@@ -1,9 +1,12 @@
 import './App.css';
+import { Header } from './components/Header/Header';
+import { RouterConfig } from './config/RouterConfig';
 
 function App() {
   return (
     <div className='App'>
-      <h1 className='text-3xl'>Omniverse</h1>
+      <Header />
+      <RouterConfig />
     </div>
   );
 }
