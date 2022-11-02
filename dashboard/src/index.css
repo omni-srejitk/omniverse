@@ -8,7 +8,7 @@
 
 @layer components {
   .page__content {
-    @apply flex  min-h-[100vh] flex-col items-start justify-start bg-inherit  px-10 pl-[21.5rem] pt-[8rem];
+    @apply flex  min-h-[100vh] flex-col items-start justify-start bg-inherit px-10  pl-[8rem] pt-[8rem] lg:pl-[21.5rem];
   }
   .page__title {
     @apply my-4 mb-10 text-5xl font-semibold;
