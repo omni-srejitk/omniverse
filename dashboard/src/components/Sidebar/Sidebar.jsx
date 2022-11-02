@@ -6,9 +6,7 @@ import { SIDEBAR_LINKS } from '../../utils/constants';
 
 export const Sidebar = () => {
   return (
-    <div className='fixed left-0 h-screen w-24 bg-white px-6 shadow-sm lg:w-[20rem]'>
-      <div className='my-4 h-10 p-3 '>Omniflo</div>
-
+    <div className='fixed left-0 z-20 h-screen w-24 border-r-2 border-gray-100 bg-white px-6 shadow-sm lg:w-[20rem]'>
       {SIDEBAR_LINKS.map(({ title, id, icon, link, active }) => {
         return (
           <NavLink

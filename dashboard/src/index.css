@@ -5,3 +5,16 @@
 .active {
   color: black;
 }
+
+@layer components {
+  .page__content {
+    @apply flex  min-h-[100vh] flex-col items-start justify-start bg-inherit  px-10 pl-[21.5rem] pt-[8rem];
+  }
+  .page__title {
+    @apply my-4 mb-10 text-5xl font-semibold;
+  }
+
+  .card {
+    @apply my-2 h-fit min-h-[200px] w-full rounded-lg bg-white p-6;
+  }
+}

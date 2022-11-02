@@ -5,7 +5,7 @@ import { RouterConfig } from './config/RouterConfig';
 
 function App() {
   return (
-    <div className='App flex'>
+    <div className='App'>
       <Sidebar />
       <Header />
       <RouterConfig />
