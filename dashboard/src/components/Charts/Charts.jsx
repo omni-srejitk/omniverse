@@ -1,29 +1,39 @@
+import moment from 'moment';
 import React from 'react';
-import { useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import Chart from 'chart.js/auto';
-
-export const Charts = () => {
-  const [saleData, setSaleData] = useState({
-    labels: [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
-    ],
-    datasets: [
-      {
-        label: 'My First Dataset',
-        data: [65, 59, 80, 81, 56, 55, 40],
-        fill: true,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1,
-      },
-    ],
-  });
-
-  return <Line data={saleData} />;
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
+export const Charts = ({ data = {}, filter = 'All', color = '#8884d8' }) => {
+  return (
+    <ResponsiveContainer width='100%' height='100%'>
+      <AreaChart width={1000} height={1000} data={data}>
+        <defs>
+          <linearGradient id='color' x1='0' y1='0' x2='0' y2='1'>
+            <stop offset='0%' stopColor={color} stopOpacity='0.9' />
+            <stop offset='75%' stopColor={color} stopOpacity='0.1' />
+          </linearGradient>
+        </defs>
+        <XAxis
+          dataKey='Date'
+          tickCount={7}
+          tickFormatter={(str) => {
+            return moment(str, 'DD-MM-YY').format('DD-MM-YY');
+          }}
+        />
+        <YAxis tickCount={10} tickMargin={5} />
+        <Tooltip />
+        <Area
+          type='monotone'
+          dataKey={filter}
+          stroke={color}
+          fill='url(#color)'
+        />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
 };
