@@ -3,7 +3,7 @@ export const SIDEBAR_LINKS = [
     id: 1,
     icon: 'home',
     title: 'Dashboard',
-    link: '/dashboard',
+    link: '/',
     active: true,
   },
   {
@@ -26,5 +26,20 @@ export const SIDEBAR_LINKS = [
     title: 'Marketing',
     link: '/marketing',
     active: false,
+  },
+];
+
+export const DATE_FILTERS = [
+  {
+    id: 1,
+    title: 'This Week',
+  },
+  {
+    id: 2,
+    title: 'This Month',
+  },
+  {
+    id: 3,
+    title: 'All Time',
   },
 ];
