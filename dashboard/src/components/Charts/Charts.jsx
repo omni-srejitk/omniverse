@@ -8,7 +8,12 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-export const Charts = ({ data = {}, filter = 'All', color = '#8884d8' }) => {
+export const Charts = ({
+  data = [],
+  filter = 'All Time',
+  color = '#8884d8',
+}) => {
+  console.log('Graph data', data);
   return (
     <ResponsiveContainer width='100%' height='100%'>
       <AreaChart width={1000} height={1000} data={data}>
@@ -20,16 +25,17 @@ export const Charts = ({ data = {}, filter = 'All', color = '#8884d8' }) => {
         </defs>
         <XAxis
           dataKey='Date'
-          tickCount={7}
+          tickMargin={1}
+          tickCount={data.length}
           tickFormatter={(str) => {
-            return moment(str, 'DD-MM-YY').format('DD-MM-YY');
+            return moment(str, 'DD-MM-YY').format('D');
           }}
         />
-        <YAxis tickCount={10} tickMargin={5} />
+        <YAxis dataKey={'Cumalative'} />
         <Tooltip />
         <Area
           type='monotone'
-          dataKey={filter}
+          dataKey={'Cumalative'}
           stroke={color}
           fill='url(#color)'
         />
