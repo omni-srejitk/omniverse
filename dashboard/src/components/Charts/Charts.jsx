@@ -13,7 +13,6 @@ export const Charts = ({
   filter = 'All Time',
   color = '#8884d8',
 }) => {
-  console.log('Graph data', data);
   return (
     <ResponsiveContainer width='100%' height='100%'>
       <AreaChart width={1000} height={1000} data={data}>
@@ -35,7 +34,7 @@ export const Charts = ({
         <Tooltip />
         <Area
           type='monotone'
-          dataKey={'Cumalative'}
+          dataKey={'Sales'}
           stroke={color}
           fill='url(#color)'
         />
