@@ -38,7 +38,6 @@ export const Carousal = () => {
 
   const encodeImage = async (url) => {
     const image = await loadImage(url);
-    // console.log(image);
     const imageData = getImageData(image);
     return encode(imageData.data, imageData.width, imageData.height, 4, 4);
   };
@@ -74,41 +73,49 @@ export const Carousal = () => {
 
   return (
     <Card title='Showcase'>
-      <div className='mb-4 flex items-center justify-between'>
-        <div>
-          <h2 className='text-xl font-medium'>Store Title</h2>
-        </div>
-        <div className='flex w-fit items-center justify-between gap-4'>
-          <button
-            className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-300`}
-            onClick={() => handleClick('PREVIOUS')}
-            disabled={currentIndex === 0 ? true : false}
-          >
-            <span className='material-icons m-0 p-0 '>chevron_left</span>
-          </button>
-          <button
-            className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 hover:bg-gray-300`}
-            onClick={() => handleClick('NEXT')}
-          >
-            <span className='material-icons m-0 p-0 text-gray-400'>
-              chevron_right
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {!ImageLoading && (
-        <div className='relative h-[20rem] w-full overflow-hidden rounded-xl bg-red-500'>
-          <div
-            className={`flex h-full w-full items-center justify-center  ${IMG_DATA[currentIndex]} `}
-          >
-            <img
-              className='w-full object-contain  '
-              src={!ImageLoading && IMG_DATA[currentIndex]['image']}
-            />
+      <div className='h-[45rem] overflow-hidden rounded-lg'>
+        <div className='mb-4 flex items-center justify-between'>
+          <div>
+            <h2 className='text-xl font-medium capitalize'>
+              {' '}
+              {!ImageLoading && IMG_DATA[currentIndex]['customer']}
+            </h2>
+          </div>
+          <div className='flex w-fit items-center justify-between gap-4'>
+            <button
+              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-300`}
+              onClick={() => handleClick('PREVIOUS')}
+              disabled={currentIndex === 0 ? true : false}
+            >
+              <span className='material-icons m-0 p-0 '>chevron_left</span>
+            </button>
+            <button
+              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 hover:bg-gray-300`}
+              onClick={() => handleClick('NEXT')}
+            >
+              <span className='material-icons m-0 p-0 text-gray-400'>
+                chevron_right
+              </span>
+            </button>
           </div>
         </div>
-      )}
+        {!ImageLoading && (
+          <div className='relative h-full w-full overflow-hidden rounded-xl'>
+            <div
+              className={`flex h-full w-full items-start justify-center  ${IMG_DATA[currentIndex]} `}
+            >
+              <img
+                className='w-full object-cover aspect-auto  '
+                src={
+                  !ImageLoading &&
+                  IMG_DATA[currentIndex]['status'] &&
+                  IMG_DATA[currentIndex]['image']
+                }
+              />
+            </div>
+          </div>
+        )}
+      </div>
     </Card>
   );
 };
