@@ -18,17 +18,19 @@ export const prepareData = (salesData = [], filterDispatch) => {
           [item]: 0,
           All: 0,
           Cumalative: 0,
+          Stores: [],
+          Items: [],
         };
         sale_count[date][item] += salesData[date][store_names][item][0];
       }
     }
     sale_count[date]['All'] = Object.values(sale_count[date]).reduce(
-      (a, b) => (a += b),
+      (a, b) => (a += +b),
       0
     );
     sale_count[date]['Cumalative'] = Object.values(sale_count)?.reduce(
       (acc, curr) => {
-        return (acc += curr.All);
+        return (acc += +curr.All);
       },
       0
     );
@@ -72,7 +74,13 @@ export const computeSalesNumber = (
           if (stores.includes(store) && item in salesData[d][store]) {
             sales += salesData[d][store][item][0];
             gmv += salesData[d][store][item][0] * prices[item];
-            sale_count[d] = { ...sale_count[d], Sales: sales, GMV: gmv };
+            sale_count[d] = {
+              ...sale_count[d],
+              Sales: sales,
+              GMV: gmv,
+              Stores: [...sale_count[d]['Stores'], store],
+              Items: [...sale_count[d]['Items'], item],
+            };
             items_count[d] = {
               ...items_count[d],
               [item]: sum,
@@ -101,6 +109,8 @@ export const computeSalesNumber = (
     TOTAL_GMV: gmv,
     SALE_DATA: GRAPHDATA,
   };
+
+  console.log(cumlativeSalesReport);
 
   return { cumlativeSalesReport };
 };

@@ -27,29 +27,33 @@ const filterByDate = ({ filterByDate }, array) => {
   }
 };
 
-// TODO Seperate Store and Item Filtering
-// const filterByStore = ({ filterBy }, array) => {
-//   console.log({ filterBy, array });
-//   if (filterBy?.length === 0) {
-//     return array;
-//   } else {
-//     return array?.filter((item) =>
-//       [...Object.keys(item)]?.some((filter) => filterBy?.includes(filter))
-//     );
-//   }
-// };
+const filterByStore = ({ filterBy }, array) => {
+  if (filterBy?.length === 0) {
+    return array;
+  } else {
+    return array?.filter((item) => {
+      return item.Stores?.some((store) =>
+        filterBy?.some(
+          (appliedFilters) =>
+            String(appliedFilters).toLowerCase() === store.toLowerCase()
+        )
+      );
+    });
+  }
+};
 
 const filterByItems = ({ filterBy }, array) => {
   if (filterBy?.length === 0) {
     return array;
   } else {
-    return array?.filter((item) =>
-      [...Object.keys(item)]?.some((filter) =>
-        filterBy?.includes(
-          (appliedFilters) => String(appliedFilters) === String(filter)
+    return array?.filter((item) => {
+      return item.Items?.some((item) =>
+        filterBy?.some(
+          (appliedFilters) =>
+            String(appliedFilters).toLowerCase() === item.toLowerCase()
         )
-      )
-    );
+      );
+    });
   }
 };
 
@@ -62,4 +66,4 @@ const applyFilters =
   };
 
 export const getFilteredData = (state, datalist) =>
-  applyFilters(state, filterByDate, filterByItems)(datalist);
+  applyFilters(state, filterByDate, filterByStore, filterByItems)(datalist);

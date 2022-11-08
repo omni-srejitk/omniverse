@@ -65,7 +65,6 @@ const FilterProvider = ({ children }) => {
 
   const datalist = getFilteredData(filterState, cumlativeSalesReport.SALE_DATA);
 
-  console.log('datalist', datalist);
   return (
     <FilterContext.Provider
       value={{
