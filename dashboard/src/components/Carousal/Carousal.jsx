@@ -1,9 +1,53 @@
+import { QueryClient, useQueries, useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
+import axios from '../../axios';
+import { queryClient } from '../../main';
 import { Card } from '../Cards/Card/Card';
+import { encode } from 'blurhash';
 
 export const Carousal = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const imageList = ['bg-red-300', 'bg-blue-400', 'bg-yellow-300'];
+  let MAX_LENGTH = 5;
+  const IMAGES_LOADED = 5;
+
+  const { isLoading: ImageLoading, data: ImageData } = useQuery(
+    ['carousal_images'],
+    () => {
+      return axios.get(
+        'https://engine.omniflo.in/api/method/omniflo_lead.omniflo_lead.api.frappe_api.image_api?brand=mezmo%20candy'
+      );
+    }
+  );
+
+  const loadImage = async (src) =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = (...args) => reject(args);
+      img.src = axios.get(src);
+    });
+
+  const getImageData = (image) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const context = canvas.getContext('2d');
+    context.drawImage(image, 0, 0);
+    return context.getImageData(0, 0, image.width, image.height);
+  };
+
+  const encodeImage = async (url) => {
+    const image = await loadImage(url);
+    // console.log(image);
+    const imageData = getImageData(image);
+    return encode(imageData.data, imageData.width, imageData.height, 4, 4);
+  };
+  // TODO Add Blurhash Support
+
+  const IMG_DATA = !ImageLoading && ImageData?.data['message'];
+  // useEffect(() => {
+  //   console.log(encodeImage(IMG_DATA[currentIndex]?.image));
+  // }, [IMG_DATA, currentIndex]);
 
   const handleClick = (type) => {
     if (type === 'NEXT') {
@@ -14,31 +58,36 @@ export const Carousal = () => {
   };
 
   useEffect(() => {
-    if (currentIndex > imageList.length - 1) {
+    if (currentIndex > MAX_LENGTH && currentIndex < IMG_DATA?.length - 1) {
+      MAX_LENGTH += IMAGES_LOADED;
+    } else if (
+      currentIndex > MAX_LENGTH &&
+      currentIndex === IMG_DATA?.length - 1
+    ) {
+      MAX_LENGTH = IMAGES_LOADED;
       setCurrentIndex(0);
     }
     if (currentIndex < 0) {
-      setCurrentIndex(imageList.length - 1);
+      setCurrentIndex(MAX_LENGTH);
     }
   }, [currentIndex]);
 
   return (
     <Card title='Showcase'>
-      <div className='items-center mb-4 flex justify-between'>
+      <div className='mb-4 flex items-center justify-between'>
         <div>
           <h2 className='text-xl font-medium'>Store Title</h2>
         </div>
-        <div className='items-center flex w-fit justify-between gap-4'>
+        <div className='flex w-fit items-center justify-between gap-4'>
           <button
-            className='items-center flex h-12 w-12 justify-center rounded-full border-2 border-gray-200 hover:bg-gray-300'
+            className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-300`}
             onClick={() => handleClick('PREVIOUS')}
+            disabled={currentIndex === 0 ? true : false}
           >
-            <span className='material-icons m-0 p-0 text-gray-400'>
-              chevron_left
-            </span>
+            <span className='material-icons m-0 p-0 '>chevron_left</span>
           </button>
           <button
-            className='items-center flex h-12 w-12 justify-center rounded-full border-2 border-gray-200 hover:bg-gray-300'
+            className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 hover:bg-gray-300`}
             onClick={() => handleClick('NEXT')}
           >
             <span className='material-icons m-0 p-0 text-gray-400'>
@@ -48,13 +97,18 @@ export const Carousal = () => {
         </div>
       </div>
 
-      <div className='relative h-80 w-full overflow-hidden rounded-xl bg-red-500'>
-        <div
-          className={`items-center absolute inset-0 flex justify-center ${imageList[currentIndex]} `}
-        >
-          Image {currentIndex}
+      {!ImageLoading && (
+        <div className='relative h-[20rem] w-full overflow-hidden rounded-xl bg-red-500'>
+          <div
+            className={`flex h-full w-full items-center justify-center  ${IMG_DATA[currentIndex]} `}
+          >
+            <img
+              className='w-full object-contain  '
+              src={!ImageLoading && IMG_DATA[currentIndex]['image']}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </Card>
   );
 };
