@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export const prepareData = (salesData = []) => {
+export const prepareData = (salesData = [], filterDispatch) => {
   let stores = new Set();
   let items = new Set();
   const prices = {};
@@ -37,13 +37,20 @@ export const prepareData = (salesData = []) => {
   stores = Array.from(stores);
   items = Array.from(items);
 
+  filterDispatch({ type: 'SET_DATES', payload: dates });
+  filterDispatch({ type: 'SET_ITEMS', payload: items });
+  filterDispatch({ type: 'SET_STORES', payload: stores });
+  filterDispatch({ type: 'SET_FILTERED_DATES', payload: dates });
+  filterDispatch({ type: 'SET_FILTERED_ITEMS', payload: items });
+  filterDispatch({ type: 'SET_FILTERED_STORES', payload: stores });
+
   return { dates, stores, items, prices, sale_count };
 };
 
 export const computeSalesNumber = (
-  dates,
-  stores,
-  items,
+  dates = [],
+  stores = [],
+  items = [],
   prices,
   salesData,
   sale_count
@@ -56,7 +63,6 @@ export const computeSalesNumber = (
   let cumlativeSalesReport = {};
   let items_count = {};
 
-  console.log(stores);
   for (var i = startDate; i <= endDate; i = moment(i).add(1, 'd')) {
     if (i.isSame(moment(dates[j], 'DD-MM-YY'))) {
       const d = dates[j].format('DD-MM-YY');
@@ -66,6 +72,7 @@ export const computeSalesNumber = (
           if (stores.includes(store) && item in salesData[d][store]) {
             sales += salesData[d][store][item][0];
             gmv += salesData[d][store][item][0] * prices[item];
+            sale_count[d] = { ...sale_count[d], Sales: sales, GMV: gmv };
             items_count[d] = {
               ...items_count[d],
               [item]: sum,
@@ -78,10 +85,21 @@ export const computeSalesNumber = (
     }
   }
 
+  let GRAPHDATA = [];
+
+  for (let key of Object.keys(sale_count)) {
+    GRAPHDATA.push({ Date: key, ...sale_count[key] });
+  }
+  GRAPHDATA = GRAPHDATA?.sort(
+    (a, b) =>
+      moment(a.Date, 'DD-MM-YY').format('DD-MM-YY') -
+      moment(b.Date, 'DD-MM-YY').format('DD-MM-YY')
+  );
+
   cumlativeSalesReport = {
     TOTAL_SALES: sales,
     TOTAL_GMV: gmv,
-    SALE_COUNT: sale_count,
+    SALE_DATA: GRAPHDATA,
   };
 
   return { cumlativeSalesReport };

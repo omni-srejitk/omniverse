@@ -1,12 +1,32 @@
 import React, { useState } from 'react';
+import { useFilter } from '../../context/FilterContext/FilterContext';
 
-export const Filter = ({ filter, setFilter }) => {
+export const Filter = ({ filter }) => {
   const [showState, setShowState] = useState(false);
+  const [itemFilters, setItemFilters] = useState([]);
+  const [storeFilters, setStoreFilters] = useState([]);
+  const { filterState, filterDispatch } = useFilter();
+
+  const handleItemChange = (val) => {
+    if (itemFilters?.includes(val)) {
+      setItemFilters(itemFilters.filter((filter) => filter !== val));
+    } else {
+      setItemFilters((prevState) => [...prevState, val]);
+    }
+  };
+
+  const handleStoreChange = (val) => {
+    if (storeFilters?.includes(val)) {
+      setStoreFilters(storeFilters.filter((filter) => filter !== val));
+    } else {
+      setStoreFilters((prevState) => [...prevState, val]);
+    }
+  };
   return (
     <div className=' relative w-max '>
       <div
         onClick={() => setShowState((prevState) => !prevState)}
-        className='items-center border-gray- 100 flex cursor-pointer justify-between  rounded-2xl border-2 px-4 py-2 font-medium hover:border-gray-400'
+        className='border-gray- 100 flex cursor-pointer items-center justify-between  rounded-2xl border-2 px-4 py-2 font-medium hover:border-gray-400'
       >
         <span className='material-icons'>
           {showState ? 'close' : 'filter_alt'}
@@ -17,59 +37,103 @@ export const Filter = ({ filter, setFilter }) => {
           showState ? 'visible h-fit' : 'hidden h-0'
         } shadow-md`}
       >
-        <p className='my-2 font-medium text-gray-500'>Sort by SKU</p>
-        <div className='mb-3 flex w-80 items-start  justify-between'>
-          <label className='font-semibold' for='SKU'>
-            Tangelo Orange
-          </label>
-          <input
-            type={'checkbox'}
-            id='SKU'
-            onClick={(e) => {
-              setFilter(e.target.dataset.value);
-            }}
-            data-value='Tangelo Orange'
-            className=' h-6 w-6 cursor-pointer font-semibold text-gray-500 hover:text-black'
-          />
+        <div className='max-h-[15rem] overflow-y-auto'>
+          <p className='my-2 font-medium text-gray-500'>By Product</p>
+          {filter['By Product']?.map((filterBy) => (
+            <div key={filterBy}>
+              <div className=' my-2 max-h-[15rem] overflow-y-auto'>
+                <div
+                  key={filterBy}
+                  className='mb-3 flex w-80 items-start justify-between '
+                >
+                  <label className='font-semibold' htmlFor={filterBy}>
+                    {filterBy}
+                  </label>
+                  <input
+                    type={'checkbox'}
+                    id={filterBy}
+                    onChange={(e) => handleItemChange(e.target.dataset.value)}
+                    checked={
+                      filterState.filterBy?.includes(filterBy) ||
+                      itemFilters.includes(filterBy)
+                    }
+                    data-value={filterBy}
+                    className=' h-6 w-6 cursor-pointer font-semibold text-gray-500 hover:text-black'
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className='mb-3 flex w-80 items-start  justify-between'>
-          <label className='font-semibold' for='SKU'>
-            Tarty Lemon
-          </label>
-          <input
-            type={'checkbox'}
-            id='SKU_2'
-            onClick={(e) => {
-              setFilter(e.target.dataset.value);
-            }}
-            data-value='Tarty Lemon'
-            className=' h-6 w-6 cursor-pointer font-semibold text-gray-500 hover:text-black'
-          />
+        <div className='max-h-[15rem] overflow-y-auto'>
+          <p className='my-2 font-medium text-gray-500'>By Store</p>
+          {filter['By Store']?.map((filterByStore) => (
+            <div key={filterByStore}>
+              <div className=' my-2'>
+                <div
+                  key={filterByStore}
+                  className='mb-3 flex w-80 items-start justify-between '
+                >
+                  <label className='font-semibold' htmlFor={filterByStore}>
+                    {filterByStore}
+                  </label>
+                  <input
+                    type={'checkbox'}
+                    id={filterByStore}
+                    onChange={(e) => handleStoreChange(e.target.dataset.value)}
+                    checked={
+                      filterState.filterBy?.includes(filterByStore) ||
+                      storeFilters.includes(filterByStore)
+                    }
+                    data-value={filterByStore}
+                    className=' h-6 w-6 cursor-pointer font-semibold text-gray-500 hover:text-black'
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className='mb-3 flex w-80 items-start justify-between '>
-          <label className='font-semibold' for='SKU'>
-            Very Strawberry
-          </label>
-          <input
-            type={'checkbox'}
-            id='SKU_3'
-            onClick={(e) => {
-              setFilter(e.target.dataset.value);
-            }}
-            data-value='Very Strawberry'
-            className=' h-6 w-6 cursor-pointer font-semibold text-gray-500 hover:text-black'
-          />
-        </div>
-        <div className='items-center mw-full flex gap-4'>
+        <div className='mw-full flex items-center gap-4'>
           <button
-            onClick={() => setShowState(false)}
-            className='items-center border-gray- 100 ml-auto flex  cursor-pointer  justify-between rounded-2xl border-2 px-4 py-2 font-medium hover:border-gray-400'
+            onClick={() => {
+              filterDispatch({
+                type: 'SET_STORES_FILTER',
+                payload: filterState.STORES,
+              });
+              filterDispatch({
+                type: 'SET_ITEMS_FILTER',
+                payload: filterState.ITEMS,
+              });
+              setItemFilters([]);
+              setStoreFilters([]);
+              setShowState(false);
+            }}
+            className='border-gray- 100 ml-auto flex cursor-pointer  items-center  justify-between rounded-2xl border-2 px-4 py-2 font-medium hover:border-gray-400'
           >
             Reset
           </button>
           <button
-            onClick={() => setShowState(false)}
-            className='items-center border-gray- 100 flex  cursor-pointer  justify-between rounded-2xl border-2 bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
+            onClick={() => {
+              filterDispatch({
+                type: 'SET_FILTERS',
+                payload: [...itemFilters, ...storeFilters],
+              });
+
+              filterDispatch({
+                type: 'SET_FILTERED_STORES',
+                payload:
+                  storeFilters?.length === 0
+                    ? filterState.STORES
+                    : storeFilters,
+              });
+              filterDispatch({
+                type: 'SET_FILTERED_ITEMS',
+                payload:
+                  itemFilters?.length === 0 ? filterState.ITEMS : itemFilters,
+              });
+              setShowState(false);
+            }}
+            className='border-gray- 100 flex cursor-pointer  items-center  justify-between rounded-2xl border-2 bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
           >
             Apply
           </button>
