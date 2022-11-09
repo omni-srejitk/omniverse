@@ -9,11 +9,14 @@ import axios from '../../axios';
 
 import { useQuery } from '@tanstack/react-query';
 import { useFilter } from '../../context/FilterContext/FilterContext';
-import { Charts } from '../../components/Charts/Charts';
+import { AreaCharts } from '../../components/Charts/Charts';
+import { BarCharts } from '../../components/Charts/BarChart/BarChart';
 
 export const Dashboard = () => {
-  const [duration, setDuration] = useState([]);
-
+  const [showState, setShowState] = useState({
+    durationFilter: false,
+    productFilter: false,
+  });
   const { filterState, datalist, cumlativeSalesReport, isGMVDataLoading } =
     useFilter();
   const { isLoading: isInventoryLoading, data: resData } = useQuery(
@@ -47,8 +50,12 @@ export const Dashboard = () => {
 
   const OVERVIEW_FILTERS = (
     <div className='items-centerS flex gap-4'>
-      <Select duration={duration} setDuration={setDuration} />
-      <Filter filter={FILTERS} />
+      <Select showState={showState} setShowState={setShowState} />
+      <Filter
+        filter={FILTERS}
+        showState={showState}
+        setShowState={setShowState}
+      />
     </div>
   );
 
@@ -57,7 +64,7 @@ export const Dashboard = () => {
       <h1 className='page__title'>Dashboard</h1>
 
       <Card title='Overview' cardHeader={OVERVIEW_FILTERS}>
-        <div className='card_body flex h-fit w-[95%] justify-start overflow-x-auto'>
+        <div className='card_body flex h-fit w-[95%] justify-start overflow-x-auto scrollbar-thin'>
           <StatCard
             icon='home'
             title='Units Sold'
@@ -89,11 +96,29 @@ export const Dashboard = () => {
           />
         </div>
       </Card>
-      <div className='grid h-fit w-full grid-cols-1 grid-rows-2 gap-4 lg:grid-cols-2 lg:grid-rows-1'>
+      <div className='grid h-fit w-full grid-cols-1 grid-rows-4 gap-4 lg:grid-cols-2 lg:grid-rows-2'>
+        <Card
+          title='Cumalative Sales'
+          classes={
+            'row-span-1  overflow-hidden flex-grow h-full justify-center items-center'
+          }
+        >
+          <div className='flex h-[20rem] w-full items-center justify-center rounded-xl bg-gray-100/50'>
+            <AreaCharts
+              data={datalist}
+              filter={filterState.filterBy}
+              color={'#3b82f6'}
+            />
+          </div>
+        </Card>
         <Carousal />
-        <Card title='Cumalative Sales'>
-          <div className='h-[20rem] w-full border-2 border-black'>
-            <Charts data={datalist} />
+        <Card title='Unit Sales ' classes={'row-span-1 flex-grow h-full'}>
+          <div className='flex h-[20rem] w-full items-center justify-center rounded-xl bg-gray-100/50'>
+            <BarCharts
+              data={datalist}
+              filter={filterState.filterBy}
+              color={'#86efac'}
+            />
           </div>
         </Card>
       </div>
