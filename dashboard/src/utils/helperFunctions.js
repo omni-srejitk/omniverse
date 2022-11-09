@@ -110,7 +110,20 @@ export const computeSalesNumber = (
     SALE_DATA: GRAPHDATA,
   };
 
-  console.log(cumlativeSalesReport);
+  console.log('Sales Report', cumlativeSalesReport);
 
   return { cumlativeSalesReport };
+};
+
+export const calcTickCount = (duration) => {
+  switch (duration) {
+    case 'All Time':
+      return 8;
+    case 'This Week':
+      return 8;
+    case 'This Month':
+      return 10;
+    default:
+      return 10;
+  }
 };
