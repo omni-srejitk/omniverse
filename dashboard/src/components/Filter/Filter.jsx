@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useFilter } from '../../context/FilterContext/FilterContext';
 
-export const Filter = ({ filter }) => {
-  const [showState, setShowState] = useState(false);
+export const Filter = ({ filter, showState, setShowState }) => {
   const [itemFilters, setItemFilters] = useState([]);
   const [storeFilters, setStoreFilters] = useState([]);
   const { filterState, filterDispatch } = useFilter();
@@ -25,20 +24,26 @@ export const Filter = ({ filter }) => {
   return (
     <div className=' relative w-max '>
       <div
-        onClick={() => setShowState((prevState) => !prevState)}
+        onClick={() =>
+          setShowState({
+            ...showState,
+            durationFilter: false,
+            productFilter: !showState.productFilter,
+          })
+        }
         className='border-gray- 100 flex cursor-pointer items-center justify-between  rounded-2xl border-2 px-4 py-2 font-medium hover:border-gray-400'
       >
         <span className='material-icons'>
-          {showState ? 'close' : 'filter_alt'}
+          {showState.productFilter ? 'close' : 'filter_alt'}
         </span>
       </div>
       <div
         className={`absolute right-0 z-20 rounded-xl bg-white p-6 ${
-          showState ? 'visible h-fit' : 'hidden h-0'
+          showState.productFilter ? 'visible h-fit' : 'hidden h-0'
         } shadow-md`}
       >
-        <div className='max-h-[15rem] overflow-y-auto'>
-          <p className='my-2 font-medium text-gray-500'>By Product</p>
+        <p className='my-2 font-medium text-gray-500'>By Product</p>
+        <div className='max-h-[15rem] overflow-y-auto pr-4 scrollbar-thin scrollbar-track-gray-50 scrollbar-thumb-blue-100 scrollbar-track-rounded-lg'>
           {filter['By Product']?.map((filterBy) => (
             <div key={filterBy}>
               <div className=' my-2 max-h-[15rem] overflow-y-auto'>
@@ -65,8 +70,9 @@ export const Filter = ({ filter }) => {
             </div>
           ))}
         </div>
-        <div className='max-h-[15rem] overflow-y-auto'>
-          <p className='my-2 font-medium text-gray-500'>By Store</p>
+        <div className='divider h-[2px] w-full bg-gray-100'></div>
+        <p className='my-2 font-medium text-gray-500'>By Store</p>
+        <div className='mb-8 max-h-[15rem] overflow-y-auto pr-4 scrollbar-thin scrollbar-track-gray-50 scrollbar-thumb-blue-100 scrollbar-track-rounded-lg'>
           {filter['By Store']?.map((filterByStore) => (
             <div key={filterByStore}>
               <div className=' my-2'>
@@ -106,7 +112,7 @@ export const Filter = ({ filter }) => {
               });
               setItemFilters([]);
               setStoreFilters([]);
-              setShowState(false);
+              setShowState({ ...showState, productFilter: false });
             }}
             className='border-gray- 100 ml-auto flex cursor-pointer  items-center  justify-between rounded-2xl border-2 px-4 py-2 font-medium hover:border-gray-400'
           >
@@ -131,7 +137,7 @@ export const Filter = ({ filter }) => {
                 payload:
                   itemFilters?.length === 0 ? filterState.ITEMS : itemFilters,
               });
-              setShowState(false);
+              setShowState({ ...showState, productFilter: false });
             }}
             className='border-gray- 100 flex cursor-pointer  items-center  justify-between rounded-2xl border-2 bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
           >
