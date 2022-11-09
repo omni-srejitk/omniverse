@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default axios.create({
   headers: {
-    common: {
+    get: {
       Authorization: `Token ${import.meta.env.VITE_AUTHORIZATION_TOKEN}`,
     },
   },

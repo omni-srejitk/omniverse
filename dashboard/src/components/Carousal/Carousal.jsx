@@ -72,18 +72,17 @@ export const Carousal = () => {
   }, [currentIndex]);
 
   return (
-    <Card title='Showcase'>
-      <div className='h-[45rem] overflow-hidden rounded-lg'>
+    <Card title='Showcase' classes={'row-span-2 flex-grow order-2 lg:order-3'}>
+      <div className='row-span-2 h-[50rem] overflow-hidden rounded-lg'>
         <div className='mb-4 flex items-center justify-between'>
           <div>
             <h2 className='text-xl font-medium capitalize'>
-              {' '}
               {!ImageLoading && IMG_DATA[currentIndex]['customer']}
             </h2>
           </div>
           <div className='flex w-fit items-center justify-between gap-4'>
             <button
-              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-300`}
+              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
               onClick={() => handleClick('PREVIOUS')}
               disabled={currentIndex === 0 ? true : false}
             >
@@ -105,7 +104,7 @@ export const Carousal = () => {
               className={`flex h-full w-full items-start justify-center  ${IMG_DATA[currentIndex]} `}
             >
               <img
-                className='w-full object-cover aspect-auto  '
+                className='aspect-auto w-full object-cover  '
                 src={
                   !ImageLoading &&
                   IMG_DATA[currentIndex]['status'] &&
