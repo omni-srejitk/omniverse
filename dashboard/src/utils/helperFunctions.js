@@ -92,19 +92,6 @@ export const computeSalesNumber = (
       TOTAL_SALES: sales,
       TOTAL_GMV: gmv,
       UNIT_SALE,
-      // ITEMS_SOLD: sale_count[moment(i).format('DD-MM-YY')]
-      //   ? sale_count[moment(i).format('DD-MM-YY')]?.Items
-      //   : [],
-      // SALE_STORES: sale_count[moment(i).format('DD-MM-YY')]
-      //   ? sale_count[moment(i).format('DD-MM-YY')]?.Stores
-      //   : [],
-      // CUMALATIVE: sale_count[moment(i).format('DD-MM-YY')]
-      //   ? sale_count[moment(i).format('DD-MM-YY')]?.Cumalative
-      //   : 0,
-      // ALL: sale_count[moment(i).format('DD-MM-YY')]
-      //   ? sale_count[moment(i).format('DD-MM-YY')]?.All
-      //   : 0,
-    };
   }
 
   let SALES_DATA = [];
@@ -136,7 +123,6 @@ export const computeSalesNumber = (
     GRAPH_DATA: SALES_DATA,
   };
 
-  console.log('Sales Report', checkThis);
 
   return { cumlativeSalesReport, checkThis };
 };
