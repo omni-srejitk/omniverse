@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
 import { useFilter } from '../../context/FilterContext/FilterContext';
 import { DATE_FILTERS } from '../../utils/constants';
 import moment from 'moment';

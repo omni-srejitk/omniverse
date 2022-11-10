@@ -17,8 +17,8 @@ export const Dashboard = () => {
     durationFilter: false,
     productFilter: false,
   });
-  const { filterState, datalist, cumlativeSalesReport, isGMVDataLoading } =
-    useFilter();
+
+  const { filterState, cumlativeSalesReport, isGMVDataLoading } = useFilter();
   const { isLoading: isInventoryLoading, data: resData } = useQuery(
     ['inventory_count'],
     () => {
@@ -70,14 +70,18 @@ export const Dashboard = () => {
             title='Units Sold'
             metric={cumlativeSalesReport.TOTAL_SALES}
             loading={isGMVDataLoading}
-            color='bg-green-100'
+            background='bg-green-100'
+            spinner={'border-green-200'}
+            tooltip={'Total count of items sold.'}
           />
           <StatCard
             icon='insights'
             title='Total GMV'
             metric={cumlativeSalesReport.TOTAL_GMV}
             loading={isGMVDataLoading}
-            color='bg-blue-100'
+            tooltip={'Total sale of items sold.'}
+            background='bg-blue-100'
+            spinner={'border-blue-200'}
             currency
           />
           <StatCard
@@ -85,14 +89,18 @@ export const Dashboard = () => {
             title='Total Stores'
             loading={isLiveStoreLoading}
             metric={liveStoreCount}
-            color='bg-purple-100'
+            background='bg-purple-100'
+            spinner={'border-purple-200'}
+            tooltip={'Total no of stores where item is active.'}
           />
           <StatCard
             icon='store'
             title='Inventory Deployed'
             metric={InventoryData}
             loading={isInventoryLoading}
-            color='bg-yellow-100'
+            tooltip={'Total no of items in inventory deployed.'}
+            background='bg-yellow-100'
+            spinner={'border-yellow-200'}
           />
         </div>
       </Card>
@@ -100,22 +108,25 @@ export const Dashboard = () => {
         <Card
           title='Cumalative Sales'
           classes={
-            'row-span-1  overflow-hidden flex-grow h-full justify-center items-center'
+            'row-span-1 order-1 overflow-hidden flex-grow h-full justify-center items-center'
           }
         >
-          <div className='flex h-[20rem] w-full items-center justify-center rounded-xl bg-gray-100/50'>
+          <div className='items-center flex h-[20rem] w-full justify-center rounded-xl bg-gray-100/50'>
             <AreaCharts
-              data={datalist}
+              data={cumlativeSalesReport.GRAPH_DATA}
               filter={filterState.filterBy}
               color={'#3b82f6'}
             />
           </div>
         </Card>
         <Carousal />
-        <Card title='Unit Sales ' classes={'row-span-1 flex-grow h-full'}>
-          <div className='flex h-[20rem] w-full items-center justify-center rounded-xl bg-gray-100/50'>
+        <Card
+          title='Unit Sales '
+          classes={'row-span-1 flex-grow h-full order-2'}
+        >
+          <div className='items-center flex h-[20rem] w-full justify-center rounded-xl bg-gray-100/50'>
             <BarCharts
-              data={datalist}
+              data={cumlativeSalesReport.GRAPH_DATA}
               filter={filterState.filterBy}
               color={'#86efac'}
             />
