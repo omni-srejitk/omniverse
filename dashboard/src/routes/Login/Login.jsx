@@ -40,17 +40,17 @@ export const Login = () => {
       );
       filterDispatch({ type: 'SET_BRAND', payload: JSON.stringify(data.name) });
       filterDispatch({ type: 'LOGIN' });
-      navigate('/dashboard');
-      toast.success(`Welcome Back ${data.name}`, { id: loginToast });
     }
 
     if (isError) {
       toast.error(`Couldn't sign you in`, { id: loginToast });
     }
+    navigate('/dashboard');
+    toast.success(`Welcome Back ${data.name}`, { id: loginToast });
   };
 
   return (
-    <main className='items-center mx-auto flex min-h-screen w-screen justify-center bg-white pl-0 lg:pl-0'>
+    <main className='mx-auto flex min-h-screen w-screen items-center justify-center bg-white pl-0 lg:pl-0'>
       <form className=' ' onSubmit={onSubmit}>
         <h1 className=' mb-8 text-5xl font-semibold'>Sign in</h1>
         <p className='mb-4 text-sm font-semibold'>Sign in with email address</p>
@@ -63,7 +63,7 @@ export const Login = () => {
             placeholder={'You email'}
             className=' h-12 w-full rounded-xl border-2 border-transparent bg-gray-100 py-[10px] pl-12 font-semibold text-gray-600 placeholder:text-gray-400'
           />
-          <span className='material-symbols-rounded items-center  pointer-events-none absolute top-0 bottom-0 left-0 flex w-12 justify-center text-gray-500'>
+          <span className='material-symbols-rounded pointer-events-none  absolute top-0 bottom-0 left-0 flex w-12 items-center justify-center text-gray-500'>
             email
           </span>
         </div>
@@ -76,19 +76,19 @@ export const Login = () => {
             placeholder={'Password'}
             className=' h-12 w-full rounded-xl border-2 border-transparent bg-gray-100 py-[10px] pl-12 font-semibold text-gray-600 placeholder:text-gray-400'
           />
-          <span className='material-symbols-rounded items-center  pointer-events-none absolute top-0 bottom-0 left-0 flex w-12 justify-center text-gray-500'>
+          <span className='material-symbols-rounded pointer-events-none  absolute top-0 bottom-0 left-0 flex w-12 items-center justify-center text-gray-500'>
             lock
           </span>
           <span
             onClick={() => passwordVisibility()}
-            className='material-symbols-rounded items-center  absolute top-0 bottom-0 right-0 flex w-12 cursor-pointer justify-center text-gray-500'
+            className='material-symbols-rounded absolute  top-0 bottom-0 right-0 flex w-12 cursor-pointer items-center justify-center text-gray-500'
           >
             {showPassword ? 'visibility_off' : 'visibility'}
           </span>
         </div>
         <button
           type='submit'
-          className='items-center my-2 flex w-72 cursor-pointer justify-center rounded-xl border-2   border-transparent bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
+          className='my-2 flex w-72 cursor-pointer items-center justify-center rounded-xl border-2   border-transparent bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
         >
           Sign in
         </button>
