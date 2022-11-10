@@ -4,6 +4,7 @@ import axios from '../../axios';
 import { queryClient } from '../../main';
 import { Card } from '../Cards/Card/Card';
 import { encode } from 'blurhash';
+import { Spinner } from '../Loaders/Spinner/Spinner';
 
 export const Carousal = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -44,9 +45,6 @@ export const Carousal = () => {
   // TODO Add Blurhash Support
 
   const IMG_DATA = !ImageLoading && ImageData?.data['message'];
-  // useEffect(() => {
-  //   console.log(encodeImage(IMG_DATA[currentIndex]?.image));
-  // }, [IMG_DATA, currentIndex]);
 
   const handleClick = (type) => {
     if (type === 'NEXT') {
@@ -55,6 +53,11 @@ export const Carousal = () => {
       setCurrentIndex((prev) => prev - 1);
     }
   };
+
+  // const checkThis =
+  //   ImageLoading && encodeImage(IMG_DATA[currentIndex]['image']);
+
+  // console.log(checkThis);
 
   useEffect(() => {
     if (currentIndex > MAX_LENGTH && currentIndex < IMG_DATA?.length - 1) {
@@ -72,24 +75,27 @@ export const Carousal = () => {
   }, [currentIndex]);
 
   return (
-    <Card title='Showcase' classes={'row-span-2 flex-grow order-2 lg:order-3'}>
-      <div className='row-span-2 h-[50rem] overflow-hidden rounded-lg'>
-        <div className='mb-4 flex items-center justify-between'>
+    <Card
+      title='Showcase'
+      classes={'row-span-4 flex-grow h-full col-span-1 order-3 lg:order-2'}
+    >
+      <div className='h-fit overflow-hidden rounded-lg'>
+        <div className='items-center mb-4 flex justify-between'>
           <div>
             <h2 className='text-xl font-medium capitalize'>
               {!ImageLoading && IMG_DATA[currentIndex]['customer']}
             </h2>
           </div>
-          <div className='flex w-fit items-center justify-between gap-4'>
+          <div className='items-center flex w-fit justify-between gap-4'>
             <button
-              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
+              className={`items-center flex h-12 w-12 justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
               onClick={() => handleClick('PREVIOUS')}
               disabled={currentIndex === 0 ? true : false}
             >
               <span className='material-icons m-0 p-0 '>chevron_left</span>
             </button>
             <button
-              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 hover:bg-gray-300`}
+              className={`items-center flex h-12 w-12 justify-center rounded-full border-2 border-gray-200 hover:bg-gray-300`}
               onClick={() => handleClick('NEXT')}
             >
               <span className='material-icons m-0 p-0 text-gray-400'>
@@ -98,13 +104,19 @@ export const Carousal = () => {
             </button>
           </div>
         </div>
-        {!ImageLoading && (
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
+        <div className='relative h-[30rem] w-full overflow-hidden rounded-xl bg-gray-50'>
+          {ImageLoading ? (
+            <Spinner
+              color={'border-blue-200'}
+              position={'top-1/2 left-1/2'}
+              loading={ImageLoading}
+            />
+          ) : (
             <div
-              className={`flex h-full w-full items-start justify-center  ${IMG_DATA[currentIndex]} `}
+              className={`flex  w-full items-start justify-center  ${IMG_DATA[currentIndex]} `}
             >
               <img
-                className='aspect-auto w-full object-cover  '
+                className='aspect-auto h-[30rem] w-full object-cover  '
                 src={
                   !ImageLoading &&
                   IMG_DATA[currentIndex]['status'] &&
@@ -112,8 +124,8 @@ export const Carousal = () => {
                 }
               />
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </Card>
   );

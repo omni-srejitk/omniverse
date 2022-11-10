@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useFilter } from '../../context/FilterContext/FilterContext';
 import { AreaCharts } from '../../components/Charts/Charts';
 import { BarCharts } from '../../components/Charts/BarChart/BarChart';
+import { Spinner } from '../../components/Loaders/Spinner/Spinner';
 
 export const Dashboard = () => {
   const [showState, setShowState] = useState({
@@ -104,32 +105,45 @@ export const Dashboard = () => {
           />
         </div>
       </Card>
-      <div className='grid h-fit w-full grid-cols-1 grid-rows-4 gap-4 lg:grid-cols-2 lg:grid-rows-2'>
+      <div className='mb-36 grid h-fit w-full grid-cols-1 grid-rows-4 gap-4 md:mb-0 lg:grid-cols-2 lg:grid-rows-4'>
         <Card
           title='Cumalative Sales'
           classes={
-            'row-span-1 order-1 overflow-hidden flex-grow h-full justify-center items-center'
+            'row-span-2 order-1 overflow-hidden justify-center items-center'
           }
         >
-          <div className='items-center flex h-[20rem] w-full justify-center rounded-xl bg-gray-100/50'>
-            <AreaCharts
-              data={cumlativeSalesReport.GRAPH_DATA}
-              filter={filterState.filterBy}
-              color={'#3b82f6'}
-            />
+          <div className='items-center relative flex h-[20rem] w-full flex-grow justify-center rounded-xl bg-gray-100/50'>
+            {isGMVDataLoading ? (
+              <Spinner
+                color={'border-blue-200'}
+                position={'top-1/2 left-1/2'}
+                loading={isGMVDataLoading}
+              />
+            ) : (
+              <AreaCharts
+                data={cumlativeSalesReport.GRAPH_DATA}
+                filter={filterState.filterBy}
+                color={'#3b82f6'}
+              />
+            )}
           </div>
         </Card>
         <Carousal />
-        <Card
-          title='Unit Sales '
-          classes={'row-span-1 flex-grow h-full order-2'}
-        >
-          <div className='items-center flex h-[20rem] w-full justify-center rounded-xl bg-gray-100/50'>
-            <BarCharts
-              data={cumlativeSalesReport.GRAPH_DATA}
-              filter={filterState.filterBy}
-              color={'#86efac'}
-            />
+        <Card title='Sales ' classes={'row-span-2 flex-grow order-2'}>
+          <div className='items-center relative flex h-[20rem] w-full justify-center rounded-xl bg-gray-100/50'>
+            {isGMVDataLoading ? (
+              <Spinner
+                color={'border-green-200'}
+                position={'top-1/2 left-1/2'}
+                loading={isGMVDataLoading}
+              />
+            ) : (
+              <BarCharts
+                data={cumlativeSalesReport.GRAPH_DATA}
+                filter={filterState.filterBy}
+                color={'#86efac'}
+              />
+            )}
           </div>
         </Card>
       </div>
