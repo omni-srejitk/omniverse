@@ -93,36 +93,49 @@ export const computeSalesNumber = (
       TOTAL_GMV: gmv,
       UNIT_SALE,
     };
+  }
 
-    let SALES_DATA = [];
+  let SALES_DATA = [];
 
-    for (let key of Object.keys(checkThis)) {
-      SALES_DATA.push({ Date: key, ...checkThis[key] });
-    }
-    SALES_DATA = SALES_DATA?.sort(
-      (a, b) =>
-        moment(a.Date, 'DD-MM-YY').format('DD-MM-YY') -
-        moment(b.Date, 'DD-MM-YY').format('DD-MM-YY')
-    );
+  for (let key of Object.keys(checkThis)) {
+    SALES_DATA.push({ Date: key, ...checkThis[key] });
+  }
+  SALES_DATA = SALES_DATA?.sort(
+    (a, b) =>
+      moment(a.Date, 'DD-MM-YY').format('DD-MM-YY') -
+      moment(b.Date, 'DD-MM-YY').format('DD-MM-YY')
+  );
 
-    let GRAPHDATA = [];
+  let GRAPHDATA = [];
 
-    for (let key of Object.keys(sale_count)) {
-      GRAPHDATA.push({ Date: key, ...sale_count[key] });
-    }
-    GRAPHDATA = GRAPHDATA?.sort(
-      (a, b) =>
-        moment(a.Date, 'DD-MM-YY').format('DD-MM-YY') -
-        moment(b.Date, 'DD-MM-YY').format('DD-MM-YY')
-    );
+  for (let key of Object.keys(sale_count)) {
+    GRAPHDATA.push({ Date: key, ...sale_count[key] });
+  }
+  GRAPHDATA = GRAPHDATA?.sort(
+    (a, b) =>
+      moment(a.Date, 'DD-MM-YY').format('DD-MM-YY') -
+      moment(b.Date, 'DD-MM-YY').format('DD-MM-YY')
+  );
 
-    cumlativeSalesReport = {
-      TOTAL_SALES: sales,
-      TOTAL_GMV: gmv,
-      SALE_DATA: GRAPHDATA,
-      GRAPH_DATA: SALES_DATA,
-    };
+  cumlativeSalesReport = {
+    TOTAL_SALES: sales,
+    TOTAL_GMV: gmv,
+    SALE_DATA: GRAPHDATA,
+    GRAPH_DATA: SALES_DATA,
+  };
 
-    return { cumlativeSalesReport, checkThis };
+  return { cumlativeSalesReport, checkThis };
+};
+
+export const calcTickCount = (duration) => {
+  switch (duration) {
+    case 'All Time':
+      return 8;
+    case 'This Week':
+      return 8;
+    case 'This Month':
+      return 10;
+    default:
+      return 10;
   }
 };

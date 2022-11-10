@@ -3,7 +3,7 @@ import { Analytics } from '../routes/Analytics/Analytics';
 import { Dashboard } from '../routes/Dashboard/Dashboard';
 import { Login } from '../routes/Login/Login';
 import { Marketing } from '../routes/Marketing/Marketing';
-import RequireAuth from '../routes/RequireAuth';
+import RequireAuth from '../utils/RequireAuth';
 import { Stores } from '../routes/Stores/Stores';
 
 export const RouterConfig = () => {
