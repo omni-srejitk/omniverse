@@ -17,6 +17,7 @@ const FilterProvider = ({ children }) => {
     filterByDate: 'All Time',
     filterBy: [],
     database: [],
+    ISLOGGED: false,
     DATES: [],
     ITEMS: [],
     STORES: [],
@@ -43,7 +44,7 @@ const FilterProvider = ({ children }) => {
     [GMV_SALES_DATA]
   );
 
-  const { cumlativeSalesReport } = useMemo(
+  const { cumlativeSalesReport, checkThis } = useMemo(
     () =>
       computeSalesNumber(
         filterState.FILTERED_DATES,
@@ -73,6 +74,7 @@ const FilterProvider = ({ children }) => {
         items,
         stores,
         dates,
+        checkThis,
         isGMVDataLoading,
         cumlativeSalesReport,
         filterDispatch,

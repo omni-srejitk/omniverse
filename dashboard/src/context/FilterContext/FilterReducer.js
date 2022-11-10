@@ -34,6 +34,10 @@ export const filterReducer = (state, { type, payload }) => {
       return { ...state, FILTERED_STORES: payload };
     case 'CLEAR_FILTERED_DATES':
       return { ...state, FILTERED_DATES: payload };
+    case 'LOGIN':
+      return { ...state, ISLOGGED: true };
+    case 'LOGOUT':
+      return { ...state, ISLOGGED: false };
     default:
       return state;
   }

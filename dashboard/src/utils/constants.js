@@ -3,7 +3,7 @@ export const SIDEBAR_LINKS = [
     id: 1,
     icon: 'home',
     title: 'Dashboard',
-    link: '/',
+    link: '/dashboard',
     active: true,
   },
   {
@@ -11,7 +11,7 @@ export const SIDEBAR_LINKS = [
     icon: 'shopping_bag',
     title: 'Stores',
     link: '/stores',
-    active: true,
+    active: false,
   },
   {
     id: 3,
