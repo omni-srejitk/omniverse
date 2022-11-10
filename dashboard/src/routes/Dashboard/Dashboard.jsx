@@ -1,17 +1,17 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import moment from 'moment';
 import { StatCard } from '../../components/Cards/Stats/StatCard';
 import { Filter } from '../../components/Filter/Filter';
 import { Select } from '../../components/Select/Select';
 import { Carousal } from '../../components/Carousal/Carousal';
 import { Card } from '../../components/Cards/Card/Card';
-import axios from '../../axios';
-
-import { useQuery } from '@tanstack/react-query';
 import { useFilter } from '../../context/FilterContext/FilterContext';
 import { AreaCharts } from '../../components/Charts/Charts';
 import { BarCharts } from '../../components/Charts/BarChart/BarChart';
 import { Spinner } from '../../components/Loaders/Spinner/Spinner';
+import {
+  fetchInventoryCount,
+  fetchLiveStoreCount,
+} from '../../services/apiCalls';
 
 export const Dashboard = () => {
   const [showState, setShowState] = useState({
@@ -20,27 +20,14 @@ export const Dashboard = () => {
   });
 
   const { filterState, cumlativeSalesReport, isGMVDataLoading } = useFilter();
-  const { isLoading: isInventoryLoading, data: resData } = useQuery(
-    ['inventory_count'],
-    () => {
-      return axios.get(
-        `${import.meta.env.VITE_BASE_URL}` +
-          `.total_inventory?brand=${encodeURI(filterState.BRAND)}`
-      );
-    }
+  const { isLoading: isInventoryLoading, data: resData } = fetchInventoryCount(
+    filterState?.BRAND
   );
 
   const InventoryData = !isInventoryLoading && resData.data['message'];
 
-  const { isLoading: isLiveStoreLoading, data: liveStoreData } = useQuery(
-    ['livestore_count'],
-    () => {
-      return axios.get(
-        `${import.meta.env.VITE_BASE_URL}` +
-          `.total_live_store?brand=${encodeURI(filterState.BRAND)}`
-      );
-    }
-  );
+  const { isLoading: isLiveStoreLoading, data: liveStoreData } =
+    fetchLiveStoreCount(filterState.BRAND);
 
   const liveStoreCount = !isLiveStoreLoading && liveStoreData.data['message'];
 

@@ -1,31 +1,29 @@
 import { QueryClient, useQueries, useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import axios from '../../axios';
 import { queryClient } from '../../main';
 import { Card } from '../Cards/Card/Card';
 import { encode } from 'blurhash';
 import { Spinner } from '../Loaders/Spinner/Spinner';
+import { fetchStoreImages } from '../../services/apiCalls';
+import { useFilter } from '../../context/FilterContext/FilterContext';
 
 export const Carousal = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   let MAX_LENGTH = 5;
   const IMAGES_LOADED = 5;
+  const { filterState } = useFilter();
 
-  const { isLoading: ImageLoading, data: ImageData } = useQuery(
-    ['carousal_images'],
-    () => {
-      return axios.get(
-        'https://engine.omniflo.in/api/method/omniflo_lead.omniflo_lead.api.frappe_api.image_api?brand=mezmo%20candy'
-      );
-    }
+  const { isLoading: ImageLoading, data: ImageData } = fetchStoreImages(
+    filterState.BRAND
   );
 
   const loadImage = async (src) =>
     new Promise((resolve, reject) => {
       const img = new Image();
+      img.crossOrigin = 'Anonymous';
       img.onload = () => resolve(img);
       img.onerror = (...args) => reject(args);
-      img.src = axios.get(src);
+      img.src = src;
     });
 
   const getImageData = (image) => {
@@ -55,7 +53,7 @@ export const Carousal = () => {
   };
 
   // const checkThis =
-  //   ImageLoading && encodeImage(IMG_DATA[currentIndex]['image']);
+  //   !ImageLoading && encodeImage(IMG_DATA[currentIndex]['image']);
 
   // console.log(checkThis);
 
