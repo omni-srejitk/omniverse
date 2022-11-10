@@ -9,9 +9,9 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
-export const AreaCharts = ({ data = [], filter = 'All Time', color }) => {
+export const AreaCharts = ({ data = [], color }) => {
   return (
-    <ResponsiveContainer width={'100%'} height={'80%'}>
+    <ResponsiveContainer width={'100%'} height={'100%'}>
       <AreaChart width={'100%'} height={'100% '} data={data}>
         <defs>
           <linearGradient id='color' x1='0' y1='0' x2='0' y2='1'>
@@ -31,7 +31,7 @@ export const AreaCharts = ({ data = [], filter = 'All Time', color }) => {
           }}
         />
         <YAxis
-          dataKey='Sales'
+          dataKey='TOTAL_SALES'
           tickLine={false}
           axisLine={false}
           interval={'preserveStartEnd'}
@@ -40,7 +40,7 @@ export const AreaCharts = ({ data = [], filter = 'All Time', color }) => {
         <Tooltip />
         <Area
           type='monotone'
-          dataKey={'Sales'}
+          dataKey={'TOTAL_SALES'}
           width={'100%'}
           height={'90%'}
           stroke={color}

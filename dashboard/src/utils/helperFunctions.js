@@ -62,17 +62,18 @@ export const computeSalesNumber = (
   let sales = 0;
   let gmv = 0;
   let j = 0;
+  let UNIT_SALE = 0;
   let cumlativeSalesReport = {};
-  let items_count = {};
+  let checkThis = {};
 
-  for (var i = startDate; i <= endDate; i = moment(i).add(1, 'd')) {
+  for (let i = startDate; i <= endDate; i = moment(i).add(1, 'd')) {
     if (i.isSame(moment(dates[j], 'DD-MM-YY'))) {
       const d = dates[j].format('DD-MM-YY');
-      for (var store in salesData[d]) {
-        let sum = 0;
-        for (var item of items) {
+      for (let store in salesData[d]) {
+        for (let item of items) {
           if (stores.includes(store) && item in salesData[d][store]) {
             sales += salesData[d][store][item][0];
+            UNIT_SALE = salesData[d][store][item][0];
             gmv += salesData[d][store][item][0] * prices[item];
             sale_count[d] = {
               ...sale_count[d],
@@ -81,17 +82,41 @@ export const computeSalesNumber = (
               Stores: [...sale_count[d]['Stores'], store],
               Items: [...sale_count[d]['Items'], item],
             };
-            items_count[d] = {
-              ...items_count[d],
-              [item]: sum,
-            };
-            items_count[d][item] = sum + salesData[d][store][item][0];
           }
         }
       }
       j++;
     }
+
+    checkThis[moment(i).format('DD-MM-YY')] = {
+      TOTAL_SALES: sales,
+      TOTAL_GMV: gmv,
+      UNIT_SALE,
+      // ITEMS_SOLD: sale_count[moment(i).format('DD-MM-YY')]
+      //   ? sale_count[moment(i).format('DD-MM-YY')]?.Items
+      //   : [],
+      // SALE_STORES: sale_count[moment(i).format('DD-MM-YY')]
+      //   ? sale_count[moment(i).format('DD-MM-YY')]?.Stores
+      //   : [],
+      // CUMALATIVE: sale_count[moment(i).format('DD-MM-YY')]
+      //   ? sale_count[moment(i).format('DD-MM-YY')]?.Cumalative
+      //   : 0,
+      // ALL: sale_count[moment(i).format('DD-MM-YY')]
+      //   ? sale_count[moment(i).format('DD-MM-YY')]?.All
+      //   : 0,
+    };
   }
+
+  let SALES_DATA = [];
+
+  for (let key of Object.keys(checkThis)) {
+    SALES_DATA.push({ Date: key, ...checkThis[key] });
+  }
+  SALES_DATA = SALES_DATA?.sort(
+    (a, b) =>
+      moment(a.Date, 'DD-MM-YY').format('DD-MM-YY') -
+      moment(b.Date, 'DD-MM-YY').format('DD-MM-YY')
+  );
 
   let GRAPHDATA = [];
 
@@ -108,11 +133,12 @@ export const computeSalesNumber = (
     TOTAL_SALES: sales,
     TOTAL_GMV: gmv,
     SALE_DATA: GRAPHDATA,
+    GRAPH_DATA: SALES_DATA,
   };
 
-  console.log('Sales Report', cumlativeSalesReport);
+  console.log('Sales Report', checkThis);
 
-  return { cumlativeSalesReport };
+  return { cumlativeSalesReport, checkThis };
 };
 
 export const calcTickCount = (duration) => {
