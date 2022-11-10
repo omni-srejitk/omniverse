@@ -10,8 +10,8 @@ export const RouterConfig = () => {
   return (
     <Routes>
       <Route path='/' element={<Login />} />
+      <Route path='/dashboard' element={<Dashboard />} />
       <Route element={<RequireAuth />}>
-        <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/stores' element={<Stores />} />
         <Route path='/analytics' element={<Analytics />} />
         <Route path='/marketing' element={<Marketing />} />
