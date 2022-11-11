@@ -7,8 +7,8 @@ import { SIDEBAR_LINKS } from '../../utils/constants';
 export const Sidebar = () => {
   return (
     <div className='fixed bottom-0 z-40 h-24 w-screen border-r-2 border-gray-100 bg-white px-6 pt-2 shadow-sm md:left-0 md:h-screen md:w-24 lg:w-[20rem]'>
-      <div className='items-center flex justify-evenly md:flex-col md:justify-start'>
-        <div className='items-center my-4 hidden h-10 w-10 justify-center rounded-full md:flex'>
+      <div className='flex items-center justify-evenly md:flex-col md:items-start md:justify-start'>
+        <div className='my-4 hidden h-10 w-10 items-center justify-center rounded-full md:flex'>
           <img src={'/logo_icon.png'} className='w-full' />
         </div>
         {SIDEBAR_LINKS.map(({ title, id, icon, link, active }) => {
@@ -18,7 +18,7 @@ export const Sidebar = () => {
               to={link}
               className={`relative ${
                 active ? 'pointer-events-auto' : 'pointer-events-none'
-              } items-center my-4 flex w-full justify-start gap-0 rounded-xl p-1 text-gray-400 hover:bg-gray-100 hover:text-black hover:shadow-sm lg:my-4 lg:gap-4`}
+              } my-4 flex w-full items-center justify-start gap-0 rounded-xl p-1 text-gray-400 hover:bg-gray-100 hover:text-black hover:shadow-sm lg:my-4 lg:gap-4`}
             >
               <span className='material-icons text-3xl'>{icon}</span>
 

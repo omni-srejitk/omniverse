@@ -13,16 +13,16 @@ export const StatCard = ({
 }) => {
   return (
     <div
-      className={`relative mr-5 flex h-full min-h-[12rem] min-w-[16rem] lg:min-w-[20rem] ${
+      className={`relative mr-5 flex h-full min-h-[12rem] min-w-[16rem] ${
         loading ? ' opacity-50' : ' opacity-100'
-      } flex-col  items-start justify-start rounded-xl lg:min-w-[calc(33.33%-12px)] ${background} p-8`}
+      } flex-col  items-start justify-start rounded-xl lg:min-w-[calc(40%-12px)] ${background} p-8`}
     >
-      <div className='items-center flex h-12 w-12 justify-center rounded-full bg-black lg:h-12 lg:w-12'>
+      <div className='flex h-12 w-12 items-center justify-center rounded-full bg-black lg:h-12 lg:w-12'>
         <span className='material-icons  text-white'>{icon}</span>
       </div>
       <Spinner loading={loading} color={spinner} />
       <div className='mt-2'>
-        <div className='items-center flex w-fit justify-between gap-2'>
+        <div className='flex w-fit items-center justify-between gap-2'>
           <p className='text-sm font-semibold'>{title}</p>
           <span title={tooltip} className='material-icons text-base'>
             info
