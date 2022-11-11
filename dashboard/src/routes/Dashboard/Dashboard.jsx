@@ -61,8 +61,6 @@ export const Dashboard = () => {
     ]
   );
 
-  console.log('CUMLATE', cumlativeSalesReport);
-
   useEffect(() => {
     filterDispatch({ type: 'SET_DATES', payload: dates });
     filterDispatch({ type: 'SET_ITEMS', payload: items });
