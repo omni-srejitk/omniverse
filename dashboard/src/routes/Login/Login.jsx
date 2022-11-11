@@ -1,18 +1,21 @@
 import { useMutation } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../axios';
+import axios from 'axios';
 import { useFilter } from '../../context/FilterContext/FilterContext';
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ username: '', password: '' });
+
   const loginUser = () => {
     return axios.post('https://api.omniflo.in/doauth', form);
   };
-  const { mutate, data, isSuccess, isError } = useMutation(loginUser);
+  const { mutate, data: res, isLoading } = useMutation(loginUser);
   const { filterDispatch } = useFilter();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
@@ -22,31 +25,31 @@ export const Login = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const navigate = useNavigate();
+  const updateUserDetails = () => {
+    const loginToast = isLoading && toast.loading('Signing you in...');
+    if (!isLoading && res?.msg === 'Unauthorized') {
+      toast.error(`Couldn't sign you in`, { id: loginToast });
+    }
+    if (!isLoading && res?.data && res?.data?.token) {
+      localStorage.setItem('Token', JSON.stringify(res?.data.token));
+      localStorage.setItem('Name', JSON.stringify(res?.data.name));
+      filterDispatch({
+        type: 'SET_BRANDNAME',
+        payload: res?.data.name,
+      });
+      filterDispatch({ type: 'LOGIN' });
+      navigate('/dashboard');
+      toast.success(`Welcome Back ${res?.data.name}`, { id: loginToast });
+    }
+  };
+
+  useEffect(() => {
+    !isLoading && updateUserDetails();
+  }, [isLoading]);
 
   const onSubmit = (e) => {
     e.preventDefault();
     mutate(form);
-    const loginToast = toast.loading('Signing you in...');
-    if (isSuccess) {
-      localStorage.setItem(
-        'Brand',
-        JSON.stringify({
-          Token: data.token,
-          Name: data.name,
-          Username: data.username,
-          Avatar: data.avatar,
-        })
-      );
-      filterDispatch({ type: 'SET_BRAND', payload: JSON.stringify(data.name) });
-      filterDispatch({ type: 'LOGIN' });
-    }
-
-    if (isError) {
-      toast.error(`Couldn't sign you in`, { id: loginToast });
-    }
-    navigate('/dashboard');
-    toast.success(`Welcome Back ${data.name}`, { id: loginToast });
   };
 
   return (
@@ -57,8 +60,8 @@ export const Login = () => {
         <div className='relative my-2 w-72'>
           <input
             type={'text'}
-            name='email'
-            value={form.email}
+            name='username'
+            value={form.username}
             onChange={handleChange}
             placeholder={'You email'}
             className=' h-12 w-full rounded-xl border-2 border-transparent bg-gray-100 py-[10px] pl-12 font-semibold text-gray-600 placeholder:text-gray-400'
