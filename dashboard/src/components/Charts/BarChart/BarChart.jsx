@@ -16,16 +16,9 @@ export const BarCharts = ({ data = [], filter = 'All Time', color }) => {
     currency: 'INR',
   });
 
-  const customAxisLabels = ({ x, y, stroke, value }) => {
-    return (
-      <text x={x} y={y} dy={-4} fill={'#000'} fontSize={10} textAnchor='middle'>
-        {value}
-      </text>
-    );
-  };
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
-      <BarChart width={'100%'} height={'100% '} data={data}>
+      <BarChart width={'100%'} height={'50%'} data={data}>
         <defs>
           <linearGradient id='color' x1='0' y1='0' x2='0' y2='1'>
             <stop offset='0%' stopColor={color} stopOpacity='0.9' />
@@ -42,16 +35,19 @@ export const BarCharts = ({ data = [], filter = 'All Time', color }) => {
           }}
           axisLine={false}
           tickLine={false}
-          // tickCount={data?.length}
-          // label={customAxisLabels}
           margin={{ top: -20 }}
           interval={'preserveStartEnd'}
           tickFormatter={(str) => {
-            return moment(str, 'DD-MM-YY').format('DD-MM-YY');
+            return moment(str, 'DD-MM-YY').format('Do');
           }}
         />
         <YAxis
           dataKey='TOTAL_GMV'
+          style={{
+            fontSize: '0.7rem',
+            margin: '1rem 0 0',
+            fontFamily: 'Inter',
+          }}
           tickLine={false}
           axisLine={false}
           interval={'preserveStartEnd'}
@@ -62,7 +58,7 @@ export const BarCharts = ({ data = [], filter = 'All Time', color }) => {
         <CartesianGrid opacity={'0.2'} />
         <Tooltip />
         <Legend
-          formatter={(value, entry, index) => (
+          formatter={(value) => (
             <span className='text-color-class'>{value}</span>
           )}
         />
