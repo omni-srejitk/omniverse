@@ -14,8 +14,8 @@ export const StatCard = ({
   return (
     <div
       className={`relative mr-5 flex h-full min-h-[12rem] min-w-[16rem] ${
-        loading ? ' opacity-50' : ' opacity-100'
-      } flex-col  items-start justify-start rounded-xl lg:min-w-[calc(40%-12px)] ${background} p-8`}
+        loading ? ' opacity-90' : ' opacity-100'
+      } flex-col  items-start justify-start rounded-xl lg:min-w-[calc(17vw-12px)] ${background} p-8`}
     >
       <div className='flex h-12 w-12 items-center justify-center rounded-full bg-black lg:h-12 lg:w-12'>
         <span className='material-icons  text-white'>{icon}</span>

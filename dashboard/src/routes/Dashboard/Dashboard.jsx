@@ -99,9 +99,8 @@ export const Dashboard = () => {
       <main className='page__content'>
         <section className='h-fit w-full'>
           <h1 className='page__title'>Dashboard</h1>
-
           <Card title='Overview' cardHeader={OVERVIEW_FILTERS}>
-            <div className='card_body flex h-fit w-[95%] justify-start overflow-x-auto scrollbar-thin'>
+            <div className='card_body flex h-fit w-full justify-start overflow-x-auto scrollbar-thin'>
               <StatCard
                 icon='home'
                 title='Units Sold'
@@ -142,11 +141,11 @@ export const Dashboard = () => {
             </div>
           </Card>
         </section>
-        <section className='grid-rows-[repeat(2,20rem] my-4 mb-36 grid h-full w-full grid-cols-1 gap-4 md:mb-0 lg:grid-cols-2'>
+        <section className='grid-rows-[repeat(2,20rem] my-4 mb-36 grid h-full w-full grid-cols-1 gap-4 md:mb-0 lg:grid-cols-3 lg:pb-6'>
           <Card
             title='Cumalative Sales'
             classes={
-              'row-span-1 order-1 max-h-[20rem] flex-grow overflow-hidden justify-center items-center'
+              'row-span-1 lg:col-span-2 order-1 max-h-[20rem] flex-grow overflow-hidden justify-center items-center'
             }
           >
             <div className='relative flex h-full w-full flex-grow items-center justify-center rounded-xl bg-gray-100/50'>
@@ -177,7 +176,7 @@ export const Dashboard = () => {
           <Card
             title='Sales '
             classes={
-              'row-span-1 max-h-[20rem] flex-grow overflow-hidden justify-center items-center order-2'
+              'row-span-1 lg:col-span-2 max-h-[20rem] flex-grow overflow-hidden justify-center items-center order-2'
             }
           >
             <div className='relative flex h-full w-full flex-grow items-center justify-center rounded-xl  bg-gray-100/50'>

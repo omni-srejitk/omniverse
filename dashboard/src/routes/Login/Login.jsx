@@ -47,6 +47,12 @@ export const Login = () => {
     !isLoading && updateUserDetails();
   }, [isLoading]);
 
+  useEffect(() => {
+    if (localStorage.getItem('Token')) {
+      navigate('/dashboard');
+    }
+  }, []);
+
   const onSubmit = (e) => {
     e.preventDefault();
     mutate(form);
