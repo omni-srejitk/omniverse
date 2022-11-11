@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
 import axios from '../axios';
 
 export const fetchInventoryCount = (BRAND) => {
@@ -7,6 +6,15 @@ export const fetchInventoryCount = (BRAND) => {
     return axios.get(
       `${import.meta.env.VITE_BASE_URL}` +
         `.total_inventory?brand=${encodeURI(BRAND)}`
+    );
+  });
+};
+
+export const fetchSalesData = (BRAND) => {
+  return useQuery(['gmv_sale_data'], () => {
+    return axios.get(
+      `${import.meta.env.VITE_BASE_URL}` +
+        `.gmv_sales_date_wise?brand=${encodeURI(BRAND)}`
     );
   });
 };

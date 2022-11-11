@@ -14,6 +14,8 @@ export const filterReducer = (state, { type, payload }) => {
       }
     case 'SET_ITEMS':
       return { ...state, ITEMS: payload };
+    case 'SET_BRANDNAME':
+      return { ...state, BRAND: payload };
     case 'SET_STORES':
       return { ...state, STORES: payload };
     case 'SET_DATES':

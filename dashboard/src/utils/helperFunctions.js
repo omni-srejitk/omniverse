@@ -39,13 +39,6 @@ export const prepareData = (salesData = [], filterDispatch) => {
   stores = Array.from(stores);
   items = Array.from(items);
 
-  filterDispatch({ type: 'SET_DATES', payload: dates });
-  filterDispatch({ type: 'SET_ITEMS', payload: items });
-  filterDispatch({ type: 'SET_STORES', payload: stores });
-  filterDispatch({ type: 'SET_FILTERED_DATES', payload: dates });
-  filterDispatch({ type: 'SET_FILTERED_ITEMS', payload: items });
-  filterDispatch({ type: 'SET_FILTERED_STORES', payload: stores });
-
   return { dates, stores, items, prices, sale_count };
 };
 
@@ -106,21 +99,9 @@ export const computeSalesNumber = (
       moment(b.Date, 'DD-MM-YY').format('DD-MM-YY')
   );
 
-  let GRAPHDATA = [];
-
-  for (let key of Object.keys(sale_count)) {
-    GRAPHDATA.push({ Date: key, ...sale_count[key] });
-  }
-  GRAPHDATA = GRAPHDATA?.sort(
-    (a, b) =>
-      moment(a.Date, 'DD-MM-YY').format('DD-MM-YY') -
-      moment(b.Date, 'DD-MM-YY').format('DD-MM-YY')
-  );
-
   cumlativeSalesReport = {
     TOTAL_SALES: sales,
     TOTAL_GMV: gmv,
-    SALE_DATA: GRAPHDATA,
     GRAPH_DATA: SALES_DATA,
   };
 

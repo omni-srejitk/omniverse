@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StatCard } from '../../components/Cards/Stats/StatCard';
 import { Filter } from '../../components/Filter/Filter';
 import { Select } from '../../components/Select/Select';
@@ -11,29 +11,76 @@ import { Spinner } from '../../components/Loaders/Spinner/Spinner';
 import {
   fetchInventoryCount,
   fetchLiveStoreCount,
+  fetchSalesData,
 } from '../../services/apiCalls';
-
+import { computeSalesNumber, prepareData } from '../../utils/helperFunctions';
 export const Dashboard = () => {
+  const { filterState, filterDispatch } = useFilter();
   const [showState, setShowState] = useState({
     durationFilter: false,
     productFilter: false,
   });
 
-  const { filterState, cumlativeSalesReport, isGMVDataLoading } = useFilter();
-  const { isLoading: isInventoryLoading, data: resData } = fetchInventoryCount(
-    filterState?.BRAND
+  const BRAND = JSON.parse(localStorage.getItem('Name'));
+
+  const { isLoading: isGMVDataLoading, data: gmvSaleRes } =
+    fetchSalesData(BRAND);
+
+  const { isLoading: isInventoryLoading, data: resData } =
+    fetchInventoryCount(BRAND);
+  const GMV_SALES_DATA = !isGMVDataLoading && gmvSaleRes?.data['message'];
+
+  var { items, stores, dates, prices, sale_count } = useMemo(
+    () => prepareData(GMV_SALES_DATA, filterDispatch),
+    [GMV_SALES_DATA]
   );
 
+  useEffect(() => {
+    if (localStorage.getItem('Token')) {
+      filterDispatch({ type: 'LOGIN' });
+    }
+  }, []);
+
+  const { cumlativeSalesReport } = useMemo(
+    () =>
+      computeSalesNumber(
+        filterState.FILTERED_DATES,
+        filterState.FILTERED_STORES,
+        filterState.FILTERED_ITEMS,
+        prices,
+        GMV_SALES_DATA,
+        sale_count
+      ),
+    [
+      filterState.FILTERED_DATES,
+      filterState.FILTERED_STORES,
+      filterState.FILTERED_ITEMS,
+      prices,
+      GMV_SALES_DATA,
+      sale_count,
+    ]
+  );
+
+  console.log('CUMLATE', cumlativeSalesReport);
+
+  useEffect(() => {
+    filterDispatch({ type: 'SET_DATES', payload: dates });
+    filterDispatch({ type: 'SET_ITEMS', payload: items });
+    filterDispatch({ type: 'SET_STORES', payload: stores });
+    filterDispatch({ type: 'SET_FILTERED_DATES', payload: dates });
+    filterDispatch({ type: 'SET_FILTERED_ITEMS', payload: items });
+    filterDispatch({ type: 'SET_FILTERED_STORES', payload: stores });
+  }, [dates, stores, items]);
   const InventoryData = !isInventoryLoading && resData.data['message'];
 
   const { isLoading: isLiveStoreLoading, data: liveStoreData } =
-    fetchLiveStoreCount(filterState.BRAND);
+    fetchLiveStoreCount(BRAND);
 
   const liveStoreCount = !isLiveStoreLoading && liveStoreData.data['message'];
 
   const FILTERS = {
-    'By Product': filterState.ITEMS,
-    'By Store': filterState.STORES,
+    'By Product': items,
+    'By Store': stores,
   };
 
   const OVERVIEW_FILTERS = (
@@ -48,92 +95,109 @@ export const Dashboard = () => {
   );
 
   return (
-    <main className='page__content'>
-      <h1 className='page__title'>Dashboard</h1>
+    filterState.ISLOGGED && (
+      <main className='page__content'>
+        <section className='h-fit w-full'>
+          <h1 className='page__title'>Dashboard</h1>
 
-      <Card title='Overview' cardHeader={OVERVIEW_FILTERS}>
-        <div className='card_body flex h-fit w-[95%] justify-start overflow-x-auto scrollbar-thin'>
-          <StatCard
-            icon='home'
-            title='Units Sold'
-            metric={cumlativeSalesReport.TOTAL_SALES}
-            loading={isGMVDataLoading}
-            background='bg-green-100'
-            spinner={'border-green-200'}
-            tooltip={'Total count of items sold.'}
-          />
-          <StatCard
-            icon='insights'
-            title='Total GMV'
-            metric={cumlativeSalesReport.TOTAL_GMV}
-            loading={isGMVDataLoading}
-            tooltip={'Total sale of items sold.'}
-            background='bg-blue-100'
-            spinner={'border-blue-200'}
-            currency
-          />
-          <StatCard
-            icon='store'
-            title='Total Stores'
-            loading={isLiveStoreLoading}
-            metric={liveStoreCount}
-            background='bg-purple-100'
-            spinner={'border-purple-200'}
-            tooltip={'Total no of stores where item is active.'}
-          />
-          <StatCard
-            icon='store'
-            title='Inventory Deployed'
-            metric={InventoryData}
-            loading={isInventoryLoading}
-            tooltip={'Total no of items in inventory deployed.'}
-            background='bg-yellow-100'
-            spinner={'border-yellow-200'}
-          />
-        </div>
-      </Card>
-      <div className='mb-36 grid h-fit w-full grid-cols-1 grid-rows-4 gap-4 md:mb-0 lg:grid-cols-2 lg:grid-rows-4'>
-        <Card
-          title='Cumalative Sales'
-          classes={
-            'row-span-2 order-1 overflow-hidden justify-center items-center'
-          }
-        >
-          <div className='items-center relative flex h-[20rem] w-full flex-grow justify-center rounded-xl bg-gray-100/50'>
-            {isGMVDataLoading ? (
-              <Spinner
-                color={'border-blue-200'}
-                position={'top-1/2 left-1/2'}
+          <Card title='Overview' cardHeader={OVERVIEW_FILTERS}>
+            <div className='card_body flex h-fit w-[95%] justify-start overflow-x-auto scrollbar-thin'>
+              <StatCard
+                icon='home'
+                title='Units Sold'
+                metric={cumlativeSalesReport.TOTAL_SALES}
                 loading={isGMVDataLoading}
+                background='bg-green-100'
+                spinner={'border-green-200'}
+                tooltip={'Total count of items sold.'}
               />
-            ) : (
-              <AreaCharts
-                data={cumlativeSalesReport.GRAPH_DATA}
-                filter={filterState.filterBy}
-                color={'#3b82f6'}
-              />
-            )}
-          </div>
-        </Card>
-        <Carousal />
-        <Card title='Sales ' classes={'row-span-2 flex-grow order-2'}>
-          <div className='items-center relative flex h-[20rem] w-full justify-center rounded-xl bg-gray-100/50'>
-            {isGMVDataLoading ? (
-              <Spinner
-                color={'border-green-200'}
-                position={'top-1/2 left-1/2'}
+              <StatCard
+                icon='insights'
+                title='Total GMV'
+                metric={cumlativeSalesReport.TOTAL_GMV}
                 loading={isGMVDataLoading}
+                tooltip={'Total sale of items sold.'}
+                background='bg-blue-100'
+                spinner={'border-blue-200'}
+                currency
               />
-            ) : (
-              <BarCharts
-                data={cumlativeSalesReport.GRAPH_DATA}
-                filter={filterState.filterBy}
-                color={'#86efac'}
+              <StatCard
+                icon='store'
+                title='Total Stores'
+                loading={isLiveStoreLoading}
+                metric={liveStoreCount}
+                background='bg-purple-100'
+                spinner={'border-purple-200'}
+                tooltip={'Total no of stores where item is active.'}
               />
-            )}
-          </div>
-        </Card>
-      </div>
-    </main>
+              <StatCard
+                icon='store'
+                title='Inventory Deployed'
+                metric={InventoryData}
+                loading={isInventoryLoading}
+                tooltip={'Total no of items in inventory deployed.'}
+                background='bg-yellow-100'
+                spinner={'border-yellow-200'}
+              />
+            </div>
+          </Card>
+        </section>
+        <section className='grid-rows-[repeat(2,20rem] my-4 mb-36 grid h-full w-full grid-cols-1 gap-4 md:mb-0 lg:grid-cols-2'>
+          <Card
+            title='Cumalative Sales'
+            classes={
+              'row-span-1 order-1 max-h-[20rem] flex-grow overflow-hidden justify-center items-center'
+            }
+          >
+            <div className='relative flex h-full w-full flex-grow items-center justify-center rounded-xl bg-gray-100/50'>
+              {isGMVDataLoading ? (
+                <Spinner
+                  color={'border-blue-200'}
+                  position={'top-1/2 left-1/2'}
+                  loading={isGMVDataLoading}
+                />
+              ) : (
+                <AreaCharts
+                  data={cumlativeSalesReport.GRAPH_DATA}
+                  filter={filterState.filterBy}
+                  color={'#3b82f6'}
+                />
+              )}
+            </div>
+          </Card>
+          <Card
+            title='Showcase'
+            classes={
+              'row-span-2 flex-grow max-h-[42rem] col-span-1 order-3 lg:order-2 '
+            }
+          >
+            <Carousal />
+          </Card>
+
+          <Card
+            title='Sales '
+            classes={
+              'row-span-1 max-h-[20rem] flex-grow overflow-hidden justify-center items-center order-2'
+            }
+          >
+            <div className='relative flex h-full w-full flex-grow items-center justify-center rounded-xl  bg-gray-100/50'>
+              {isGMVDataLoading ? (
+                <Spinner
+                  color={'border-green-200'}
+                  position={'top-1/2 left-1/2'}
+                  loading={isGMVDataLoading}
+                />
+              ) : (
+                <BarCharts
+                  data={cumlativeSalesReport.GRAPH_DATA}
+                  filter={filterState.filterBy}
+                  color={'#86efac'}
+                />
+              )}
+            </div>
+          </Card>
+        </section>
+      </main>
+    )
   );
 };
