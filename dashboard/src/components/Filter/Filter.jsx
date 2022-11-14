@@ -31,7 +31,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
             productFilter: !showState.productFilter,
           })
         }
-        className='border-gray- 100 items-center flex cursor-pointer justify-between  rounded-2xl border-2 px-4 py-2 font-medium hover:border-gray-400'
+        className='flex cursor-pointer items-center justify-between rounded-2xl  border-2 border-gray-100 px-4 py-2 font-medium hover:border-gray-400'
       >
         <span className='material-icons'>
           {showState.productFilter ? 'close' : 'filter_alt'}
@@ -99,22 +99,26 @@ export const Filter = ({ filter, showState, setShowState }) => {
             </div>
           ))}
         </div>
-        <div className='mw-full items-center flex gap-4'>
+        <div className='mw-full flex items-center gap-4'>
           <button
             onClick={() => {
               filterDispatch({
-                type: 'SET_STORES_FILTER',
+                type: 'SET_FILTERED_STORES',
                 payload: filterState.STORES,
               });
               filterDispatch({
-                type: 'SET_ITEMS_FILTER',
+                type: 'SET_FILTERED_ITEMS',
                 payload: filterState.ITEMS,
+              });
+              filterDispatch({
+                type: 'SET_FILTERS',
+                payload: [],
               });
               setItemFilters([]);
               setStoreFilters([]);
               setShowState({ ...showState, productFilter: false });
             }}
-            className='border-gray- 100 items-center ml-auto flex  cursor-pointer  justify-between rounded-2xl border-2 px-4 py-2 font-medium hover:border-gray-400'
+            className='ml-auto flex cursor-pointer items-center  justify-between  rounded-2xl border-2 border-gray-100 px-4 py-2 font-medium hover:border-gray-400'
           >
             Reset
           </button>
@@ -124,7 +128,6 @@ export const Filter = ({ filter, showState, setShowState }) => {
                 type: 'SET_FILTERS',
                 payload: [...itemFilters, ...storeFilters],
               });
-
               filterDispatch({
                 type: 'SET_FILTERED_STORES',
                 payload:
@@ -139,7 +142,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
               });
               setShowState({ ...showState, productFilter: false });
             }}
-            className='border-gray- 100 items-center flex  cursor-pointer  justify-between rounded-2xl border-2 bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
+            className='border-gray- 100 flex cursor-pointer  items-center  justify-between rounded-2xl border-2 bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
           >
             Apply
           </button>
