@@ -69,7 +69,7 @@ export const Login = () => {
             name='username'
             value={form.username}
             onChange={handleChange}
-            placeholder={'You email'}
+            placeholder={'Username'}
             className=' h-12 w-full rounded-xl border-2 border-transparent bg-gray-100 py-[10px] pl-12 font-semibold text-gray-600 placeholder:text-gray-400'
           />
           <span className='material-symbols-rounded pointer-events-none  absolute top-0 bottom-0 left-0 flex w-12 items-center justify-center text-gray-500'>
