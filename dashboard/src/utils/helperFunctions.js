@@ -120,3 +120,18 @@ export const calcTickCount = (duration) => {
       return 10;
   }
 };
+
+export const cacheImages = async (srcArray, setLoading) => {
+  const promises = await srcArray?.map((src) => {
+    return new Promise(function (resolve, reject) {
+      const img = new Image();
+
+      img.src = src['image'];
+      img.onload = () => resolve();
+      img.onerror = () => reject();
+    });
+  });
+  await Promise.all(promises);
+
+  setLoading(false);
+};

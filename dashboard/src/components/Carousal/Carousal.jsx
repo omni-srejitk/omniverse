@@ -8,7 +8,6 @@ export const Carousal = () => {
   const IMAGES_LOADED = 5;
   const BRAND = JSON.parse(localStorage.getItem('Name'));
   const { isLoading: ImageLoading, data: ImageData } = fetchStoreImages(BRAND);
-
   const IMG_DATA = !ImageLoading && ImageData?.data['message'];
 
   const handleClick = (type) => {
