@@ -1,146 +1,96 @@
 import React from 'react';
-import { Card } from '../../components/Cards/Card/Card';
+import { useState } from 'react';
+import { StoreCard } from '../../components/Cards/StoreCard/StoreCard';
+import { LABELS } from '../../components/Labels';
 
 export const Stores = () => {
+  const TAGS = [
+    {
+      id: 1,
+      name: 'High Footfall',
+      color: 'purple',
+      icon: 'groups',
+    },
+    {
+      id: 2,
+      name: 'Super Popular',
+      color: 'yellow',
+      icon: 'favorite',
+    },
+    {
+      id: 3,
+      name: 'Organic',
+      color: 'green',
+      icon: 'spa',
+    },
+    {
+      id: 4,
+      name: 'In Society',
+      color: 'teal',
+      icon: 'other_houses',
+    },
+    {
+      id: 5,
+      name: 'Posh Locality',
+      color: 'pink',
+      icon: 'villa',
+    },
+  ];
+
+  const [wishlist, setWishlist] = useState([]);
+
+  console.log(wishlist);
   return (
     <main className='page__content'>
       <h1 className='page__title'>Stores</h1>
-      <Card title={'MBT Hypermarket'}>
-        <div className='items-center flex justify-start gap-6'>
-          <div className='items-center flex h-14 w-14 justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-300 '>
-            <span className='material-icons  text-gray-600'>store</span>
-          </div>
-          <div>
-            <p>Hypermarket | HSR Layout</p>
-          </div>
+      <section className='relative flex h-[30rem] w-full flex-col items-start justify-between gap-8 lg:flex-row'>
+        <div className='z-10 flex h-full max-h-screen  flex-col items-start justify-start gap-4 overflow-y-auto pt-[26rem] scrollbar-thin scrollbar-thumb-blue-200 lg:w-[28rem] lg:pr-4 lg:pt-0'>
+          <StoreCard
+            id='001'
+            title={'Spencers Retail'}
+            location={'HSR Layout'}
+            type={'HyperMarket'}
+            icon='store'
+            tags={TAGS}
+            label={LABELS.FLAGSHIP}
+            showLabel
+          />
+          <StoreCard
+            id='002'
+            title={'Spencers Retail'}
+            location={'HSR Layout'}
+            type={'HyperMarket'}
+            icon='store'
+            tags={TAGS}
+            label={LABELS.PLATINUM}
+            showLabel
+            wishlist={wishlist}
+            setWishlist={setWishlist}
+          />
+          <StoreCard
+            id='003'
+            title={'Spencers Retail'}
+            location={'HSR Layout'}
+            type={'HyperMarket'}
+            icon='store'
+            tags={TAGS}
+            label={LABELS.GOLD}
+            showLabel
+          />
+          <StoreCard
+            title={'Spencers Retail'}
+            location={'HSR Layout'}
+            type={'HyperMarket'}
+            icon='store'
+            tags={TAGS}
+            label={LABELS.DIAMOND}
+            showLabel
+          />
         </div>
-        <div className='items-center flex'>
-          <div className='mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-green-50 p-8 shadow-sm'>
-            <div>
-              <span className='material-icons items-center flex h-10 w-10 justify-center rounded-full bg-green-100'>
-                arrow_upward
-              </span>
-            </div>
-            <div>
-              <h3 className='text-2xl'>24</h3>
-              <p>Total Units sold</p>
-            </div>
-          </div>
-          <div className='mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 p-8 shadow-sm'>
-            <div>
-              <span className='material-icons items-center flex h-10 w-10 justify-center rounded-full bg-blue-100'>
-                inventory_2
-              </span>
-            </div>
-            <div>
-              <h3 className='text-2xl'>8</h3>
-              <p>Currently In Store</p>
-            </div>
-          </div>
+        <div className=' h-full flex-grow rounded-lg bg-white lg:right-0 lg:w-1/2'>
+          Hello
         </div>
-      </Card>
-      <Card title={'MBT Hypermarket'}>
-        <div className='items-center flex justify-start gap-6'>
-          <div className='items-center flex h-14 w-14 justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-300 '>
-            <span className='material-icons  text-gray-600'>store</span>
-          </div>
-          <div>
-            <p>Hypermarket | HSR Layout</p>
-          </div>
-        </div>
-        <div className='items-center flex'>
-          <div className='mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-green-50 p-8 shadow-sm'>
-            <div>
-              <span className='material-icons items-center flex h-10 w-10 justify-center rounded-full bg-green-100'>
-                arrow_upward
-              </span>
-            </div>
-            <div>
-              <h3 className='text-2xl'>24</h3>
-              <p>Total Units sold</p>
-            </div>
-          </div>
-          <div className='mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 p-8 shadow-sm'>
-            <div>
-              <span className='material-icons items-center flex h-10 w-10 justify-center rounded-full bg-blue-100'>
-                inventory_2
-              </span>
-            </div>
-            <div>
-              <h3 className='text-2xl'>8</h3>
-              <p>Currently In Store</p>
-            </div>
-          </div>
-        </div>
-      </Card>
-      <Card title={'MBT Hypermarket'}>
-        <div className='items-center flex justify-start gap-6'>
-          <div className='items-center flex h-14 w-14 justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-300 '>
-            <span className='material-icons  text-gray-600'>store</span>
-          </div>
-          <div>
-            <p>Hypermarket | HSR Layout</p>
-          </div>
-        </div>
-        <div className='items-center flex'>
-          <div className='mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-green-50 p-8 shadow-sm'>
-            <div>
-              <span className='material-icons items-center flex h-10 w-10 justify-center rounded-full bg-green-100'>
-                arrow_upward
-              </span>
-            </div>
-            <div>
-              <h3 className='text-2xl'>24</h3>
-              <p>Total Units sold</p>
-            </div>
-          </div>
-          <div className='mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 p-8 shadow-sm'>
-            <div>
-              <span className='material-icons items-center flex h-10 w-10 justify-center rounded-full bg-blue-100'>
-                inventory_2
-              </span>
-            </div>
-            <div>
-              <h3 className='text-2xl'>8</h3>
-              <p>Currently In Store</p>
-            </div>
-          </div>
-        </div>
-      </Card>
-      <Card title={'MBT Hypermarket'}>
-        <div className='items-center flex justify-start gap-6'>
-          <div className='items-center flex h-14 w-14 justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-300 '>
-            <span className='material-icons  text-gray-600'>store</span>
-          </div>
-          <div>
-            <p>Hypermarket | HSR Layout</p>
-          </div>
-        </div>
-        <div className='items-center flex'>
-          <div className='mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-green-50 p-8 shadow-sm'>
-            <div>
-              <span className='material-icons items-center flex h-10 w-10 justify-center rounded-full bg-green-100'>
-                arrow_upward
-              </span>
-            </div>
-            <div>
-              <h3 className='text-2xl'>24</h3>
-              <p>Total Units sold</p>
-            </div>
-          </div>
-          <div className='mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 p-8 shadow-sm'>
-            <div>
-              <span className='material-icons items-center flex h-10 w-10 justify-center rounded-full bg-blue-100'>
-                inventory_2
-              </span>
-            </div>
-            <div>
-              <h3 className='text-2xl'>8</h3>
-              <p>Currently In Store</p>
-            </div>
-          </div>
-        </div>
-      </Card>
+      </section>
     </main>
   );
 };
