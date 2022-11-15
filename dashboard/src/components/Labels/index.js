@@ -1,0 +1,6 @@
+export const LABELS = {
+  FLAGSHIP: 'FLAGSHIP',
+  DIAMOND: 'DIAMOND',
+  GOLD: 'GOLD',
+  PLATINUM: 'PLATINUM',
+};
