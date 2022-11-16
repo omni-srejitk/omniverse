@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useEffect } from 'react';
+import { useId } from 'react';
 import { useState } from 'react';
 import { Button } from '../../components/Buttons';
 import { Card } from '../../components/Cards/Card/Card';
@@ -216,7 +217,9 @@ export const Inventory = () => {
                 !isWarehouseLoading &&
                 stocklist[options]?.map(
                   ({ item_name, item_code, qty, customer_name }, idx) => (
-                    <TableRow>
+                    <TableRow
+                      key={`${item_name} + ${customer_name} + ${item_code}`}
+                    >
                       <TableData>{idx + 1}</TableData>
                       {options !== 'WAREHOUSE' && (
                         <TableData>{customer_name || '-'}</TableData>
