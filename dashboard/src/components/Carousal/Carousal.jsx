@@ -43,7 +43,7 @@ export const Carousal = () => {
             </h2>
           ) : null}
         </div>
-        {!ImageLoading && Object.keys(IMG_DATA)?.length > 0 ? (
+        {!ImageLoading && Object.keys(IMG_DATA)?.length > 1 ? (
           <div className='flex h-14 w-fit items-center justify-between gap-4'>
             <button
               className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
