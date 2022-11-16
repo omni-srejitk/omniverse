@@ -11,7 +11,7 @@ export const SIDEBAR_LINKS = [
     icon: 'inventory',
     title: 'Inventory',
     link: '/inventory',
-    active: true,
+    active: false,
   },
   {
     id: 3,
