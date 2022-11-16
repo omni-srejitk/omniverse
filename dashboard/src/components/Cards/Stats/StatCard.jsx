@@ -13,7 +13,7 @@ export const StatCard = ({
 }) => {
   return (
     <div
-      className={`relative mr-5 flex h-full min-h-[12rem] min-w-[16rem] ${
+      className={`relative mr-5 flex h-full min-h-[12rem] min-w-[12rem] w-full ${
         loading ? ' opacity-90' : ' opacity-100'
       } flex-col  items-start justify-start rounded-xl lg:min-w-[calc(17vw-12px)] ${background} p-8`}
     >
