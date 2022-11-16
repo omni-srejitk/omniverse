@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { StatCard } from '../../components/Cards/Stats/StatCard';
+import { StatCard } from '../../components/Cards/StatsCard/StatCard';
 import { Filter } from '../../components/Filter/Filter';
 import { Select } from '../../components/Select/Select';
 import { Carousal } from '../../components/Carousal/Carousal';

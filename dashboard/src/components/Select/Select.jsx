@@ -43,7 +43,7 @@ export const Select = ({ showState, setShowState }) => {
             productFilter: false,
           })
         }
-        className='border-gray- 100 flex cursor-pointer items-center justify-between  rounded-2xl border-2 px-4 py-2 font-medium hover:border-gray-400'
+        className='flex cursor-pointer items-center justify-between rounded-lg  border-2 border-gray-100 px-4 py-2 font-medium hover:border-gray-400'
       >
         {filterState.filterByDate}
         <span className='material-icons'>
@@ -53,7 +53,7 @@ export const Select = ({ showState, setShowState }) => {
       <ul
         className={` ${
           !showState.durationFilter ? 'invisible h-0' : 'h-fit'
-        } absolute z-20 my-1 flex w-32 flex-col items-center justify-start rounded-xl border-2 border-gray-50 bg-white `}
+        } absolute z-20 my-1 flex w-32 flex-col items-center justify-start rounded-lg border-2 border-gray-50 bg-white `}
       >
         {DATE_FILTERS?.map((item) => (
           <li

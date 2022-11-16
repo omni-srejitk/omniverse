@@ -10,13 +10,19 @@ export const StatCard = ({
   loading,
   currency = false,
   tooltip,
+  showLabel = false,
 }) => {
   return (
     <div
-      className={`relative mr-5 flex h-full min-h-[12rem] min-w-[16rem] ${
+      className={`relative mr-5 flex h-full min-h-[12rem] w-full min-w-[12rem] ${
         loading ? ' opacity-90' : ' opacity-100'
       } flex-col  items-start justify-start rounded-xl lg:min-w-[calc(17vw-12px)] ${background} p-8`}
     >
+      {showLabel && (
+        <div className='absolute top-4 right-0 rounded-l-md border-2 border-red-300 bg-white p-[2px] text-[8px] font-semibold text-red-400'>
+          SOON
+        </div>
+      )}
       <div className='flex h-12 w-12 items-center justify-center rounded-full bg-black lg:h-12 lg:w-12'>
         <span className='material-icons  text-white'>{icon}</span>
       </div>

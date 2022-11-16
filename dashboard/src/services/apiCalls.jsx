@@ -36,3 +36,21 @@ export const fetchStoreImages = (BRAND) => {
     );
   });
 };
+
+export const fetchDeployedQuantity = (BRAND) => {
+  return useQuery(['deployed_qty'], () => {
+    return axios.get(
+      `${import.meta.env.VITE_BASE_URL}` +
+        `.deployed_quantity?brand=${encodeURI(BRAND)}`
+    );
+  });
+};
+
+export const fetchWarehouseQuantity = (BRAND) => {
+  return useQuery(['warehouse_qty'], () => {
+    return axios.get(
+      `${import.meta.env.VITE_BASE_URL}` +
+        `.warehouse_quantity?brand=${encodeURI(BRAND)}`
+    );
+  });
+};

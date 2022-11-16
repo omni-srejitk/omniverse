@@ -19,17 +19,22 @@ export const Carousal = () => {
   };
 
   useEffect(() => {
-    if (currentIndex > MAX_LENGTH && currentIndex < IMG_DATA?.length - 1) {
+    if (currentIndex > MAX_LENGTH) {
       MAX_LENGTH += IMAGES_LOADED;
-    } else if (
+    }
+    if (
       currentIndex > MAX_LENGTH &&
-      currentIndex === IMG_DATA?.length - 1
+      currentIndex === Object.keys(IMG_DATA)?.length - 1
     ) {
       MAX_LENGTH = IMAGES_LOADED;
       setCurrentIndex(0);
     }
+    if (currentIndex > Object.keys(IMG_DATA)?.length - 1) {
+      setCurrentIndex(0);
+    }
     if (currentIndex < 0) {
-      setCurrentIndex(MAX_LENGTH);
+      const PICS_LENGTH = Object.keys(IMG_DATA)?.length - 1;
+      setCurrentIndex(PICS_LENGTH);
     }
   }, [currentIndex]);
 
@@ -37,27 +42,32 @@ export const Carousal = () => {
     <div className='flex h-full max-h-full flex-col items-center justify-start overflow-hidden rounded-lg pb-20'>
       <div className='mb-4 flex w-full items-center justify-between overflow-hidden'>
         <div>
-          <h2 className='text-xl font-medium capitalize'>
-            {ImageLoading ? 'Loading...' : IMG_DATA[currentIndex]['customer']}
-          </h2>
+          {!ImageLoading && Object.keys(IMG_DATA)?.length > 0 ? (
+            <h2 className='text-xl font-medium capitalize'>
+              {ImageLoading ? 'Loading...' : IMG_DATA[currentIndex]['customer']}
+            </h2>
+          ) : null}
         </div>
-        <div className='flex h-14 w-fit items-center justify-between gap-4'>
-          <button
-            className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
-            onClick={() => handleClick('PREVIOUS')}
-            disabled={currentIndex === 0 ? true : false}
-          >
-            <span className='material-icons m-0 p-0 '>chevron_left</span>
-          </button>
-          <button
-            className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 hover:bg-gray-300`}
-            onClick={() => handleClick('NEXT')}
-          >
-            <span className='material-icons m-0 p-0 text-gray-400'>
-              chevron_right
-            </span>
-          </button>
-        </div>
+        {!ImageLoading && Object.keys(IMG_DATA)?.length > 1 ? (
+          <div className='flex h-14 w-fit items-center justify-between gap-4'>
+            <button
+              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
+              onClick={() => handleClick('PREVIOUS')}
+              disabled={currentIndex === 0 ? true : false}
+            >
+              <span className='material-icons m-0 p-0 '>chevron_left</span>
+            </button>
+            <button
+              disabled={Object.keys(IMG_DATA)?.length - 1 === currentIndex}
+              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300 hover:bg-gray-300`}
+              onClick={() => handleClick('NEXT')}
+            >
+              <span className='material-icons m-0 p-0 text-gray-400'>
+                chevron_right
+              </span>
+            </button>
+          </div>
+        ) : null}
       </div>
       <div className='relative flex h-full  w-full flex-grow overflow-hidden rounded-xl'>
         {ImageLoading ? (
@@ -68,16 +78,30 @@ export const Carousal = () => {
           />
         ) : (
           <div
-            className={`left-0 top-0 bottom-0 flex h-full w-full flex-grow items-start justify-center gap-4 overflow-hidden `}
+            className={`left-0 top-0 bottom-0 flex h-full w-full flex-grow justify-center gap-4 overflow-hidden `}
           >
-            <img
-              className='z-10  h-full w-full rounded-xl object-cover'
-              src={
-                !ImageLoading &&
-                IMG_DATA[currentIndex]['status'] &&
-                IMG_DATA[currentIndex]['image']
-              }
-            />
+            {!ImageLoading && Object.keys(IMG_DATA)?.length > 0 ? (
+              <img
+                className='z-10  h-full w-full rounded-xl object-cover'
+                src={
+                  !ImageLoading &&
+                  IMG_DATA[currentIndex]['status'] &&
+                  IMG_DATA[currentIndex]['image']
+                }
+              />
+            ) : (
+              <div className='flex h-full w-full items-center justify-center'>
+                <div className='flex flex-col items-center justify-center gap-4'>
+                  <span className='material-icons flex h-20 w-20 items-center justify-center rounded-full bg-gray-200 text-4xl text-gray-400'>
+                    camera_enhance
+                  </span>
+                  <p className=' text-center text-xl'>Come back soon.</p>
+                  <p className=' text-center font-semibold text-gray-500'>
+                    We're currently curating pictures for your products.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
