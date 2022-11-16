@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { Button } from '../../components/Buttons';
 import { Card } from '../../components/Cards/Card/Card';
-import { StatCard } from '../../components/Cards/Stats/StatCard';
+import { StatCard } from '../../components/Cards/StatsCard/StatCard';
 import { Filter } from '../../components/Filter/Filter';
 import {
   TableBody,
@@ -118,14 +118,25 @@ export const Inventory = () => {
   //   * Table Logics
 
   const INVENTORY_OPTIONS = (
-    <div className='flex h-fit w-fit items-center justify-between'>
-      <Button clickFunc={() => setOptions('ALL')}>All</Button>
-      <Button clickFunc={() => setOptions('INVENTORY')}>In Store</Button>
-      <Button clickFunc={() => setOptions('WAREHOUSE')}>In Warehouse</Button>
+    <div className='flex h-fit w-fit flex-col items-center justify-between lg:flex-row'>
+      <Button active={options === 'ALL'} clickFunc={() => setOptions('ALL')}>
+        All
+      </Button>
+      <Button
+        active={options === 'INVENTORY'}
+        clickFunc={() => setOptions('INVENTORY')}
+      >
+        In Store
+      </Button>
+      <Button
+        active={options === 'WAREHOUSE'}
+        clickFunc={() => setOptions('WAREHOUSE')}
+      >
+        In Warehouse
+      </Button>
     </div>
   );
 
-  console.log(options);
   const { isLoading: isGMVDataLoading, data: gmvSaleRes } =
     fetchSalesData(BRAND);
 
@@ -153,7 +164,7 @@ export const Inventory = () => {
       <section className='h-fit w-full'>
         <h1 className='page__title'>Inventory</h1>
         <Card title='Overview' cardHeader={INVENTORY_FILTERS}>
-          <div className='card_body grid h-fit w-full grid-cols-3 gap-4 '>
+          <div className='card_body flex h-fit  w-full gap-2 overflow-x-scroll scrollbar-thin lg:grid lg:grid-cols-3 lg:gap-4 '>
             <StatCard
               icon='inventory'
               title='In Stores'
@@ -161,14 +172,14 @@ export const Inventory = () => {
               loading={isInventoryLoading}
               background='bg-green-100'
               spinner={'border-green-200'}
-              tooltip={'Total count of items sold.'}
+              tooltip={'Total count of items in store.'}
             />
             <StatCard
               icon='warehouse'
               title='In Warehouse'
               metric={stock.TOTAL_WAREHOUSE_STOCK || 0}
               loading={isWarehouseLoading}
-              tooltip={'Total sale of items sold.'}
+              tooltip={'Total count of items in warehouse.'}
               background='bg-blue-100'
               spinner={'border-blue-200'}
             />
@@ -179,7 +190,8 @@ export const Inventory = () => {
               metric={'0'}
               background='bg-purple-100'
               spinner={'border-purple-200'}
-              tooltip={'Total no of stores where item is active.'}
+              showLabel
+              tooltip={'Total count of items shipped.'}
             />
           </div>
         </Card>
