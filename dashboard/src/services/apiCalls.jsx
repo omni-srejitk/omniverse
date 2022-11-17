@@ -54,3 +54,12 @@ export const fetchWarehouseQuantity = (BRAND) => {
     );
   });
 };
+
+export const fetchAllLiveStores = (BRAND) => {
+  return useQuery(['live-stores'], () => {
+    return axios.get(
+      `${import.meta.env.VITE_BASE_URL}` +
+        `.stores_lives?brand=${encodeURI(BRAND)}`
+    );
+  });
+};

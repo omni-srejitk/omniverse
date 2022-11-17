@@ -9,6 +9,7 @@ import { AreaCharts } from '../../components/Charts/Charts';
 import { BarCharts } from '../../components/Charts/BarChart/BarChart';
 import { Spinner } from '../../components/Loaders/Spinner/Spinner';
 import {
+  fetchAllLiveStores,
   fetchInventoryCount,
   fetchLiveStoreCount,
   fetchSalesData,
@@ -34,7 +35,11 @@ export const Dashboard = () => {
     () => prepareData(GMV_SALES_DATA, filterDispatch),
     [GMV_SALES_DATA]
   );
+  const { data: allStoresData, isLoading: isAllStoresLoading } =
+    fetchAllLiveStores(BRAND);
 
+  const STORES_LIST =
+    !isAllStoresLoading && Object.values(allStoresData?.data['message']);
   useEffect(() => {
     if (localStorage.getItem('Token')) {
       filterDispatch({ type: 'LOGIN' });
@@ -64,11 +69,11 @@ export const Dashboard = () => {
   useEffect(() => {
     filterDispatch({ type: 'SET_DATES', payload: dates });
     filterDispatch({ type: 'SET_ITEMS', payload: items });
-    filterDispatch({ type: 'SET_STORES', payload: stores });
+    filterDispatch({ type: 'SET_STORES', payload: STORES_LIST[0] });
     filterDispatch({ type: 'SET_FILTERED_DATES', payload: dates });
     filterDispatch({ type: 'SET_FILTERED_ITEMS', payload: items });
-    filterDispatch({ type: 'SET_FILTERED_STORES', payload: stores });
-  }, [dates, stores, items]);
+    filterDispatch({ type: 'SET_FILTERED_STORES', payload: STORES_LIST[0] });
+  }, [dates, STORES_LIST[0], items]);
   const InventoryData = !isInventoryLoading && resData.data['message'];
 
   const { isLoading: isLiveStoreLoading, data: liveStoreData } =
@@ -78,7 +83,7 @@ export const Dashboard = () => {
 
   const FILTERS = {
     'By Product': items,
-    'By Store': stores,
+    'By Store': STORES_LIST[0],
   };
 
   const OVERVIEW_FILTERS = (
@@ -96,7 +101,7 @@ export const Dashboard = () => {
     filterState.ISLOGGED && (
       <main className='page__content'>
         <section className='h-fit w-full'>
-          <h1 className='page__title'>Dashboard</h1>
+          <h1 className='page__title'>Welcome {BRAND}</h1>
           <Card title='Overview' cardHeader={OVERVIEW_FILTERS}>
             <div className='card_body flex h-fit w-full justify-start overflow-x-auto scrollbar-thin'>
               <StatCard
@@ -129,7 +134,7 @@ export const Dashboard = () => {
               />
               <StatCard
                 icon='store'
-                title='Inventory Deployed'
+                title='In Inventory'
                 metric={InventoryData}
                 loading={isInventoryLoading}
                 tooltip={'Total no of items in inventory deployed.'}
