@@ -34,14 +34,14 @@ export const Login = () => {
       let BRANDNAME =
         form.username.charAt(0).toUpperCase() + form.username.slice(1);
       localStorage.setItem('Token', JSON.stringify(res?.data.token));
-      localStorage.setItem('Name', JSON.stringify(BRANDNAME));
+      localStorage.setItem('Name', JSON.stringify(res?.data.name));
       filterDispatch({
         type: 'SET_BRANDNAME',
-        payload: BRANDNAME,
+        payload: res?.data.name,
       });
       filterDispatch({ type: 'LOGIN' });
       navigate('/dashboard');
-      toast.success(`Welcome Back ${BRANDNAME}`, { id: loginToast });
+      toast.success(`Welcome Back ${res?.data.name}`, { id: loginToast });
     }
   };
 
