@@ -2,7 +2,6 @@ import * as React from "react";
 import Map, { Marker, Popup } from "react-map-gl";
 //import getCenter from "geolib/es/getCenter";
 import "mapbox-gl/dist/mapbox-gl.css";
-import MarkerCard from "./MarkerCard";
 import { useState } from "react";
 
 function MapComponent({ storesData }) {
