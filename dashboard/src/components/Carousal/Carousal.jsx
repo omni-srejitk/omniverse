@@ -59,7 +59,7 @@ export const Carousal = () => {
             </button>
             <button
               disabled={Object.keys(IMG_DATA)?.length - 1 === currentIndex}
-              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300 hover:bg-gray-300`}
+              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
               onClick={() => handleClick('NEXT')}
             >
               <span className='material-icons m-0 p-0 text-gray-400'>

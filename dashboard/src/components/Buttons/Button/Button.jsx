@@ -24,7 +24,7 @@ export const Button = ({ children, type, active, clickFunc }) => {
   const OUTLINED = (
     <button
       onClick={clickFunc}
-      className='cursor-pointer rounded-lg border-2 border-gray-100 px-4  py-2 font-semibold text-gray-700 hover:border-gray-400  hover:text-black'
+      className='cursor-pointer rounded-lg border-2 border-gray-300 px-4  py-2 font-semibold text-gray-700 hover:border-gray-400  hover:text-black'
     >
       {children}
     </button>
