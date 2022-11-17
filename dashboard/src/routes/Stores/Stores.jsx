@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { StoreCard } from '../../components/Cards/StoreCard/StoreCard';
 import { LABELS } from '../../components/Labels';
+import MapComponent from '../../components/Map/MapComponent';
 
 export const Stores = () => {
   const TAGS = [
@@ -37,18 +38,30 @@ export const Stores = () => {
     },
   ];
 
-  const [wishlist, setWishlist] = useState([]);
+  const STORES_DATA = [
+    {
+      longitude: 77.577226,
+      latitude: 12.988621,
+      price: 100,
+      storeName: 'Testing1',
+    },
+    {
+      longitude: 77.5685723756697,
+      latitude: 12.980253335829326,
+      price: 100,
+      storeName: 'Testing2',
+    },
+  ];
 
-  //   <div className="mt-[152px]">
-  //   <MapComponent storesData={storesData} />
-  //   {/* <MapComponent /> */}
-  // </div>
+  const [showModal, setShowModal] = useState(false);
+
+  const [wishlist, setWishlist] = useState([]);
 
   return (
     <main className='page__content'>
       <h1 className='page__title'>Stores</h1>
-      <section className='relative flex h-[30rem] w-full flex-col items-start justify-between gap-8 lg:flex-row'>
-        <div className='z-10 flex h-full max-h-screen  flex-col items-start justify-start gap-4 overflow-y-auto pt-[26rem] scrollbar-thin scrollbar-thumb-blue-200 lg:w-[28rem] lg:pr-4 lg:pt-0'>
+      <section className='relative mx-auto mb-36 flex h-[40rem] w-full flex-col items-center justify-between gap-8 lg:mb-0 lg:w-full lg:flex-row lg:items-start'>
+        <div className='z-10 order-2 mx-auto flex h-full  max-h-screen flex-col items-start justify-start gap-4 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-200 lg:order-1 lg:w-[28rem] lg:pr-4 lg:pt-0'>
           <StoreCard
             id='001'
             title={'Spencers Retail'}
@@ -57,6 +70,8 @@ export const Stores = () => {
             icon='store'
             tags={TAGS}
             label={LABELS.FLAGSHIP}
+            setShowModal={setShowModal}
+            showModal={showModal}
             showLabel
           />
           <StoreCard
@@ -67,6 +82,7 @@ export const Stores = () => {
             icon='store'
             tags={TAGS}
             label={LABELS.PLATINUM}
+            setShowModal={setShowModal}
             showLabel
             wishlist={wishlist}
             setWishlist={setWishlist}
@@ -79,6 +95,7 @@ export const Stores = () => {
             icon='store'
             tags={TAGS}
             label={LABELS.GOLD}
+            setShowModal={setShowModal}
             showLabel
           />
           <StoreCard
@@ -88,11 +105,16 @@ export const Stores = () => {
             icon='store'
             tags={TAGS}
             label={LABELS.DIAMOND}
+            setShowModal={setShowModal}
             showLabel
           />
         </div>
-        <div className=' h-full flex-grow rounded-lg bg-white lg:right-0 lg:w-1/2'>
-          Hello
+        <div className=' order-1 h-full w-full flex-grow overflow-hidden rounded-lg bg-white p-6 lg:right-0 lg:order-2 lg:w-1/2'>
+          <MapComponent
+            storesData={STORES_DATA}
+            showModal={showModal}
+            setShowModal={setShowModal}
+          />
         </div>
       </section>
     </main>

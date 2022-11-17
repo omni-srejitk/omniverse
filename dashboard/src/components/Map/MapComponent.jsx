@@ -1,16 +1,13 @@
-import * as React from "react";
-import Map, { Marker, Popup } from "react-map-gl";
-//import getCenter from "geolib/es/getCenter";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { useState } from "react";
+import * as React from 'react';
+import Map, { Marker } from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { useState } from 'react';
+import { Modal } from '../Modal/Modal';
+import { StoreModal } from '../Modal/StoreModal/StoreModal';
 
-function MapComponent({ storesData }) {
-  const [seletectedLocation, setSelectedLocation] = useState({});
-  // const coordinates = storesData.map((result) => ({
-  //   longitude: result.longitude,
-  //   latitude: result.latitude,
-  // }));
-  // const center = getCenter(coordinates);
+function MapComponent({ storesData, showModal, setShowModal }) {
+  const [selectedLocation, setSelectedLocation] = useState({});
+
   return (
     <Map
       initialViewState={{
@@ -19,49 +16,44 @@ function MapComponent({ storesData }) {
         zoom: 10,
       }}
       style={{
-        width: 600,
-        height: 600,
-        marginLeft: "30px",
-        borderRadius: "20px",
-        boxShadow:
-          "0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.19)",
+        width: '100%',
+        height: '100%',
+        borderRadius: '12px',
       }}
-      mapboxAccessToken="pk.eyJ1IjoiYXl1czIwMDAiLCJhIjoiY2wyZXhrb3R3MDQzOTNxcm5nbWJ4azh5eSJ9.4kZ6cwuNgfe973DXixSlyA"
-      mapStyle="mapbox://styles/ayus2000/cl2fqyzby001r15ltj3seihot"
+      mapboxAccessToken={import.meta.env.VITE_MAP_TOKEN}
+      mapStyle={import.meta.env.VITE_MAP_STYLE}
     >
-      {storesData.map((result) => (
-        <div key={result.longitude}>
+      {storesData.map((store) => (
+        <div key={store.longitude}>
           <Marker
-            longitude={result.longitude}
-            latitude={result.latitude}
+            longitude={store.longitude}
+            latitude={store.latitude}
             offsetLeft={-20}
             offsetTop={-10}
           >
             <p
-              role="img"
+              role='img'
               onClick={() => {
-                setSelectedLocation(result);
+                setSelectedLocation(store);
+                setShowModal(true);
               }}
-              className="cursor-pointer rounded-md bg-white p-2 drop-shadow-md
-    transition-all duration-150 ease-out hover:scale-125"
+              className='cursor-pointer rounded-md bg-red-500 p-2
+    transition-all duration-150 ease-out hover:scale-125'
             >
-              {result.storeName}
+              {store.storeName}
             </p>
-            <div className="flex flex-row justify-center">
-              <span class="material-icons">room</span>
+            <div className='flex flex-row justify-center'>
+              <span className='material-icons'>room</span>
             </div>
           </Marker>
-          {seletectedLocation.longitude === result.longitude && (
-            <Popup
-              latitude={seletectedLocation.latitude}
-              longitude={seletectedLocation.longitude}
-              anchor="bottom"
-              className="z-40"
-              closeOnClick={false}
-              onClose={() => setSelectedLocation({})}
+          {selectedLocation.longitude === store.longitude && (
+            <Modal
+              open={showModal}
+              onClose={() => setShowModal(false)}
+              onClick={(e) => e.stopPropagation()}
             >
-              {result.storeName}
-            </Popup>
+              <StoreModal />
+            </Modal>
           )}
         </div>
       ))}

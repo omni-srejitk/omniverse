@@ -1,5 +1,7 @@
 import React from 'react';
 import { TierLabel } from '../../Labels/TierLabels/TierLabels';
+import { Modal } from '../../Modal/Modal';
+import { StoreModal } from '../../Modal/StoreModal/StoreModal';
 
 export const StoreCard = ({
   id,
@@ -12,9 +14,14 @@ export const StoreCard = ({
   label,
   wishlist,
   setWishlist,
+  showModal,
+  setShowModal,
 }) => {
   return (
-    <div className='relative w-full rounded-lg bg-white px-6 py-5'>
+    <div
+      onClick={() => setShowModal(true)}
+      className='relative w-full rounded-lg bg-white px-6 py-5'
+    >
       <div className='flex items-center justify-start gap-6'>
         <div className='flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-300 '>
           <span className='material-icons  text-gray-600'>{icon}</span>
@@ -87,6 +94,15 @@ export const StoreCard = ({
           onClick={() => setWishlist([...wishlist, { id: id, title: title }])}
           className='absolute bottom-4 right-4 flex h-6 w-6 items-center justify-center rounded-full border-2 border-blue-200 bg-white'
         ></div>
+      )}
+      {showModal && (
+        <Modal
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <StoreModal />
+        </Modal>
       )}
     </div>
   );
