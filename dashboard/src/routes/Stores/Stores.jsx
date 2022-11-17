@@ -1,165 +1,122 @@
-import React from "react";
-import { Card } from "../../components/Cards/Card/Card";
-import MapComponent from "../../components/Map/MapComponent";
+import React from 'react';
+import { useState } from 'react';
+import { StoreCard } from '../../components/Cards/StoreCard/StoreCard';
+import { LABELS } from '../../components/Labels';
+import MapComponent from '../../components/Map/MapComponent';
 
 export const Stores = () => {
-  const storesData = [
+  const TAGS = [
+    {
+      id: 1,
+      name: 'High Footfall',
+      color: 'purple',
+      icon: 'groups',
+    },
+    {
+      id: 2,
+      name: 'Super Popular',
+      color: 'yellow',
+      icon: 'favorite',
+    },
+    {
+      id: 3,
+      name: 'Organic',
+      color: 'green',
+      icon: 'spa',
+    },
+    {
+      id: 4,
+      name: 'In Society',
+      color: 'teal',
+      icon: 'other_houses',
+    },
+    {
+      id: 5,
+      name: 'Posh Locality',
+      color: 'pink',
+      icon: 'villa',
+    },
+  ];
+
+  const STORES_DATA = [
     {
       longitude: 77.577226,
       latitude: 12.988621,
       price: 100,
-      storeName: "Testing1",
+      storeName: 'Testing1',
     },
     {
       longitude: 77.5685723756697,
       latitude: 12.980253335829326,
       price: 100,
-      storeName: "Testing2",
+      storeName: 'Testing2',
     },
   ];
+
+  const [showModal, setShowModal] = useState(false);
+
+  const [wishlist, setWishlist] = useState([]);
+
   return (
-    <main className="page__content">
-      <h1 className="page__title">Stores</h1>
-      <Card title={"MBT Hypermarket"}>
-        <div className="flex items-center justify-start gap-6">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-300 ">
-            <span className="material-icons  text-gray-600">store</span>
-          </div>
-          <div>
-            <p>Hypermarket | HSR Layout</p>
-          </div>
+    <main className='page__content'>
+      <h1 className='page__title'>Stores</h1>
+      <section className='relative mx-auto mb-36 flex h-[40rem] w-full flex-col items-center justify-between gap-8 lg:mb-0 lg:w-full lg:flex-row lg:items-start'>
+        <div className='z-10 order-2 mx-auto flex h-full  max-h-screen flex-col items-start justify-start gap-4 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-200 lg:order-1 lg:w-[28rem] lg:pr-4 lg:pt-0'>
+          <StoreCard
+            id='001'
+            title={'Spencers Retail'}
+            location={'HSR Layout'}
+            type={'HyperMarket'}
+            icon='store'
+            tags={TAGS}
+            label={LABELS.FLAGSHIP}
+            setShowModal={setShowModal}
+            showModal={showModal}
+            showLabel
+          />
+          <StoreCard
+            id='002'
+            title={'Spencers Retail'}
+            location={'HSR Layout'}
+            type={'HyperMarket'}
+            icon='store'
+            tags={TAGS}
+            label={LABELS.PLATINUM}
+            setShowModal={setShowModal}
+            showLabel
+            wishlist={wishlist}
+            setWishlist={setWishlist}
+          />
+          <StoreCard
+            id='003'
+            title={'Spencers Retail'}
+            location={'HSR Layout'}
+            type={'HyperMarket'}
+            icon='store'
+            tags={TAGS}
+            label={LABELS.GOLD}
+            setShowModal={setShowModal}
+            showLabel
+          />
+          <StoreCard
+            title={'Spencers Retail'}
+            location={'HSR Layout'}
+            type={'HyperMarket'}
+            icon='store'
+            tags={TAGS}
+            label={LABELS.DIAMOND}
+            setShowModal={setShowModal}
+            showLabel
+          />
         </div>
-        <div className="flex items-center">
-          <div className="mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-green-50 p-8 shadow-sm">
-            <div>
-              <span className="material-icons flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                arrow_upward
-              </span>
-            </div>
-            <div>
-              <h3 className="text-2xl">24</h3>
-              <p>Total Units sold</p>
-            </div>
-          </div>
-          <div className="mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 p-8 shadow-sm">
-            <div>
-              <span className="material-icons flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                inventory_2
-              </span>
-            </div>
-            <div>
-              <h3 className="text-2xl">8</h3>
-              <p>Currently In Store</p>
-            </div>
-          </div>
+        <div className=' order-1 h-full w-full flex-grow overflow-hidden rounded-lg bg-white p-6 lg:right-0 lg:order-2 lg:w-1/2'>
+          <MapComponent
+            storesData={STORES_DATA}
+            showModal={showModal}
+            setShowModal={setShowModal}
+          />
         </div>
-      </Card>
-      <Card title={"MBT Hypermarket"}>
-        <div className="flex items-center justify-start gap-6">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-300 ">
-            <span className="material-icons  text-gray-600">store</span>
-          </div>
-          <div>
-            <p>Hypermarket | HSR Layout</p>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div className="mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-green-50 p-8 shadow-sm">
-            <div>
-              <span className="material-icons flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                arrow_upward
-              </span>
-            </div>
-            <div>
-              <h3 className="text-2xl">24</h3>
-              <p>Total Units sold</p>
-            </div>
-          </div>
-          <div className="mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 p-8 shadow-sm">
-            <div>
-              <span className="material-icons flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                inventory_2
-              </span>
-            </div>
-            <div>
-              <h3 className="text-2xl">8</h3>
-              <p>Currently In Store</p>
-            </div>
-          </div>
-        </div>
-      </Card>
-      <Card title={"MBT Hypermarket"}>
-        <div className="flex items-center justify-start gap-6">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-300 ">
-            <span className="material-icons  text-gray-600">store</span>
-          </div>
-          <div>
-            <p>Hypermarket | HSR Layout</p>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div className="mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-green-50 p-8 shadow-sm">
-            <div>
-              <span className="material-icons flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                arrow_upward
-              </span>
-            </div>
-            <div>
-              <h3 className="text-2xl">24</h3>
-              <p>Total Units sold</p>
-            </div>
-          </div>
-          <div className="mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 p-8 shadow-sm">
-            <div>
-              <span className="material-icons flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                inventory_2
-              </span>
-            </div>
-            <div>
-              <h3 className="text-2xl">8</h3>
-              <p>Currently In Store</p>
-            </div>
-          </div>
-        </div>
-      </Card>
-      <Card title={"MBT Hypermarket"}>
-        <div className="flex items-center justify-start gap-6">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-300 ">
-            <span className="material-icons  text-gray-600">store</span>
-          </div>
-          <div>
-            <p>Hypermarket | HSR Layout</p>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div className="mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-green-50 p-8 shadow-sm">
-            <div>
-              <span className="material-icons flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                arrow_upward
-              </span>
-            </div>
-            <div>
-              <h3 className="text-2xl">24</h3>
-              <p>Total Units sold</p>
-            </div>
-          </div>
-          <div className="mt-8 mr-4 flex gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 p-8 shadow-sm">
-            <div>
-              <span className="material-icons flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                inventory_2
-              </span>
-            </div>
-            <div>
-              <h3 className="text-2xl">8</h3>
-              <p>Currently In Store</p>
-            </div>
-          </div>
-        </div>
-      </Card>
-      <div className="mt-[152px]">
-        <MapComponent storesData={storesData} />
-        {/* <MapComponent /> */}
-      </div>
+      </section>
     </main>
   );
 };
