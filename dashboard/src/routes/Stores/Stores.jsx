@@ -39,7 +39,11 @@ export const Stores = () => {
 
   const [wishlist, setWishlist] = useState([]);
 
-  console.log(wishlist);
+  //   <div className="mt-[152px]">
+  //   <MapComponent storesData={storesData} />
+  //   {/* <MapComponent /> */}
+  // </div>
+
   return (
     <main className='page__content'>
       <h1 className='page__title'>Stores</h1>
