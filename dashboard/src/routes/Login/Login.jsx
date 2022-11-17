@@ -31,15 +31,18 @@ export const Login = () => {
       toast.error(`Couldn't sign you in`, { id: loginToast });
     }
     if (!isLoading && res?.data && res?.data?.token) {
+      let BRANDNAME =
+        form.username.charAt(0).toUpperCase() + form.username.slice(1);
       localStorage.setItem('Token', JSON.stringify(res?.data.token));
-      localStorage.setItem('Name', JSON.stringify(res?.data.name));
+      localStorage.setItem('Name', JSON.stringify(BRANDNAME));
+
       filterDispatch({
         type: 'SET_BRANDNAME',
-        payload: res?.data.name,
+        payload: BRANDNAME,
       });
       filterDispatch({ type: 'LOGIN' });
       navigate('/dashboard');
-      toast.success(`Welcome Back ${res?.data.name}`, { id: loginToast });
+      toast.success(`Welcome Back ${BRANDNAME}`, { id: loginToast });
     }
   };
 
@@ -48,7 +51,7 @@ export const Login = () => {
   }, [isLoading]);
 
   useEffect(() => {
-    if (localStorage.getItem('Token')) {
+    if (localStorage.getItem('Token') && localStorage.getItem('Name')) {
       navigate('/dashboard');
     }
   }, []);
