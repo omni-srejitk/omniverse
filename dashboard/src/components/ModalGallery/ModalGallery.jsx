@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Spinner } from '../Loaders/Spinner/Spinner';
 import { fetchStoreImages } from '../../services/apiCalls';
 
-export const Carousal = () => {
+export const ModalGallery = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   let MAX_LENGTH = 5;
   const IMAGES_LOADED = 5;
   const BRAND = JSON.parse(localStorage.getItem('Name'));
   const { isLoading: ImageLoading, data: ImageData } = fetchStoreImages(BRAND);
+
   const IMG_DATA = !ImageLoading && ImageData?.data['message'];
 
   const handleClick = (type) => {
@@ -19,39 +20,27 @@ export const Carousal = () => {
   };
 
   useEffect(() => {
-    if (currentIndex > MAX_LENGTH) {
+    if (currentIndex > MAX_LENGTH && currentIndex < IMG_DATA?.length - 1) {
       MAX_LENGTH += IMAGES_LOADED;
-    }
-    if (
+    } else if (
       currentIndex > MAX_LENGTH &&
-      currentIndex === Object.keys(IMG_DATA)?.length - 1
+      currentIndex === IMG_DATA?.length - 1
     ) {
       MAX_LENGTH = IMAGES_LOADED;
       setCurrentIndex(0);
     }
-    if (currentIndex > Object.keys(IMG_DATA)?.length - 1) {
-      setCurrentIndex(0);
-    }
     if (currentIndex < 0) {
-      const PICS_LENGTH = Object.keys(IMG_DATA)?.length - 1;
-      setCurrentIndex(PICS_LENGTH);
+      setCurrentIndex(MAX_LENGTH);
     }
   }, [currentIndex]);
 
   return (
-    <div className='flex h-full max-h-full flex-col items-center justify-start overflow-hidden rounded-lg pb-20'>
-      <div className='mb-4 flex w-full items-center justify-between overflow-hidden'>
-        <div>
-          {!ImageLoading && Object.keys(IMG_DATA)?.length > 0 ? (
-            <h2 className='text-xl font-medium capitalize'>
-              {ImageLoading ? 'Loading...' : IMG_DATA[currentIndex]['customer']}
-            </h2>
-          ) : null}
-        </div>
+    <div className='relative z-10 flex h-full max-h-full w-full flex-col items-center justify-start overflow-hidden rounded-lg'>
+      <div className='absolute top-1/2 z-40 mb-4 flex w-full -translate-y-1/2 items-center justify-between overflow-hidden lg:static lg:top-0 lg:order-2 lg:h-fit lg:translate-y-0'>
         {!ImageLoading && Object.keys(IMG_DATA)?.length > 1 ? (
-          <div className='flex h-14 w-fit items-center justify-between gap-4'>
+          <div className='z-40 flex h-14 w-full items-center justify-between gap-4 px-6 lg:mt-6 lg:px-0'>
             <button
-              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
+              className={`z-40 flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 bg-white text-gray-400 disabled:bg-gray-100 disabled:text-gray-400 hover:border-gray-400 hover:bg-gray-100 hover:text-black`}
               onClick={() => handleClick('PREVIOUS')}
               disabled={currentIndex === 0 ? true : false}
             >
@@ -59,7 +48,7 @@ export const Carousal = () => {
             </button>
             <button
               disabled={Object.keys(IMG_DATA)?.length - 1 === currentIndex}
-              className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
+              className={`z-40 flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 bg-white text-gray-400 disabled:bg-gray-100 disabled:text-gray-400 hover:border-gray-400 hover:bg-gray-100 hover:text-black`}
               onClick={() => handleClick('NEXT')}
             >
               <span className='material-icons m-0 p-0 text-gray-400'>
@@ -69,20 +58,20 @@ export const Carousal = () => {
           </div>
         ) : null}
       </div>
-      <div className='relative flex h-full  w-full flex-grow overflow-hidden rounded-xl'>
+      <div className='relative z-30 flex h-full w-full flex-grow overflow-hidden rounded-xl'>
         {ImageLoading ? (
           <Spinner
             color={'border-blue-200'}
-            position={'top-1/2 left-1/2'}
+            position={'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'}
             loading={ImageLoading}
           />
         ) : (
           <div
-            className={` flex h-full w-full flex-grow justify-center gap-4 overflow-hidden `}
+            className={`flex h-full w-full flex-grow items-center justify-center gap-4 overflow-hidden lg:left-0 lg:top-0 lg:bottom-0`}
           >
             {!ImageLoading && Object.keys(IMG_DATA)?.length > 0 ? (
               <img
-                className='z-10  h-full w-full rounded-xl object-cover'
+                className='z-10 h-full w-full rounded-xl object-cover'
                 src={
                   !ImageLoading &&
                   IMG_DATA[currentIndex]['status'] &&

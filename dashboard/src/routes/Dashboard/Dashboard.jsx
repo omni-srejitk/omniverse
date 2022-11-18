@@ -41,6 +41,8 @@ export const Dashboard = () => {
   const STORES_LIST =
     !isAllStoresLoading && Object.values(allStoresData?.data['message']);
 
+  const STORES_LIST =
+    !isAllStoresLoading && Object.values(allStoresData?.data['message']);
   useEffect(() => {
     if (localStorage.getItem('Token')) {
       filterDispatch({ type: 'LOGIN' });
@@ -84,7 +86,7 @@ export const Dashboard = () => {
 
   const FILTERS = {
     'By Product': items,
-    'By Store': STORES_LIST[0],
+    'By Store': stores,
   };
 
   const OVERVIEW_FILTERS = (

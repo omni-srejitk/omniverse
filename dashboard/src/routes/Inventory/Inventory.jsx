@@ -116,8 +116,6 @@ export const Inventory = () => {
     filterState,
   ]);
 
-  //   * Table Logics
-
   const INVENTORY_OPTIONS = (
     <div className='flex h-fit w-fit flex-col items-center justify-between lg:flex-row'>
       <Button active={options === 'ALL'} clickFunc={() => setOptions('ALL')}>
@@ -184,12 +182,11 @@ export const Inventory = () => {
               background='bg-blue-100'
               spinner={'border-blue-200'}
             />
-            {/* //TODO Add this metric later on */}
             <StatCard
               icon='local_shipping'
               title='Total Shipped'
               metric={'0'}
-              background='bg-purple-100'
+              background='bg-gray-100'
               spinner={'border-purple-200'}
               showLabel
               tooltip={'Total count of items shipped.'}
@@ -197,7 +194,7 @@ export const Inventory = () => {
           </div>
         </Card>
       </section>
-      <section className='my-8 h-fit w-full'>
+      <section className='my-8 mb-40 h-fit w-full lg:my-4'>
         <Card title={'Details'} cardHeader={INVENTORY_OPTIONS}>
           <TableContainer>
             <TableHead>
@@ -214,7 +211,8 @@ export const Inventory = () => {
             </TableHead>
             <TableBody>
               {!isInventoryLoading &&
-                !isWarehouseLoading &&
+              !isWarehouseLoading &&
+              stocklist[options]?.length > 0 ? (
                 stocklist[options]?.map(
                   ({ item_name, item_code, qty, customer_name }, idx) => (
                     <TableRow
@@ -243,7 +241,13 @@ export const Inventory = () => {
                       </TableData>
                     </TableRow>
                   )
-                )}
+                )
+              ) : (
+                <div className='flex h-[10rem] w-full flex-col items-center justify-center font-semibold text-gray-400'>
+                  <p>No data found for the applied filters.</p>
+                  <p>Please reset and try again.</p>{' '}
+                </div>
+              )}
             </TableBody>
           </TableContainer>
         </Card>

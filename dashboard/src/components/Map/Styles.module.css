@@ -1,0 +1,58 @@
+.carouselContainer {
+    display: flex;
+    align-items: center;
+    width: 300px;
+    height: 200px;
+    border-radius: 10px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  
+  .photos {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    z-index: -1;
+  }
+  
+  /* style for the buttons */
+  
+  .btnContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .btn:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+  }
+  
+  .btn > span {
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+    width: 50%;
+    margin-top: 25%;
+  }
+  
+  .calendarWrap {
+    display: inline-block;
+    position: relative;
+  }
+  
+  .calendarElement {
+    position: absolute;
+    left: 180%;
+    transform: translateX(-50%);
+    top: 40px;
+    border: 1px solid #ccc;
+    z-index: 40;
+  }
+  
