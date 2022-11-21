@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from '../../Loaders/Spinner/Spinner';
+import { Spinner } from '../../Loaders';
 
 export const StatCard = ({
   icon,
@@ -34,10 +34,10 @@ export const StatCard = ({
             info
           </span>
         </div>
-        <h3 className=' text-5xl font-semibold'>
+        <h3 className=' text-4xl font-semibold'>
           {' '}
           {currency && <span>&#8377;</span>}
-          {metric}
+          {metric > 1000 ? (metric / 1000).toFixed(1) + 'K' : metric}
         </h3>
       </div>
     </div>

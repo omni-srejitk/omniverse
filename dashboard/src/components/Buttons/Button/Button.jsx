@@ -24,9 +24,20 @@ export const Button = ({ children, type, active, clickFunc }) => {
   const OUTLINED = (
     <button
       onClick={clickFunc}
-      className='cursor-pointer rounded-lg border-2 border-gray-100 px-4  py-2 font-semibold text-gray-700 hover:border-gray-400  hover:text-black'
+      className='cursor-pointer rounded-lg border-2 border-gray-300 px-4  py-2 font-semibold text-gray-700 hover:border-gray-400  hover:text-black'
     >
       {children}
+    </button>
+  );
+
+  const LOGO_BUTTON = (
+    <button
+      onClick={clickFunc}
+      className='group absolute top-4 right-4 z-40 h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-100 bg-white font-semibold text-gray-700 hover:border-gray-400  hover:text-black'
+    >
+      <span className='material-icons flex h-full w-full items-center justify-center rounded-lg text-gray-400 group-hover:text-black'>
+        {children}
+      </span>
     </button>
   );
 
@@ -37,6 +48,8 @@ export const Button = ({ children, type, active, clickFunc }) => {
       return SECONDARY;
     case 'OUTLINED':
       return OUTLINED;
+    case 'LOGO_BUTTON':
+      return LOGO_BUTTON;
     default:
       return SECONDARY;
   }

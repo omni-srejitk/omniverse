@@ -1,122 +1,88 @@
-import React, { useMemo } from 'react';
-import { useEffect } from 'react';
-import { useId } from 'react';
-import { useState } from 'react';
-import { Button } from '../../components/Buttons';
-import { Card } from '../../components/Cards/Card/Card';
-import { StatCard } from '../../components/Cards/StatsCard/StatCard';
-import { Filter } from '../../components/Filter/Filter';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  Button,
+  Card,
+  Filter,
+  Spinner,
+  StatCard,
   TableBody,
   TableContainer,
   TableData,
   TableHead,
   TableHeader,
   TableRow,
-} from '../../components/Table';
-import { useFilter } from '../../context/FilterContext/FilterContext';
+} from '../../components';
+
+import {
+  selectAllInventory,
+  selectAllItems,
+  selectAllStores,
+  selectAllWarehouse,
+  selectAllFilteredItems,
+  selectAllFilteredStores,
+} from '../../redux/actions';
+
 import {
   fetchDeployedQuantity,
-  fetchSalesData,
   fetchWarehouseQuantity,
 } from '../../services/apiCalls';
-import { prepareData } from '../../utils/helperFunctions';
+import { applyInventoryFilters } from '../../utils/helperFunctions';
 
 export const Inventory = () => {
   const BRAND = JSON.parse(localStorage.getItem('Name'));
-  const [showState, setShowState] = useState({
-    productFilter: false,
-  });
-  const [stock, setStock] = useState({
-    TOTAL_INVENTORY_STOCK: 0,
-    TOTAL_WAREHOUSE_STOCK: 0,
-  });
-
-  const [options, setOptions] = useState('ALL');
-
-  const [stocklist, setStockList] = useState({
-    ALL: [],
-    WAREHOUSE: [],
-    INVENTORY: [],
-  });
-
   const { isLoading: isInventoryLoading, data: inventoryRes } =
     fetchDeployedQuantity(BRAND);
 
-  const { filterState, filterDispatch } = useFilter();
   const { isLoading: isWarehouseLoading, data: warehouseRes } =
     fetchWarehouseQuantity(BRAND);
+  const [showState, setShowState] = useState({
+    productFilter: false,
+  });
+  const [options, setOptions] = useState('ALL');
+  const [stocklist, setStocklist] = useState({});
+  const dispatch = useDispatch();
 
   const INVENTORY_LIST = !isInventoryLoading && inventoryRes?.data?.message;
-
   const WAREHOUSE_LIST = !isWarehouseLoading && warehouseRes?.data?.message;
-
-  const fetchTotalStock = (state, arr) => {
-    if (state.FILTERED_STORES?.length > 0) {
-      arr = arr.filter((item) =>
-        state.FILTERED_STORES?.includes(item.customer_name)
-      );
-    }
-
-    if (state.FILTERED_ITEMS?.length > 0) {
-      arr = arr.filter((item) =>
-        state.FILTERED_ITEMS?.includes(item.item_name)
-      );
-    }
-
-    let res = arr.reduce((acc, curr) => (acc += curr.qty), 0);
-
-    return res;
-  };
-
-  const updateList = (state, arr) => {
-    if (state.FILTERED_STORES?.length > 0) {
-      arr = arr.filter((item) =>
-        state.FILTERED_STORES?.includes(item.customer_name)
-      );
-    }
-
-    if (state.FILTERED_ITEMS?.length > 0) {
-      arr = arr.filter((item) =>
-        state.FILTERED_ITEMS?.includes(item.item_name)
-      );
-    }
-
-    return arr;
-  };
+  const INVENTORY_COUNT = useSelector(selectAllInventory);
+  const WAREHOUSE_COUNT = useSelector(selectAllWarehouse);
+  const FILTERED_ITEMS = useSelector(selectAllFilteredItems);
+  const FILTERED_STORES = useSelector(selectAllFilteredStores);
+  const ALLITEMS = useSelector(selectAllItems);
+  const ALLSTORES = useSelector(selectAllStores);
 
   useEffect(() => {
-    let INVENTORY_STOCK =
-      !isInventoryLoading && fetchTotalStock(filterState, INVENTORY_LIST);
-    let WAREHOUSE_STOCK =
-      !isWarehouseLoading && fetchTotalStock(filterState, WAREHOUSE_LIST);
-    let INVENTORY_DATA =
-      !isInventoryLoading && updateList(filterState, INVENTORY_LIST);
-    let WAREHOUSE_DATA =
-      !isWarehouseLoading && updateList(filterState, WAREHOUSE_LIST);
-
     if (!isInventoryLoading && !isWarehouseLoading) {
-      setStockList({
-        ...stocklist,
-        ALL: [...INVENTORY_DATA, ...WAREHOUSE_DATA],
-        WAREHOUSE: WAREHOUSE_DATA,
-        INVENTORY: INVENTORY_DATA,
-      });
-      setStock({
-        ...stock,
-        TOTAL_INVENTORY_STOCK: INVENTORY_STOCK,
-        TOTAL_WAREHOUSE_STOCK: WAREHOUSE_STOCK,
-      });
+      applyInventoryFilters(
+        FILTERED_ITEMS,
+        FILTERED_STORES,
+        INVENTORY_LIST,
+        WAREHOUSE_LIST,
+        dispatch,
+        setStocklist
+      );
     }
   }, [
+    FILTERED_ITEMS,
+    FILTERED_STORES,
     isInventoryLoading,
-    isWarehouseLoading,
     INVENTORY_LIST,
-    WAREHOUSE_LIST,
-    filterState,
+    isWarehouseLoading,
   ]);
 
-  //   * Table Logics
+  const FILTERS = {
+    'By Product': ALLITEMS,
+    'By Store': ALLSTORES,
+  };
+
+  const INVENTORY_FILTERS = (
+    <Filter
+      filter={FILTERS}
+      showState={showState}
+      setShowState={setShowState}
+    />
+  );
 
   const INVENTORY_OPTIONS = (
     <div className='flex h-fit w-fit flex-col items-center justify-between lg:flex-row'>
@@ -138,28 +104,6 @@ export const Inventory = () => {
     </div>
   );
 
-  const { isLoading: isGMVDataLoading, data: gmvSaleRes } =
-    fetchSalesData(BRAND);
-
-  const GMV_SALES_DATA = !isGMVDataLoading && gmvSaleRes?.data['message'];
-
-  var { items, stores } = useMemo(
-    () => prepareData(GMV_SALES_DATA, filterDispatch),
-    [GMV_SALES_DATA]
-  );
-  const FILTERS = {
-    'By Product': items,
-    'By Store': stores,
-  };
-
-  const INVENTORY_FILTERS = (
-    <Filter
-      filter={FILTERS}
-      showState={showState}
-      setShowState={setShowState}
-    />
-  );
-
   return (
     <main className='page__content'>
       <section className='h-fit w-full'>
@@ -169,7 +113,7 @@ export const Inventory = () => {
             <StatCard
               icon='inventory'
               title='In Stores'
-              metric={stock.TOTAL_INVENTORY_STOCK || 0}
+              metric={INVENTORY_COUNT}
               loading={isInventoryLoading}
               background='bg-green-100'
               spinner={'border-green-200'}
@@ -178,18 +122,17 @@ export const Inventory = () => {
             <StatCard
               icon='warehouse'
               title='In Warehouse'
-              metric={stock.TOTAL_WAREHOUSE_STOCK || 0}
+              metric={WAREHOUSE_COUNT}
               loading={isWarehouseLoading}
               tooltip={'Total count of items in warehouse.'}
               background='bg-blue-100'
               spinner={'border-blue-200'}
             />
-            {/* //TODO Add this metric later on */}
             <StatCard
               icon='local_shipping'
               title='Total Shipped'
               metric={'0'}
-              background='bg-purple-100'
+              background='bg-gray-100'
               spinner={'border-purple-200'}
               showLabel
               tooltip={'Total count of items shipped.'}
@@ -197,25 +140,26 @@ export const Inventory = () => {
           </div>
         </Card>
       </section>
-      <section className='my-8 h-fit w-full'>
+      <section className='my-8 mb-40 h-fit w-full lg:my-4'>
         <Card title={'Details'} cardHeader={INVENTORY_OPTIONS}>
-          <TableContainer>
-            <TableHead>
-              <TableRow>
-                <TableHeader>S. No</TableHeader>
-                {options !== 'WAREHOUSE' && (
-                  <TableHeader>Store Name</TableHeader>
-                )}
-                <TableHeader>Product Name</TableHeader>
-                <TableHeader>SKU</TableHeader>
-                <TableHeader>Quantity</TableHeader>
-                <TableHeader>Category</TableHeader>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!isInventoryLoading &&
-                !isWarehouseLoading &&
-                stocklist[options]?.map(
+          {isInventoryLoading && isWarehouseLoading ? (
+            <Spinner loading={isInventoryLoading && isWarehouseLoading} />
+          ) : stocklist[options]?.length > 0 ? (
+            <TableContainer>
+              <TableHead>
+                <TableRow>
+                  <TableHeader>S. No</TableHeader>
+                  {options !== 'WAREHOUSE' && (
+                    <TableHeader>Store Name</TableHeader>
+                  )}
+                  <TableHeader>Product Name</TableHeader>
+                  <TableHeader>SKU</TableHeader>
+                  <TableHeader>Quantity</TableHeader>
+                  <TableHeader>Category</TableHeader>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {stocklist[options]?.map(
                   ({ item_name, item_code, qty, customer_name }, idx) => (
                     <TableRow
                       key={`${item_name} + ${customer_name} + ${item_code}`}
@@ -244,8 +188,14 @@ export const Inventory = () => {
                     </TableRow>
                   )
                 )}
-            </TableBody>
-          </TableContainer>
+              </TableBody>
+            </TableContainer>
+          ) : (
+            <div className='flex h-[30rem] w-full flex-col items-center justify-center font-semibold text-gray-400'>
+              <p>No data found for the applied filters.</p>
+              <p>Please reset and try again.</p>{' '}
+            </div>
+          )}
         </Card>
       </section>
     </main>

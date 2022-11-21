@@ -10,6 +10,7 @@ import {
   CartesianGrid,
   Legend,
 } from 'recharts';
+
 export const AreaCharts = ({ data = [], color }) => {
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>

@@ -1,21 +1,37 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { StatCard } from '../../components/Cards/StatsCard/StatCard';
-import { Filter } from '../../components/Filter/Filter';
-import { Select } from '../../components/Select/Select';
-import { Carousal } from '../../components/Carousal/Carousal';
-import { Card } from '../../components/Cards/Card/Card';
-import { useFilter } from '../../context/FilterContext/FilterContext';
-import { AreaCharts } from '../../components/Charts/Charts';
-import { BarCharts } from '../../components/Charts/BarChart/BarChart';
-import { Spinner } from '../../components/Loaders/Spinner/Spinner';
+import { fetchInventoryCount, fetchStoreImages } from '../../services/apiCalls';
+import { computeSalesNumber } from '../../utils/helperFunctions';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  fetchInventoryCount,
-  fetchLiveStoreCount,
-  fetchSalesData,
-} from '../../services/apiCalls';
-import { computeSalesNumber, prepareData } from '../../utils/helperFunctions';
+  selectAllGMVSalesData,
+  selectAllItems,
+  selectAllPrices,
+  selectAllSalesData,
+  selectAllStores,
+  selectAllFilteredDates,
+  selectAllFilteredItems,
+  selectAllFilteredStores,
+  selectLoadingState,
+  selectLoginStatus,
+} from '../../redux/actions';
+
+import {
+  AreaCharts,
+  BarCharts,
+  Card,
+  Carousal,
+  Filter,
+  Select,
+  Spinner,
+  StatCard,
+} from '../../components';
+import {
+  setAuthToken,
+  setBrandName,
+  setloginStatus,
+} from '../../redux/features/authSlice';
+
 export const Dashboard = () => {
-  const { filterState, filterDispatch } = useFilter();
   const [showState, setShowState] = useState({
     durationFilter: false,
     productFilter: false,
@@ -23,69 +39,67 @@ export const Dashboard = () => {
 
   const BRAND = JSON.parse(localStorage.getItem('Name'));
 
-  const { isLoading: isGMVDataLoading, data: gmvSaleRes } =
-    fetchSalesData(BRAND);
-
   const { isLoading: isInventoryLoading, data: resData } =
     fetchInventoryCount(BRAND);
-  const GMV_SALES_DATA = !isGMVDataLoading && gmvSaleRes?.data['message'];
+  const dispatch = useDispatch();
+  const isGMVDataLoading = useSelector(selectLoadingState);
+  const PRICES = useSelector(selectAllPrices);
+  const SALE_DATA = useSelector(selectAllSalesData);
+  const ISLOGGED = useSelector(selectLoginStatus);
+  const ALLITEMS = useSelector(selectAllItems);
+  const ALLSTORES = useSelector(selectAllStores);
+  const FILTERED_DATES = useSelector(selectAllFilteredDates);
+  const FILTERED_ITEMS = useSelector(selectAllFilteredItems);
+  const FILTERED_STORES = useSelector(selectAllFilteredStores);
 
-  var { items, stores, dates, prices, sale_count } = useMemo(
-    () => prepareData(GMV_SALES_DATA, filterDispatch),
-    [GMV_SALES_DATA]
-  );
-
+  const LIVESTORES_LENGTH = ALLSTORES?.length;
+  const TOKEN = localStorage.getItem('Token');
+  const NAME = localStorage.getItem('Name');
+  const GMV_SALES_DATA = useSelector(selectAllGMVSalesData);
   useEffect(() => {
-    if (localStorage.getItem('Token')) {
-      filterDispatch({ type: 'LOGIN' });
+    if (TOKEN) {
+      dispatch(setloginStatus(true));
+      dispatch(setAuthToken(TOKEN));
+      dispatch(setBrandName(NAME));
     }
-  }, []);
+  }, [TOKEN, NAME]);
 
-  const { cumlativeSalesReport } = useMemo(
-    () =>
-      computeSalesNumber(
-        filterState.FILTERED_DATES,
-        filterState.FILTERED_STORES,
-        filterState.FILTERED_ITEMS,
-        prices,
-        GMV_SALES_DATA,
-        sale_count
-      ),
-    [
-      filterState.FILTERED_DATES,
-      filterState.FILTERED_STORES,
-      filterState.FILTERED_ITEMS,
-      prices,
+  const { cumlativeSalesReport } = useMemo(() => {
+    const STORES = FILTERED_STORES?.length === 0 ? ALLSTORES : FILTERED_STORES;
+    const ITEMS = FILTERED_ITEMS?.length === 0 ? ALLITEMS : FILTERED_ITEMS;
+    return computeSalesNumber(
+      FILTERED_DATES,
+      STORES,
+      ITEMS,
+      PRICES,
       GMV_SALES_DATA,
-      sale_count,
-    ]
-  );
+      SALE_DATA
+    );
+  }, [
+    FILTERED_DATES,
+    FILTERED_STORES,
+    FILTERED_ITEMS,
+    PRICES,
+    GMV_SALES_DATA,
+    SALE_DATA,
+  ]);
 
-  useEffect(() => {
-    filterDispatch({ type: 'SET_DATES', payload: dates });
-    filterDispatch({ type: 'SET_ITEMS', payload: items });
-    filterDispatch({ type: 'SET_STORES', payload: stores });
-    filterDispatch({ type: 'SET_FILTERED_DATES', payload: dates });
-    filterDispatch({ type: 'SET_FILTERED_ITEMS', payload: items });
-    filterDispatch({ type: 'SET_FILTERED_STORES', payload: stores });
-  }, [dates, stores, items]);
-  const InventoryData = !isInventoryLoading && resData.data['message'];
+  const InventoryData = !isInventoryLoading && resData?.data['message'];
 
-  const { isLoading: isLiveStoreLoading, data: liveStoreData } =
-    fetchLiveStoreCount(BRAND);
-
-  const liveStoreCount = !isLiveStoreLoading && liveStoreData.data['message'];
-
-  const FILTERS = {
-    'By Product': items,
-    'By Store': stores,
+  const DASHBOARD_FILTERS = {
+    'By Product': ALLITEMS,
+    'By Store': ALLSTORES,
   };
+
+  const { isLoading: ImageLoading, data: ImageData } = fetchStoreImages(BRAND);
+
+  let IMG_DATA = !ImageLoading && ImageData?.data['message'];
 
   const OVERVIEW_FILTERS = (
     <div className='items-centerS flex gap-4'>
       <Select showState={showState} setShowState={setShowState} />
       <Filter
-        filter={FILTERS}
+        filter={DASHBOARD_FILTERS}
         showState={showState}
         setShowState={setShowState}
       />
@@ -93,10 +107,10 @@ export const Dashboard = () => {
   );
 
   return (
-    filterState.ISLOGGED && (
+    ISLOGGED && (
       <main className='page__content'>
         <section className='h-fit w-full'>
-          <h1 className='page__title'>Dashboard</h1>
+          <h1 className='page__title'>Welcome {BRAND}</h1>
           <Card title='Overview' cardHeader={OVERVIEW_FILTERS}>
             <div className='card_body flex h-fit w-full justify-start overflow-x-auto scrollbar-thin'>
               <StatCard
@@ -121,15 +135,15 @@ export const Dashboard = () => {
               <StatCard
                 icon='store'
                 title='Total Stores'
-                loading={isLiveStoreLoading}
-                metric={liveStoreCount}
+                loading={isGMVDataLoading}
+                metric={LIVESTORES_LENGTH}
                 background='bg-purple-100'
                 spinner={'border-purple-200'}
                 tooltip={'Total no of stores where item is active.'}
               />
               <StatCard
                 icon='store'
-                title='Inventory Deployed'
+                title='In Inventory'
                 metric={InventoryData}
                 loading={isInventoryLoading}
                 tooltip={'Total no of items in inventory deployed.'}
@@ -156,7 +170,6 @@ export const Dashboard = () => {
               ) : (
                 <AreaCharts
                   data={cumlativeSalesReport.GRAPH_DATA}
-                  filter={filterState.filterBy}
                   color={'#3b82f6'}
                 />
               )}
@@ -168,7 +181,7 @@ export const Dashboard = () => {
               'row-span-2 flex-grow max-h-[42rem] col-span-1 order-3 lg:order-2 '
             }
           >
-            <Carousal />
+            <Carousal src={IMG_DATA} loading={ImageLoading} />
           </Card>
 
           <Card
@@ -187,7 +200,6 @@ export const Dashboard = () => {
               ) : (
                 <BarCharts
                   data={cumlativeSalesReport.GRAPH_DATA}
-                  filter={filterState.filterBy}
                   color={'#86efac'}
                 />
               )}

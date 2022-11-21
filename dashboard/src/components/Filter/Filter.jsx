@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import { useFilter } from '../../context/FilterContext/FilterContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectItemFilters, selectStoreFilters } from '../../redux/actions';
+import {
+  setFilteredItems,
+  setFilteredStores,
+} from '../../redux/features/filterSlice';
 
 export const Filter = ({ filter, showState, setShowState }) => {
   const [itemFilters, setItemFilters] = useState([]);
   const [storeFilters, setStoreFilters] = useState([]);
-  const { filterState, filterDispatch } = useFilter();
+
+  const dispatch = useDispatch();
+  const FILTERBYITEM = useSelector(selectItemFilters);
+  const FILTERBYSTORE = useSelector(selectStoreFilters);
 
   const handleItemChange = (val) => {
     if (itemFilters?.includes(val)) {
@@ -46,12 +54,12 @@ export const Filter = ({ filter, showState, setShowState }) => {
         <div className='max-h-[15rem] overflow-y-auto pr-4 scrollbar-thin scrollbar-track-gray-50 scrollbar-thumb-blue-100 scrollbar-track-rounded-lg'>
           {filter['By Product']?.map((filterBy) => (
             <div key={filterBy}>
-              <div className=' my-2 max-h-[15rem] overflow-y-auto'>
+              <div className=' my-2 flex max-h-[15rem] items-center justify-between overflow-y-auto'>
                 <div
                   key={filterBy}
-                  className='mb-3 flex w-80 items-start justify-between '
+                  className='mb-3 flex h-full w-80 items-start justify-between '
                 >
-                  <label className='font-semibold' htmlFor={filterBy}>
+                  <label className='w-[90%] font-semibold' htmlFor={filterBy}>
                     {filterBy}
                   </label>
                   <input
@@ -59,11 +67,11 @@ export const Filter = ({ filter, showState, setShowState }) => {
                     id={filterBy}
                     onChange={(e) => handleItemChange(e.target.dataset.value)}
                     checked={
-                      filterState.filterBy?.includes(filterBy) ||
+                      FILTERBYITEM?.includes(filterBy) ||
                       itemFilters.includes(filterBy)
                     }
                     data-value={filterBy}
-                    className=' h-6 w-6 cursor-pointer font-semibold text-gray-500 hover:text-black'
+                    className=' h-6 w-6 cursor-pointer rounded-lg font-semibold text-gray-500  hover:text-black'
                   />
                 </div>
               </div>
@@ -88,7 +96,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
                     id={filterByStore}
                     onChange={(e) => handleStoreChange(e.target.dataset.value)}
                     checked={
-                      filterState.filterBy?.includes(filterByStore) ||
+                      FILTERBYSTORE?.includes(filterByStore) ||
                       storeFilters.includes(filterByStore)
                     }
                     data-value={filterByStore}
@@ -102,18 +110,8 @@ export const Filter = ({ filter, showState, setShowState }) => {
         <div className='mw-full flex items-center gap-4'>
           <button
             onClick={() => {
-              filterDispatch({
-                type: 'SET_FILTERED_STORES',
-                payload: filterState.STORES,
-              });
-              filterDispatch({
-                type: 'SET_FILTERED_ITEMS',
-                payload: filterState.ITEMS,
-              });
-              filterDispatch({
-                type: 'SET_FILTERS',
-                payload: [],
-              });
+              dispatch(setFilteredStores([]));
+              dispatch(setFilteredItems([]));
               setItemFilters([]);
               setStoreFilters([]);
               setShowState({ ...showState, productFilter: false });
@@ -124,22 +122,12 @@ export const Filter = ({ filter, showState, setShowState }) => {
           </button>
           <button
             onClick={() => {
-              filterDispatch({
-                type: 'SET_FILTERS',
-                payload: [...itemFilters, ...storeFilters],
-              });
-              filterDispatch({
-                type: 'SET_FILTERED_STORES',
-                payload:
-                  storeFilters?.length === 0
-                    ? filterState.STORES
-                    : storeFilters,
-              });
-              filterDispatch({
-                type: 'SET_FILTERED_ITEMS',
-                payload:
-                  itemFilters?.length === 0 ? filterState.ITEMS : itemFilters,
-              });
+              const FILTER_BY_STORES =
+                storeFilters?.length === 0 ? [] : storeFilters;
+              const FILTER_BY_ITEMS =
+                itemFilters?.length === 0 ? [] : itemFilters;
+              dispatch(setFilteredStores(FILTER_BY_STORES));
+              dispatch(setFilteredItems(FILTER_BY_ITEMS));
               setShowState({ ...showState, productFilter: false });
             }}
             className='border-gray- 100 flex cursor-pointer  items-center  justify-between rounded-2xl border-2 bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
