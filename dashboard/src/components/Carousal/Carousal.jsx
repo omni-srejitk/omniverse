@@ -67,12 +67,13 @@ export const Carousal = ({ src, loading }) => {
     return encode(imageData.data, imageData.width, imageData.height, 4, 4);
   };
 
-  useEffect(() => {
-    if (images?.length > 0) {
-      let temp = images.map((item) => encodeImageToBlurhash(item.image));
-      console.log(temp);
-    }
-  }, [images]);
+  // !Fix : Getting CORS Error
+  // useEffect(() => {
+  //   if (images?.length > 0) {
+  //     let temp = images.map((item) => loadImage(item.image));
+  //     console.log(temp);
+  //   }
+  // }, [images]);
 
   return (
     <div className='flex h-full max-h-full flex-col items-center justify-start overflow-hidden rounded-lg pb-20'>
