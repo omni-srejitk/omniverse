@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Spinner } from '../Loaders/Spinner/Spinner';
-import { fetchStoreImages } from '../../services/apiCalls';
+import { reduceImages } from '../../utils/helperFunctions';
+import { Spinner } from '../Loaders';
+import { encode } from 'blurhash';
 
-export const Carousal = () => {
+export const Carousal = ({ src, loading }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [images, setImages] = useState([]);
   let MAX_LENGTH = 5;
   const IMAGES_LOADED = 5;
-  const BRAND = JSON.parse(localStorage.getItem('Name'));
-  const { isLoading: ImageLoading, data: ImageData } = fetchStoreImages(BRAND);
-  const IMG_DATA = !ImageLoading && ImageData?.data['message'];
 
   const handleClick = (type) => {
     if (type === 'NEXT') {
@@ -19,21 +18,27 @@ export const Carousal = () => {
   };
 
   useEffect(() => {
+    if (!loading) {
+      reduceImages(src, setImages);
+    }
+  }, [src, loading]);
+
+  useEffect(() => {
     if (currentIndex > MAX_LENGTH) {
       MAX_LENGTH += IMAGES_LOADED;
     }
     if (
       currentIndex > MAX_LENGTH &&
-      currentIndex === Object.keys(IMG_DATA)?.length - 1
+      currentIndex === Object.keys(src)?.length - 1
     ) {
       MAX_LENGTH = IMAGES_LOADED;
       setCurrentIndex(0);
     }
-    if (currentIndex > Object.keys(IMG_DATA)?.length - 1) {
+    if (currentIndex > Object.keys(src)?.length - 1) {
       setCurrentIndex(0);
     }
     if (currentIndex < 0) {
-      const PICS_LENGTH = Object.keys(IMG_DATA)?.length - 1;
+      const PICS_LENGTH = Object.keys(src)?.length - 1;
       setCurrentIndex(PICS_LENGTH);
     }
   }, [currentIndex]);
@@ -73,13 +78,13 @@ export const Carousal = () => {
     <div className='flex h-full max-h-full flex-col items-center justify-start overflow-hidden rounded-lg pb-20'>
       <div className='mb-4 flex w-full items-center justify-between overflow-hidden'>
         <div>
-          {!ImageLoading && Object.keys(IMG_DATA)?.length > 0 ? (
+          {!loading && Object.keys(images)?.length > 0 ? (
             <h2 className='text-xl font-medium capitalize'>
-              {ImageLoading ? 'Loading...' : IMG_DATA[currentIndex]['customer']}
+              {loading ? 'Loading...' : images[currentIndex]['customer']}
             </h2>
           ) : null}
         </div>
-        {!ImageLoading && Object.keys(IMG_DATA)?.length > 1 ? (
+        {!loading && Object.keys(images)?.length > 1 ? (
           <div className='flex h-14 w-fit items-center justify-between gap-4'>
             <button
               className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
@@ -89,7 +94,7 @@ export const Carousal = () => {
               <span className='material-icons m-0 p-0 '>chevron_left</span>
             </button>
             <button
-              disabled={Object.keys(IMG_DATA)?.length - 1 === currentIndex}
+              disabled={Object.keys(images)?.length - 1 === currentIndex}
               className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
               onClick={() => handleClick('NEXT')}
             >
@@ -101,23 +106,23 @@ export const Carousal = () => {
         ) : null}
       </div>
       <div className='relative flex h-full  w-full flex-grow overflow-hidden rounded-xl'>
-        {ImageLoading ? (
+        {loading ? (
           <Spinner
             color={'border-blue-200'}
             position={'top-1/2 left-1/2'}
-            loading={ImageLoading}
+            loading={loading}
           />
         ) : (
           <div
             className={` flex h-full w-full flex-grow justify-center gap-4 overflow-hidden `}
           >
-            {!ImageLoading && Object.keys(IMG_DATA)?.length > 0 ? (
+            {!loading && Object.keys(images)?.length > 0 ? (
               <img
                 className='z-10  h-full w-full rounded-xl object-cover'
                 src={
-                  !ImageLoading &&
-                  IMG_DATA[currentIndex]['status'] &&
-                  IMG_DATA[currentIndex]['image']
+                  !loading &&
+                  images[currentIndex]['status'] &&
+                  images[currentIndex]['image']
                 }
               />
             ) : (
