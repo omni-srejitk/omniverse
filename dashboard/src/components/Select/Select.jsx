@@ -1,38 +1,17 @@
 import React from 'react';
-import { useFilter } from '../../context/FilterContext/FilterContext';
+import { useDispatch, useSelector } from 'react-redux';
 import { DATE_FILTERS } from '../../utils/constants';
-import moment from 'moment';
+import {
+  selectDurationFilter,
+  setDurationFilter,
+} from '../../redux/features/filterSlice';
+import { selectAllDates } from '../../redux/features/dataSlice';
+import { filterDates } from '../../utils/helperFunctions';
 export const Select = ({ showState, setShowState }) => {
-  const { filterState, filterDispatch } = useFilter();
+  const dispatch = useDispatch();
+  const DATES = useSelector(selectAllDates);
+  const FILTERBYDURATION = useSelector(selectDurationFilter);
 
-  const filterDates = (val, DATES, dispatch) => {
-    switch (val) {
-      case 'This Week':
-        const firstDayOfWeek = moment().startOf('week');
-        const currDayOfWeek = moment().endOf('week');
-
-        const filteredWeek = DATES.filter((date) =>
-          moment(date, 'DD-MM-YY').isBetween(
-            moment(firstDayOfWeek, 'DD-MM-YY'),
-            moment(currDayOfWeek, 'DD-MM-YY')
-          )
-        );
-        return dispatch({ type: 'SET_FILTERED_DATES', payload: filteredWeek });
-
-      case 'This Month':
-        const firstDayOfMonth = moment().startOf('month');
-        const currDayOfMonth = moment().endOf('month');
-        const filteredMonth = DATES.filter((date) =>
-          moment(date, 'DD-MM-YY').isBetween(
-            moment(firstDayOfMonth, 'DD-MM-YY'),
-            moment(currDayOfMonth, 'DD-MM-YY')
-          )
-        );
-        return dispatch({ type: 'SET_FILTERED_DATES', payload: filteredMonth });
-      default:
-        return dispatch({ type: 'SET_FILTERED_DATES', payload: DATES });
-    }
-  };
   return (
     <div className='relative w-max '>
       <div
@@ -45,7 +24,7 @@ export const Select = ({ showState, setShowState }) => {
         }
         className='flex cursor-pointer items-center justify-between rounded-lg  border-2 border-gray-100 px-4 py-2 font-medium hover:border-gray-400'
       >
-        {filterState.filterByDate}
+        {FILTERBYDURATION}
         <span className='material-icons'>
           {showState.durationFilter ? 'expand_less' : 'expand_more'}
         </span>
@@ -59,11 +38,8 @@ export const Select = ({ showState, setShowState }) => {
           <li
             key={item.id}
             onClick={(e) => {
-              filterDispatch({
-                type: 'SET_DATE_FILTER',
-                payload: item.title,
-              });
-              filterDates(item.title, filterState.DATES, filterDispatch);
+              dispatch(setDurationFilter(item.title));
+              filterDates(item.title, DATES, dispatch);
               setShowState({ ...showState, durationFilter: false });
             }}
             className=' cursor-pointer px-4 py-2 font-semibold text-gray-500 hover:text-black'

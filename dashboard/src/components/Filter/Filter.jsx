@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
-import { useFilter } from '../../context/FilterContext/FilterContext';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectAllItems,
+  selectAllStores,
+} from '../../redux/features/dataSlice';
+import {
+  selectItemFilters,
+  selectStoreFilters,
+  setFilteredItems,
+  setFilteredStores,
+} from '../../redux/features/filterSlice';
 
 export const Filter = ({ filter, showState, setShowState }) => {
   const [itemFilters, setItemFilters] = useState([]);
   const [storeFilters, setStoreFilters] = useState([]);
-  const { filterState, filterDispatch } = useFilter();
+
+  const dispatch = useDispatch();
+  const FILTERBYITEM = useSelector(selectItemFilters);
+  const FILTERBYSTORE = useSelector(selectStoreFilters);
 
   const handleItemChange = (val) => {
     if (itemFilters?.includes(val)) {
@@ -59,7 +72,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
                     id={filterBy}
                     onChange={(e) => handleItemChange(e.target.dataset.value)}
                     checked={
-                      filterState.filterBy?.includes(filterBy) ||
+                      FILTERBYITEM?.includes(filterBy) ||
                       itemFilters.includes(filterBy)
                     }
                     data-value={filterBy}
@@ -88,7 +101,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
                     id={filterByStore}
                     onChange={(e) => handleStoreChange(e.target.dataset.value)}
                     checked={
-                      filterState.filterBy?.includes(filterByStore) ||
+                      FILTERBYSTORE?.includes(filterByStore) ||
                       storeFilters.includes(filterByStore)
                     }
                     data-value={filterByStore}
@@ -102,18 +115,8 @@ export const Filter = ({ filter, showState, setShowState }) => {
         <div className='mw-full flex items-center gap-4'>
           <button
             onClick={() => {
-              filterDispatch({
-                type: 'SET_FILTERED_STORES',
-                payload: filterState.STORES,
-              });
-              filterDispatch({
-                type: 'SET_FILTERED_ITEMS',
-                payload: filterState.ITEMS,
-              });
-              filterDispatch({
-                type: 'SET_FILTERS',
-                payload: [],
-              });
+              dispatch(setFilteredStores([]));
+              dispatch(setFilteredItems([]));
               setItemFilters([]);
               setStoreFilters([]);
               setShowState({ ...showState, productFilter: false });
@@ -124,22 +127,12 @@ export const Filter = ({ filter, showState, setShowState }) => {
           </button>
           <button
             onClick={() => {
-              filterDispatch({
-                type: 'SET_FILTERS',
-                payload: [...itemFilters, ...storeFilters],
-              });
-              filterDispatch({
-                type: 'SET_FILTERED_STORES',
-                payload:
-                  storeFilters?.length === 0
-                    ? filterState.STORES
-                    : storeFilters,
-              });
-              filterDispatch({
-                type: 'SET_FILTERED_ITEMS',
-                payload:
-                  itemFilters?.length === 0 ? filterState.ITEMS : itemFilters,
-              });
+              const FILTER_BY_STORES =
+                storeFilters?.length === 0 ? [] : storeFilters;
+              const FILTER_BY_ITEMS =
+                itemFilters?.length === 0 ? [] : itemFilters;
+              dispatch(setFilteredStores(FILTER_BY_STORES));
+              dispatch(setFilteredItems(FILTER_BY_ITEMS));
               setShowState({ ...showState, productFilter: false });
             }}
             className='border-gray- 100 flex cursor-pointer  items-center  justify-between rounded-2xl border-2 bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
