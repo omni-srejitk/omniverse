@@ -9,6 +9,8 @@ const initialState = {
   sold: 0,
   inventory: 0,
   warehouse: 0,
+  inventoryList: [],
+  warehouseList: [],
   gmvSaleData: [],
 };
 
@@ -43,6 +45,12 @@ const dataSlice = createSlice({
     setAllGMVSaleData: (state, action) => {
       state.gmvSaleData = action.payload;
     },
+    setAllInventoryList: (state, action) => {
+      state.inventoryList = action.payload;
+    },
+    setAllWarehouseList: (state, action) => {
+      state.warehouseList = action.payload;
+    },
   },
 });
 
@@ -52,6 +60,10 @@ export const selectAllDates = (state) => state.data.dates;
 export const selectAllPrices = (state) => state.data.prices;
 export const selectAllSalesData = (state) => state.data.salesData;
 export const selectAllGMVSalesData = (state) => state.data.gmvSaleData;
+export const selectInventoryList = (state) => state.data.inventoryList;
+export const selectAllInventory = (state) => state.data.inventory;
+export const selectWarehouseList = (state) => state.data.warehouseList;
+export const selectAllWarehouse = (state) => state.data.warehouse;
 export const {
   setAllStores,
   setAllItems,
@@ -62,6 +74,8 @@ export const {
   setAllInventory,
   setAllWarehouse,
   setAllGMVSaleData,
+  setAllInventoryList,
+  setAllWarehouseList,
 } = dataSlice.actions;
 
 export default dataSlice.reducer;

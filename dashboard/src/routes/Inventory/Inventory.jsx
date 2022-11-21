@@ -1,7 +1,5 @@
-import React, { useMemo } from 'react';
-import { useEffect } from 'react';
-import { useId } from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '../../components/Buttons';
 import { Card } from '../../components/Cards/Card/Card';
 import { StatCard } from '../../components/Cards/StatsCard/StatCard';
@@ -14,107 +12,119 @@ import {
   TableHeader,
   TableRow,
 } from '../../components/Table';
-import { useFilter } from '../../context/FilterContext/FilterContext';
+import {
+  selectAllInventory,
+  selectAllItems,
+  selectAllStores,
+  selectAllWarehouse,
+  selectInventoryList,
+  selectWarehouseList,
+  setAllInventory,
+  setAllInventoryList,
+  setAllWarehouse,
+  setAllWarehouseList,
+} from '../../redux/features/dataSlice';
+import {
+  selectAllFilteredItems,
+  selectAllFilteredStores,
+} from '../../redux/features/filterSlice';
 import {
   fetchDeployedQuantity,
-  fetchSalesData,
   fetchWarehouseQuantity,
 } from '../../services/apiCalls';
-import { prepareData } from '../../utils/helperFunctions';
 
 export const Inventory = () => {
   const BRAND = JSON.parse(localStorage.getItem('Name'));
   const [showState, setShowState] = useState({
     productFilter: false,
   });
-  const [stock, setStock] = useState({
-    TOTAL_INVENTORY_STOCK: 0,
-    TOTAL_WAREHOUSE_STOCK: 0,
-  });
 
   const [options, setOptions] = useState('ALL');
 
-  const [stocklist, setStockList] = useState({
-    ALL: [],
-    WAREHOUSE: [],
-    INVENTORY: [],
-  });
+  const [stocklist, setStocklist] = useState({});
 
+  const INVENTORY_COUNT = useSelector(selectAllInventory);
+  const WAREHOUSE_COUNT = useSelector(selectAllWarehouse);
   const { isLoading: isInventoryLoading, data: inventoryRes } =
     fetchDeployedQuantity(BRAND);
 
-  const { filterState, filterDispatch } = useFilter();
   const { isLoading: isWarehouseLoading, data: warehouseRes } =
     fetchWarehouseQuantity(BRAND);
 
   const INVENTORY_LIST = !isInventoryLoading && inventoryRes?.data?.message;
-
   const WAREHOUSE_LIST = !isWarehouseLoading && warehouseRes?.data?.message;
+  const FILTERED_ITEMS = useSelector(selectAllFilteredItems);
+  const FILTERED_STORES = useSelector(selectAllFilteredStores);
+  const dispatch = useDispatch();
+  const ALLITEMS = useSelector(selectAllItems);
+  const ALLSTORES = useSelector(selectAllStores);
 
-  const fetchTotalStock = (state, arr) => {
-    if (state.FILTERED_STORES?.length > 0) {
-      arr = arr.filter((item) =>
-        state.FILTERED_STORES?.includes(item.customer_name)
+  const applyInventoryFilters = (
+    FILTERED_ITEMS,
+    FILTERED_STORES,
+    INVENTORY_LIST,
+    WAREHOUSE_LIST
+  ) => {
+    let INV_LIST = [...INVENTORY_LIST];
+    let WARE_LIST = [...WAREHOUSE_LIST];
+    let INV_COUNT = 0;
+    let WARE_COUNT = 0;
+    if (FILTERED_ITEMS?.length > 0) {
+      INV_LIST = INV_LIST?.filter((item) =>
+        FILTERED_ITEMS?.includes(item.item_name)
+      );
+      WARE_LIST = WARE_LIST?.filter((item) =>
+        FILTERED_ITEMS?.includes(item.item_name)
       );
     }
-
-    if (state.FILTERED_ITEMS?.length > 0) {
-      arr = arr.filter((item) =>
-        state.FILTERED_ITEMS?.includes(item.item_name)
+    if (FILTERED_STORES?.length > 0) {
+      INV_LIST = INV_LIST?.filter((item) =>
+        FILTERED_STORES?.includes(item.customer_name)
       );
     }
+    INV_COUNT = INV_LIST?.reduce((acc, curr) => (acc += curr.qty), 0);
+    WARE_COUNT = WARE_LIST?.reduce((acc, curr) => (acc += curr.qty), 0);
+    dispatch(setAllInventory(INV_COUNT));
+    dispatch(setAllInventoryList(INV_LIST));
+    dispatch(setAllWarehouse(WARE_COUNT));
+    dispatch(setAllWarehouseList(WARE_LIST));
 
-    let res = arr.reduce((acc, curr) => (acc += curr.qty), 0);
-
-    return res;
-  };
-
-  const updateList = (state, arr) => {
-    if (state.FILTERED_STORES?.length > 0) {
-      arr = arr.filter((item) =>
-        state.FILTERED_STORES?.includes(item.customer_name)
-      );
-    }
-
-    if (state.FILTERED_ITEMS?.length > 0) {
-      arr = arr.filter((item) =>
-        state.FILTERED_ITEMS?.includes(item.item_name)
-      );
-    }
-
-    return arr;
+    setStocklist({
+      ALL: [...INV_LIST, WARE_LIST],
+      INVENTORY: [...INV_LIST],
+      WAREHOUSE: [...WARE_LIST],
+    });
   };
 
   useEffect(() => {
-    let INVENTORY_STOCK =
-      !isInventoryLoading && fetchTotalStock(filterState, INVENTORY_LIST);
-    let WAREHOUSE_STOCK =
-      !isWarehouseLoading && fetchTotalStock(filterState, WAREHOUSE_LIST);
-    let INVENTORY_DATA =
-      !isInventoryLoading && updateList(filterState, INVENTORY_LIST);
-    let WAREHOUSE_DATA =
-      !isWarehouseLoading && updateList(filterState, WAREHOUSE_LIST);
-
     if (!isInventoryLoading && !isWarehouseLoading) {
-      setStockList({
-        ...stocklist,
-        ALL: [...INVENTORY_DATA, ...WAREHOUSE_DATA],
-        WAREHOUSE: WAREHOUSE_DATA,
-        INVENTORY: INVENTORY_DATA,
-      });
-      setStock({
-        ...stock,
-        TOTAL_INVENTORY_STOCK: INVENTORY_STOCK,
-        TOTAL_WAREHOUSE_STOCK: WAREHOUSE_STOCK,
-      });
+      applyInventoryFilters(
+        FILTERED_ITEMS,
+        FILTERED_STORES,
+        INVENTORY_LIST,
+        WAREHOUSE_LIST
+      );
     }
   }, [
+    FILTERED_ITEMS,
+    FILTERED_STORES,
     isInventoryLoading,
-    isWarehouseLoading,
     INVENTORY_LIST,
-    WAREHOUSE_LIST,
-    filterState,
+    isWarehouseLoading,
   ]);
+
+  const FILTERS = {
+    'By Product': ALLITEMS,
+    'By Store': ALLSTORES,
+  };
+
+  const INVENTORY_FILTERS = (
+    <Filter
+      filter={FILTERS}
+      showState={showState}
+      setShowState={setShowState}
+    />
+  );
 
   const INVENTORY_OPTIONS = (
     <div className='flex h-fit w-fit flex-col items-center justify-between lg:flex-row'>
@@ -136,28 +146,6 @@ export const Inventory = () => {
     </div>
   );
 
-  const { isLoading: isGMVDataLoading, data: gmvSaleRes } =
-    fetchSalesData(BRAND);
-
-  const GMV_SALES_DATA = !isGMVDataLoading && gmvSaleRes?.data['message'];
-
-  var { items, stores } = useMemo(
-    () => prepareData(GMV_SALES_DATA, filterDispatch),
-    [GMV_SALES_DATA]
-  );
-  const FILTERS = {
-    'By Product': items,
-    'By Store': stores,
-  };
-
-  const INVENTORY_FILTERS = (
-    <Filter
-      filter={FILTERS}
-      showState={showState}
-      setShowState={setShowState}
-    />
-  );
-
   return (
     <main className='page__content'>
       <section className='h-fit w-full'>
@@ -167,7 +155,7 @@ export const Inventory = () => {
             <StatCard
               icon='inventory'
               title='In Stores'
-              metric={stock.TOTAL_INVENTORY_STOCK || 0}
+              metric={INVENTORY_COUNT}
               loading={isInventoryLoading}
               background='bg-green-100'
               spinner={'border-green-200'}
@@ -176,7 +164,7 @@ export const Inventory = () => {
             <StatCard
               icon='warehouse'
               title='In Warehouse'
-              metric={stock.TOTAL_WAREHOUSE_STOCK || 0}
+              metric={WAREHOUSE_COUNT}
               loading={isWarehouseLoading}
               tooltip={'Total count of items in warehouse.'}
               background='bg-blue-100'
