@@ -4,6 +4,7 @@ import { Button } from '../../components/Buttons';
 import { Card } from '../../components/Cards/Card/Card';
 import { StatCard } from '../../components/Cards/StatsCard/StatCard';
 import { Filter } from '../../components/Filter/Filter';
+import { Spinner } from '../../components/Loaders/Spinner/Spinner';
 import {
   TableBody,
   TableContainer,
@@ -141,9 +142,9 @@ export const Inventory = () => {
       </section>
       <section className='my-8 mb-40 h-fit w-full lg:my-4'>
         <Card title={'Details'} cardHeader={INVENTORY_OPTIONS}>
-          {stocklist[options]?.length > 0 &&
-          !isInventoryLoading &&
-          !isWarehouseLoading ? (
+          {isInventoryLoading && isWarehouseLoading ? (
+            <Spinner loading={isInventoryLoading && isWarehouseLoading} />
+          ) : stocklist[options]?.length > 0 ? (
             <TableContainer>
               <TableHead>
                 <TableRow>
