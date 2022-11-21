@@ -17,12 +17,6 @@ import {
   selectAllItems,
   selectAllStores,
   selectAllWarehouse,
-  selectInventoryList,
-  selectWarehouseList,
-  setAllInventory,
-  setAllInventoryList,
-  setAllWarehouse,
-  setAllWarehouseList,
 } from '../../redux/features/dataSlice';
 import {
   selectAllFilteredItems,
@@ -32,69 +26,30 @@ import {
   fetchDeployedQuantity,
   fetchWarehouseQuantity,
 } from '../../services/apiCalls';
+import { applyInventoryFilters } from '../../utils/helperFunctions';
 
 export const Inventory = () => {
   const BRAND = JSON.parse(localStorage.getItem('Name'));
-  const [showState, setShowState] = useState({
-    productFilter: false,
-  });
-
-  const [options, setOptions] = useState('ALL');
-
-  const [stocklist, setStocklist] = useState({});
-
-  const INVENTORY_COUNT = useSelector(selectAllInventory);
-  const WAREHOUSE_COUNT = useSelector(selectAllWarehouse);
   const { isLoading: isInventoryLoading, data: inventoryRes } =
     fetchDeployedQuantity(BRAND);
 
   const { isLoading: isWarehouseLoading, data: warehouseRes } =
     fetchWarehouseQuantity(BRAND);
+  const [showState, setShowState] = useState({
+    productFilter: false,
+  });
+  const [options, setOptions] = useState('ALL');
+  const [stocklist, setStocklist] = useState({});
+  const dispatch = useDispatch();
 
+  const INVENTORY_COUNT = useSelector(selectAllInventory);
+  const WAREHOUSE_COUNT = useSelector(selectAllWarehouse);
   const INVENTORY_LIST = !isInventoryLoading && inventoryRes?.data?.message;
   const WAREHOUSE_LIST = !isWarehouseLoading && warehouseRes?.data?.message;
   const FILTERED_ITEMS = useSelector(selectAllFilteredItems);
   const FILTERED_STORES = useSelector(selectAllFilteredStores);
-  const dispatch = useDispatch();
   const ALLITEMS = useSelector(selectAllItems);
   const ALLSTORES = useSelector(selectAllStores);
-
-  const applyInventoryFilters = (
-    FILTERED_ITEMS,
-    FILTERED_STORES,
-    INVENTORY_LIST,
-    WAREHOUSE_LIST
-  ) => {
-    let INV_LIST = [...INVENTORY_LIST];
-    let WARE_LIST = [...WAREHOUSE_LIST];
-    let INV_COUNT = 0;
-    let WARE_COUNT = 0;
-    if (FILTERED_ITEMS?.length > 0) {
-      INV_LIST = INV_LIST?.filter((item) =>
-        FILTERED_ITEMS?.includes(item.item_name)
-      );
-      WARE_LIST = WARE_LIST?.filter((item) =>
-        FILTERED_ITEMS?.includes(item.item_name)
-      );
-    }
-    if (FILTERED_STORES?.length > 0) {
-      INV_LIST = INV_LIST?.filter((item) =>
-        FILTERED_STORES?.includes(item.customer_name)
-      );
-    }
-    INV_COUNT = INV_LIST?.reduce((acc, curr) => (acc += curr.qty), 0);
-    WARE_COUNT = WARE_LIST?.reduce((acc, curr) => (acc += curr.qty), 0);
-    dispatch(setAllInventory(INV_COUNT));
-    dispatch(setAllInventoryList(INV_LIST));
-    dispatch(setAllWarehouse(WARE_COUNT));
-    dispatch(setAllWarehouseList(WARE_LIST));
-
-    setStocklist({
-      ALL: [...INV_LIST, WARE_LIST],
-      INVENTORY: [...INV_LIST],
-      WAREHOUSE: [...WARE_LIST],
-    });
-  };
 
   useEffect(() => {
     if (!isInventoryLoading && !isWarehouseLoading) {
@@ -102,7 +57,9 @@ export const Inventory = () => {
         FILTERED_ITEMS,
         FILTERED_STORES,
         INVENTORY_LIST,
-        WAREHOUSE_LIST
+        WAREHOUSE_LIST,
+        dispatch,
+        setStocklist
       );
     }
   }, [
@@ -184,24 +141,24 @@ export const Inventory = () => {
       </section>
       <section className='my-8 mb-40 h-fit w-full lg:my-4'>
         <Card title={'Details'} cardHeader={INVENTORY_OPTIONS}>
-          <TableContainer>
-            <TableHead>
-              <TableRow>
-                <TableHeader>S. No</TableHeader>
-                {options !== 'WAREHOUSE' && (
-                  <TableHeader>Store Name</TableHeader>
-                )}
-                <TableHeader>Product Name</TableHeader>
-                <TableHeader>SKU</TableHeader>
-                <TableHeader>Quantity</TableHeader>
-                <TableHeader>Category</TableHeader>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!isInventoryLoading &&
-              !isWarehouseLoading &&
-              stocklist[options]?.length > 0 ? (
-                stocklist[options]?.map(
+          {stocklist[options]?.length > 0 &&
+          !isInventoryLoading &&
+          !isWarehouseLoading ? (
+            <TableContainer>
+              <TableHead>
+                <TableRow>
+                  <TableHeader>S. No</TableHeader>
+                  {options !== 'WAREHOUSE' && (
+                    <TableHeader>Store Name</TableHeader>
+                  )}
+                  <TableHeader>Product Name</TableHeader>
+                  <TableHeader>SKU</TableHeader>
+                  <TableHeader>Quantity</TableHeader>
+                  <TableHeader>Category</TableHeader>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {stocklist[options]?.map(
                   ({ item_name, item_code, qty, customer_name }, idx) => (
                     <TableRow
                       key={`${item_name} + ${customer_name} + ${item_code}`}
@@ -229,15 +186,15 @@ export const Inventory = () => {
                       </TableData>
                     </TableRow>
                   )
-                )
-              ) : (
-                <div className='flex h-[10rem] w-full flex-col items-center justify-center font-semibold text-gray-400'>
-                  <p>No data found for the applied filters.</p>
-                  <p>Please reset and try again.</p>{' '}
-                </div>
-              )}
-            </TableBody>
-          </TableContainer>
+                )}
+              </TableBody>
+            </TableContainer>
+          ) : (
+            <div className='flex h-[30rem] w-full flex-col items-center justify-center font-semibold text-gray-400'>
+              <p>No data found for the applied filters.</p>
+              <p>Please reset and try again.</p>{' '}
+            </div>
+          )}
         </Card>
       </section>
     </main>

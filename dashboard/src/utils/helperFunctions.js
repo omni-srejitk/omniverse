@@ -1,10 +1,14 @@
 import moment from 'moment';
 import {
   setAllDates,
+  setAllInventory,
+  setAllInventoryList,
   setAllItems,
   setAllPrices,
   setAllSalesData,
   setAllStores,
+  setAllWarehouse,
+  setAllWarehouseList,
 } from '../redux/features/dataSlice';
 import { setFilteredDates } from '../redux/features/filterSlice';
 
@@ -60,7 +64,7 @@ export const computeSalesNumber = (
   stores = [],
   items = [],
   prices,
-  salesData,
+  salesData
 ) => {
   const startDate = moment(dates[0], 'DD-MM-YY');
   const endDate = moment();
@@ -80,7 +84,6 @@ export const computeSalesNumber = (
             sales += salesData[d][store][item][0];
             UNIT_SALE = salesData[d][store][item][0];
             gmv += salesData[d][store][item][0] * prices[item];
-
           }
         }
       }
@@ -169,4 +172,43 @@ export const filterDates = (val, DATES, dispatch) => {
     default:
       return dispatch(setFilteredDates(DATES));
   }
+};
+
+export const applyInventoryFilters = (
+  FILTERED_ITEMS,
+  FILTERED_STORES,
+  INVENTORY_LIST,
+  WAREHOUSE_LIST,
+  dispatch,
+  setStocklist
+) => {
+  let INV_LIST = [...INVENTORY_LIST];
+  let WARE_LIST = [...WAREHOUSE_LIST];
+  let INV_COUNT = 0;
+  let WARE_COUNT = 0;
+  if (FILTERED_ITEMS?.length > 0) {
+    INV_LIST = INV_LIST?.filter((item) =>
+      FILTERED_ITEMS?.includes(item.item_name)
+    );
+    WARE_LIST = WARE_LIST?.filter((item) =>
+      FILTERED_ITEMS?.includes(item.item_name)
+    );
+  }
+  if (FILTERED_STORES?.length > 0) {
+    INV_LIST = INV_LIST?.filter((item) =>
+      FILTERED_STORES?.includes(item.customer_name)
+    );
+  }
+  INV_COUNT = INV_LIST?.reduce((acc, curr) => (acc += curr.qty), 0);
+  WARE_COUNT = WARE_LIST?.reduce((acc, curr) => (acc += curr.qty), 0);
+  dispatch(setAllInventory(INV_COUNT));
+  dispatch(setAllInventoryList(INV_LIST));
+  dispatch(setAllWarehouse(WARE_COUNT));
+  dispatch(setAllWarehouseList(WARE_LIST));
+
+  setStocklist({
+    ALL: [...INV_LIST, WARE_LIST],
+    INVENTORY: [...INV_LIST],
+    WAREHOUSE: [...WARE_LIST],
+  });
 };
