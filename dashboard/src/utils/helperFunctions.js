@@ -12,7 +12,7 @@ import {
 } from '../redux/features/dataSlice';
 import { setFilteredDates } from '../redux/features/filterSlice';
 
-export const prepareData = (salesData = [], dispatch) => {
+export const prepareData = (salesData = [], STORES, dispatch) => {
   let stores = new Set();
   let items = new Set();
   const prices = {};
@@ -54,7 +54,7 @@ export const prepareData = (salesData = [], dispatch) => {
   dispatch(setAllDates(dates));
   dispatch(setFilteredDates(dates));
   dispatch(setAllItems(items));
-  dispatch(setAllStores(stores));
+  dispatch(setAllStores(STORES));
   dispatch(setAllPrices(prices));
   dispatch(setAllSalesData(sale_count));
 };
@@ -207,7 +207,7 @@ export const applyInventoryFilters = (
   dispatch(setAllWarehouseList(WARE_LIST));
 
   setStocklist({
-    ALL: [...INV_LIST, WARE_LIST],
+    ALL: [...INV_LIST, ...WARE_LIST],
     INVENTORY: [...INV_LIST],
     WAREHOUSE: [...WARE_LIST],
   });
