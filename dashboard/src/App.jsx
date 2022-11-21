@@ -12,7 +12,7 @@ import { setLoadingState } from './redux/features/authSlice';
 import { setAllGMVSaleData } from './redux/features/dataSlice';
 function App() {
   const { pathname } = useLocation();
-  const BRAND = JSON.parse(localStorage.getItem('Name'));
+  let BRAND = JSON.parse(localStorage.getItem('Name'));
 
   const { isLoading: isGMVDataLoading, data: gmvSaleRes } =
     fetchSalesData(BRAND);
@@ -21,14 +21,21 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    prepareData(GMV_SALES_DATA, dispatch);
-    if (isGMVDataLoading) {
+    const STORES = !isLiveStoresLoading && storesRes?.data?.message[BRAND];
+    if (isGMVDataLoading || isLiveStoresLoading) {
       dispatch(setLoadingState(true));
-    } else if (!isGMVDataLoading && gmvSaleRes?.data['message']) {
-      dispatch(setAllGMVSaleData(GMV_SALES_DATA));
-      dispatch(setLoadingState(false));
     }
-  }, [isGMVDataLoading, GMV_SALES_DATA]);
+    if (
+      !isGMVDataLoading &&
+      !isLiveStoresLoading &&
+      gmvSaleRes?.data['message']
+    ) {
+      prepareData(GMV_SALES_DATA, STORES, dispatch);
+      dispatch(setAllGMVSaleData(GMV_SALES_DATA));
+    }
+
+    dispatch(setLoadingState(false));
+  }, [isGMVDataLoading, isLiveStoresLoading, GMV_SALES_DATA]);
 
   return (
     <div className='App'>

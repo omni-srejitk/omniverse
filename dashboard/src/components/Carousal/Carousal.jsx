@@ -38,6 +38,37 @@ export const Carousal = () => {
     }
   }, [currentIndex]);
 
+  const loadImage = async (src) =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => resolve(img);
+      img.onerror = (...args) => reject(args);
+    });
+
+  const getImageData = (image) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const context = canvas.getContext('2d');
+    context.drawImage(image, 0, 0);
+    return context.getImageData(0, 0, image.width, image.height);
+  };
+
+  const encodeImageToBlurhash = async (imageUrl) => {
+    const image = await loadImage(imageUrl);
+    const imageData = getImageData(image);
+    return encode(imageData.data, imageData.width, imageData.height, 4, 4);
+  };
+
+  // !Fix : Getting CORS Error
+  // useEffect(() => {
+  //   if (images?.length > 0) {
+  //     let temp = images.map((item) => loadImage(item.image));
+  //     console.log(temp);
+  //   }
+  // }, [images]);
+
   return (
     <div className='flex h-full max-h-full flex-col items-center justify-start overflow-hidden rounded-lg pb-20'>
       <div className='mb-4 flex w-full items-center justify-between overflow-hidden'>
