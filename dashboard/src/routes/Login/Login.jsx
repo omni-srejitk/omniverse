@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useFilter } from '../../context/FilterContext/FilterContext';
 import { useDispatch } from 'react-redux';
 import {
   setAuthToken,
@@ -19,7 +18,6 @@ export const Login = () => {
     return axios.post('https://api.omniflo.in/doauth', form);
   };
   const { mutate, data: res, isLoading } = useMutation(loginUser);
-  const { filterDispatch } = useFilter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,14 +37,6 @@ export const Login = () => {
       localStorage.setItem('Token', JSON.stringify(res?.data.token));
       localStorage.setItem('Name', JSON.stringify(res?.data?.name));
 
-      // TODO Remove this
-      filterDispatch({
-        type: 'SET_BRANDNAME',
-        payload: res?.data?.name,
-      });
-      filterDispatch({ type: 'LOGIN' });
-
-      // ? Redux Dependency
       dispatch(setloginStatus(true));
       dispatch(setAuthToken(res?.data.token));
       dispatch(setBrandName(res?.data.name));
