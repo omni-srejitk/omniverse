@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from '../../Loaders/Spinner/Spinner';
+import { Spinner } from '../../Loaders';
 
 export const StatCard = ({
   icon,
