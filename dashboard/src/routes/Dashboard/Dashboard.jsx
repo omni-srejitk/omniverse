@@ -1,13 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { StatCard } from '../../components/Cards/StatsCard/StatCard';
-import { Filter } from '../../components/Filter/Filter';
-import { Select } from '../../components/Select/Select';
-import { Carousal } from '../../components/Carousal/Carousal';
-import { Card } from '../../components/Cards/Card/Card';
-import { AreaCharts } from '../../components/Charts/Charts';
-import { BarCharts } from '../../components/Charts/BarChart/BarChart';
-import { Spinner } from '../../components/Loaders/Spinner/Spinner';
-import { fetchInventoryCount } from '../../services/apiCalls';
+import { fetchInventoryCount, fetchStoreImages } from '../../services/apiCalls';
 import { computeSalesNumber } from '../../utils/helperFunctions';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,19 +8,29 @@ import {
   selectAllPrices,
   selectAllSalesData,
   selectAllStores,
-} from '../../redux/features/dataSlice';
-import {
   selectAllFilteredDates,
   selectAllFilteredItems,
   selectAllFilteredStores,
-} from '../../redux/features/filterSlice';
-import {
   selectLoadingState,
   selectLoginStatus,
+} from '../../redux/actions';
+
+import {
+  AreaCharts,
+  BarCharts,
+  Card,
+  Carousal,
+  Filter,
+  Select,
+  Spinner,
+  StatCard,
+} from '../../components';
+import {
   setAuthToken,
   setBrandName,
   setloginStatus,
 } from '../../redux/features/authSlice';
+
 export const Dashboard = () => {
   const [showState, setShowState] = useState({
     durationFilter: false,
@@ -88,6 +90,10 @@ export const Dashboard = () => {
     'By Product': ALLITEMS,
     'By Store': ALLSTORES,
   };
+
+  const { isLoading: ImageLoading, data: ImageData } = fetchStoreImages(BRAND);
+
+  let IMG_DATA = !ImageLoading && ImageData?.data['message'];
 
   const OVERVIEW_FILTERS = (
     <div className='items-centerS flex gap-4'>
@@ -175,7 +181,7 @@ export const Dashboard = () => {
               'row-span-2 flex-grow max-h-[42rem] col-span-1 order-3 lg:order-2 '
             }
           >
-            <Carousal />
+            <Carousal src={IMG_DATA} loading={ImageLoading} />
           </Card>
 
           <Card

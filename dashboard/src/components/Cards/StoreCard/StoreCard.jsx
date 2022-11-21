@@ -1,7 +1,6 @@
 import React from 'react';
 import { TierLabel } from '../../Labels/TierLabels/TierLabels';
-import { Modal } from '../../Modal/Modal';
-import { StoreModal } from '../../Modal/StoreModal/StoreModal';
+import { Modal, StoreModal } from '../../Modals';
 
 export const StoreCard = ({
   id,

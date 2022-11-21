@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { MdPerson } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../Buttons';
 import { useDispatch } from 'react-redux';
 import {
   setAuthToken,
   setBrandName,
   setloginStatus,
 } from '../../redux/features/authSlice';
+import { Button } from '../Buttons';
+
 export const Header = () => {
   const [profileOption, setProfileOption] = useState(false);
   const dispatch = useDispatch();
