@@ -20,14 +20,10 @@ function App() {
   const { isLoading: isLiveStoresLoading, data: storesRes } =
     fetchAllLiveStores(BRAND);
 
-  const STORES = !isLiveStoresLoading && storesRes?.data?.message[BRAND];
-
-
   const GMV_SALES_DATA = !isGMVDataLoading && gmvSaleRes?.data['message'];
   const dispatch = useDispatch();
 
   useEffect(() => {
-    prepareData(GMV_SALES_DATA, STORES, dispatch);
     if (isGMVDataLoading || isLiveStoresLoading) {
       dispatch(setLoadingState(true));
     } else if (
@@ -35,6 +31,8 @@ function App() {
       !isLiveStoresLoading &&
       gmvSaleRes?.data['message']
     ) {
+      const STORES = !isLiveStoresLoading && storesRes?.data?.message[BRAND];
+      prepareData(GMV_SALES_DATA, STORES, dispatch);
       dispatch(setAllGMVSaleData(GMV_SALES_DATA));
       dispatch(setLoadingState(false));
     }
