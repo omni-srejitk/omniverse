@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from '../../components/Buttons';
-import { Card } from '../../components/Cards/Card/Card';
-import { StatCard } from '../../components/Cards/StatsCard/StatCard';
-import { Filter } from '../../components/Filter/Filter';
-import { Spinner } from '../../components/Loaders/Spinner/Spinner';
 import {
+  Button,
+  Card,
+  Filter,
+  Spinner,
+  StatCard,
   TableBody,
   TableContainer,
   TableData,
   TableHead,
   TableHeader,
   TableRow,
-} from '../../components/Table';
+} from '../../components';
+
 import {
   selectAllInventory,
   selectAllItems,
   selectAllStores,
   selectAllWarehouse,
-} from '../../redux/features/dataSlice';
-import {
   selectAllFilteredItems,
   selectAllFilteredStores,
-} from '../../redux/features/filterSlice';
+} from '../../redux/actions';
+
 import {
   fetchDeployedQuantity,
   fetchWarehouseQuantity,

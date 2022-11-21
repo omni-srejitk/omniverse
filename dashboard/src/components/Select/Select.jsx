@@ -1,12 +1,10 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DATE_FILTERS } from '../../utils/constants';
-import {
-  selectDurationFilter,
-  setDurationFilter,
-} from '../../redux/features/filterSlice';
-import { selectAllDates } from '../../redux/features/dataSlice';
+import { selectDurationFilter, selectAllDates } from '../../redux/actions';
 import { filterDates } from '../../utils/helperFunctions';
+import { setDurationFilter } from '../../redux/features/filterSlice';
+
 export const Select = ({ showState, setShowState }) => {
   const dispatch = useDispatch();
   const DATES = useSelector(selectAllDates);

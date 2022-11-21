@@ -8,20 +8,29 @@ import {
   selectAllPrices,
   selectAllSalesData,
   selectAllStores,
-} from '../../redux/features/dataSlice';
-import {
   selectAllFilteredDates,
   selectAllFilteredItems,
   selectAllFilteredStores,
-} from '../../redux/features/filterSlice';
-import {
   selectLoadingState,
   selectLoginStatus,
+} from '../../redux/actions';
+
+import {
+  AreaCharts,
+  BarCharts,
+  Card,
+  Carousal,
+  Filter,
+  Select,
+  Spinner,
+  StatCard,
+} from '../../components';
+import {
   setAuthToken,
   setBrandName,
   setloginStatus,
 } from '../../redux/features/authSlice';
-import { AreaCharts, BarCharts, Card, Carousal, Filter, Select, Spinner, StatCard } from '../../components';
+
 export const Dashboard = () => {
   const [showState, setShowState] = useState({
     durationFilter: false,
@@ -172,7 +181,7 @@ export const Dashboard = () => {
               'row-span-2 flex-grow max-h-[42rem] col-span-1 order-3 lg:order-2 '
             }
           >
-            <Carousal src={IMG_DATA} loading={ImageLoading}/>
+            <Carousal src={IMG_DATA} loading={ImageLoading} />
           </Card>
 
           <Card

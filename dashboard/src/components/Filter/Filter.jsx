@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectItemFilters, selectStoreFilters } from '../../redux/actions';
 import {
-  selectItemFilters,
-  selectStoreFilters,
   setFilteredItems,
   setFilteredStores,
 } from '../../redux/features/filterSlice';
