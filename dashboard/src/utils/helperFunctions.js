@@ -1,13 +1,21 @@
 import moment from 'moment';
+import {
+  setAllDates,
+  setAllItems,
+  setAllPrices,
+  setAllSalesData,
+  setAllStores,
+} from '../redux/features/dataSlice';
+import { setFilteredDates } from '../redux/features/filterSlice';
 
-export const prepareData = (salesData = [], filterDispatch) => {
+export const prepareData = (salesData = [], dispatch) => {
   let stores = new Set();
   let items = new Set();
   const prices = {};
   const dates = [];
   const sale_count = {};
   for (let date in salesData) {
-    dates.push(moment(date, 'DD-MM-YY'));
+    dates.push(moment(date, 'DD-MM-YY').format('DD-MM-YY'));
     for (let store_names in salesData[date]) {
       stores.add(store_names);
       for (let item in salesData[date][store_names]) {
@@ -39,7 +47,12 @@ export const prepareData = (salesData = [], filterDispatch) => {
   stores = Array.from(stores);
   items = Array.from(items);
 
-  return { dates, stores, items, prices, sale_count };
+  dispatch(setAllDates(dates));
+  dispatch(setFilteredDates(dates));
+  dispatch(setAllItems(items));
+  dispatch(setAllStores(stores));
+  dispatch(setAllPrices(prices));
+  dispatch(setAllSalesData(sale_count));
 };
 
 export const computeSalesNumber = (
@@ -48,7 +61,6 @@ export const computeSalesNumber = (
   items = [],
   prices,
   salesData,
-  sale_count
 ) => {
   const startDate = moment(dates[0], 'DD-MM-YY');
   const endDate = moment();
@@ -61,20 +73,14 @@ export const computeSalesNumber = (
 
   for (let i = startDate; i <= endDate; i = moment(i).add(1, 'd')) {
     if (i.isSame(moment(dates[j], 'DD-MM-YY'))) {
-      const d = dates[j].format('DD-MM-YY');
+      const d = moment(dates[j], 'DD-MM-YY').format('DD-MM-YY');
       for (let store in salesData[d]) {
         for (let item of items) {
           if (stores.includes(store) && item in salesData[d][store]) {
             sales += salesData[d][store][item][0];
             UNIT_SALE = salesData[d][store][item][0];
             gmv += salesData[d][store][item][0] * prices[item];
-            sale_count[d] = {
-              ...sale_count[d],
-              Sales: sales,
-              GMV: gmv,
-              Stores: [...sale_count[d]['Stores'], store],
-              Items: [...sale_count[d]['Items'], item],
-            };
+
           }
         }
       }
@@ -134,4 +140,33 @@ export const cacheImages = async (srcArray, setLoading) => {
   await Promise.all(promises);
 
   setLoading(false);
+};
+
+export const filterDates = (val, DATES, dispatch) => {
+  switch (val) {
+    case 'This Week':
+      const firstDayOfWeek = moment().startOf('week');
+      const currDayOfWeek = moment().endOf('week');
+
+      const filteredWeek = DATES?.filter((date) =>
+        moment(date, 'DD-MM-YY').isBetween(
+          moment(firstDayOfWeek, 'DD-MM-YY'),
+          moment(currDayOfWeek, 'DD-MM-YY')
+        )
+      );
+      return dispatch(setFilteredDates(filteredWeek));
+
+    case 'This Month':
+      const firstDayOfMonth = moment().startOf('month');
+      const currDayOfMonth = moment().endOf('month');
+      const filteredMonth = DATES?.filter((date) =>
+        moment(date, 'DD-MM-YY').isBetween(
+          moment(firstDayOfMonth, 'DD-MM-YY'),
+          moment(currDayOfMonth, 'DD-MM-YY')
+        )
+      );
+      return dispatch(setFilteredDates(filteredMonth));
+    default:
+      return dispatch(setFilteredDates(DATES));
+  }
 };
