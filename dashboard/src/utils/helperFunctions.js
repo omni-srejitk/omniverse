@@ -67,7 +67,7 @@ export const computeSalesNumber = (
   salesData
 ) => {
   const startDate = moment(dates[0], 'DD-MM-YY');
-  const endDate = moment();
+  const endDate = moment().endOf('week');
   let sales = 0;
   let gmv = 0;
   let j = 0;
@@ -211,4 +211,15 @@ export const applyInventoryFilters = (
     INVENTORY: [...INV_LIST],
     WAREHOUSE: [...WARE_LIST],
   });
+};
+
+export const reduceImages = (arr, setSrclist) => {
+  let reducedSrc = arr.map((meta) => {
+    return {
+      ...meta,
+      image: meta.image.replace('engine-omniflo', 'engine-omniflo-reduced'),
+    };
+  });
+
+  setSrclist(reducedSrc);
 };
