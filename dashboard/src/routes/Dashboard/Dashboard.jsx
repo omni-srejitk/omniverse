@@ -50,7 +50,7 @@ export const Dashboard = () => {
   const FILTERED_ITEMS = useSelector(selectAllFilteredItems);
   const FILTERED_STORES = useSelector(selectAllFilteredStores);
 
-  const LIVESTORES_LENGTH = FILTERED_STORES?.length;
+  const LIVESTORES_LENGTH = ALLSTORES?.length;
   const TOKEN = localStorage.getItem('Token');
   const NAME = localStorage.getItem('Name');
   const GMV_SALES_DATA = useSelector(selectAllGMVSalesData);
@@ -62,27 +62,27 @@ export const Dashboard = () => {
     }
   }, [TOKEN, NAME]);
 
-  const { cumlativeSalesReport } = useMemo(
-    () =>
-      computeSalesNumber(
-        FILTERED_DATES,
-        FILTERED_STORES,
-        FILTERED_ITEMS,
-        PRICES,
-        GMV_SALES_DATA,
-        SALE_DATA
-      ),
-    [
+  const { cumlativeSalesReport } = useMemo(() => {
+    const STORES = FILTERED_STORES?.length === 0 ? ALLSTORES : FILTERED_STORES;
+    const ITEMS = FILTERED_ITEMS?.length === 0 ? ALLITEMS : FILTERED_ITEMS;
+    return computeSalesNumber(
       FILTERED_DATES,
-      FILTERED_STORES,
-      FILTERED_ITEMS,
+      STORES,
+      ITEMS,
       PRICES,
       GMV_SALES_DATA,
-      SALE_DATA,
-    ]
-  );
+      SALE_DATA
+    );
+  }, [
+    FILTERED_DATES,
+    FILTERED_STORES,
+    FILTERED_ITEMS,
+    PRICES,
+    GMV_SALES_DATA,
+    SALE_DATA,
+  ]);
 
-  const InventoryData = !isInventoryLoading && resData.data['message'];
+  const InventoryData = !isInventoryLoading && resData?.data['message'];
 
   const DASHBOARD_FILTERS = {
     'By Product': ALLITEMS,

@@ -42,10 +42,10 @@ export const Inventory = () => {
   const [stocklist, setStocklist] = useState({});
   const dispatch = useDispatch();
 
-  const INVENTORY_COUNT = useSelector(selectAllInventory);
-  const WAREHOUSE_COUNT = useSelector(selectAllWarehouse);
   const INVENTORY_LIST = !isInventoryLoading && inventoryRes?.data?.message;
   const WAREHOUSE_LIST = !isWarehouseLoading && warehouseRes?.data?.message;
+  const INVENTORY_COUNT = useSelector(selectAllInventory);
+  const WAREHOUSE_COUNT = useSelector(selectAllWarehouse);
   const FILTERED_ITEMS = useSelector(selectAllFilteredItems);
   const FILTERED_STORES = useSelector(selectAllFilteredStores);
   const ALLITEMS = useSelector(selectAllItems);
