@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectItemFilters, selectStoreFilters } from '../../redux/actions';
 import {
-  selectAllItems,
-  selectAllStores,
-} from '../../redux/features/dataSlice';
-import {
-  selectItemFilters,
-  selectStoreFilters,
   setFilteredItems,
   setFilteredStores,
 } from '../../redux/features/filterSlice';
@@ -59,12 +54,12 @@ export const Filter = ({ filter, showState, setShowState }) => {
         <div className='max-h-[15rem] overflow-y-auto pr-4 scrollbar-thin scrollbar-track-gray-50 scrollbar-thumb-blue-100 scrollbar-track-rounded-lg'>
           {filter['By Product']?.map((filterBy) => (
             <div key={filterBy}>
-              <div className=' my-2 max-h-[15rem] overflow-y-auto'>
+              <div className=' my-2 flex max-h-[15rem] items-center justify-between overflow-y-auto'>
                 <div
                   key={filterBy}
-                  className='mb-3 flex w-80 items-start justify-between '
+                  className='mb-3 flex h-full w-80 items-start justify-between '
                 >
-                  <label className='font-semibold' htmlFor={filterBy}>
+                  <label className='w-[90%] font-semibold' htmlFor={filterBy}>
                     {filterBy}
                   </label>
                   <input
@@ -76,7 +71,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
                       itemFilters.includes(filterBy)
                     }
                     data-value={filterBy}
-                    className=' h-6 w-6 cursor-pointer font-semibold text-gray-500 hover:text-black'
+                    className=' h-6 w-6 cursor-pointer rounded-lg font-semibold text-gray-500  hover:text-black'
                   />
                 </div>
               </div>

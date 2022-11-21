@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Spinner } from '../Loaders/Spinner/Spinner';
 import { fetchStoreImages } from '../../services/apiCalls';
+import { Spinner } from '../Loaders';
 
 export const ModalGallery = () => {
   const [currentIndex, setCurrentIndex] = useState(0);

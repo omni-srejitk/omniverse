@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from '../../components/Buttons';
-import { Card } from '../../components/Cards/Card/Card';
-import { StatCard } from '../../components/Cards/StatsCard/StatCard';
-import { Filter } from '../../components/Filter/Filter';
 import {
+  Button,
+  Card,
+  Filter,
+  Spinner,
+  StatCard,
   TableBody,
   TableContainer,
   TableData,
   TableHead,
   TableHeader,
   TableRow,
-} from '../../components/Table';
+} from '../../components';
+
 import {
   selectAllInventory,
   selectAllItems,
   selectAllStores,
   selectAllWarehouse,
-} from '../../redux/features/dataSlice';
-import {
   selectAllFilteredItems,
   selectAllFilteredStores,
-} from '../../redux/features/filterSlice';
+} from '../../redux/actions';
+
 import {
   fetchDeployedQuantity,
   fetchWarehouseQuantity,
@@ -141,9 +142,9 @@ export const Inventory = () => {
       </section>
       <section className='my-8 mb-40 h-fit w-full lg:my-4'>
         <Card title={'Details'} cardHeader={INVENTORY_OPTIONS}>
-          {stocklist[options]?.length > 0 &&
-          !isInventoryLoading &&
-          !isWarehouseLoading ? (
+          {isInventoryLoading && isWarehouseLoading ? (
+            <Spinner loading={isInventoryLoading && isWarehouseLoading} />
+          ) : stocklist[options]?.length > 0 ? (
             <TableContainer>
               <TableHead>
                 <TableRow>

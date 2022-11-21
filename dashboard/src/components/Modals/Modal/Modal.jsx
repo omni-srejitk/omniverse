@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Button } from '../Buttons';
+import { Button } from '../../Buttons';
 
 export const Modal = ({ open, children, onClose, obj }) => {
   if (!open) return null;

@@ -2,8 +2,8 @@ import * as React from 'react';
 import Map, { Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useState } from 'react';
-import { Modal } from '../Modal/Modal';
-import { StoreModal } from '../Modal/StoreModal/StoreModal';
+import { StoreModal } from '../Modals/StoreModal/StoreModal';
+import { Modal } from '../Modals';
 
 function MapComponent({ storesData, showModal, setShowModal }) {
   const [selectedLocation, setSelectedLocation] = useState({});

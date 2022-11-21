@@ -12,7 +12,7 @@ import {
 } from '../redux/features/dataSlice';
 import { setFilteredDates } from '../redux/features/filterSlice';
 
-export const prepareData = (salesData = [], dispatch) => {
+export const prepareData = (salesData = [], STORES, dispatch) => {
   let stores = new Set();
   let items = new Set();
   const prices = {};
@@ -54,7 +54,7 @@ export const prepareData = (salesData = [], dispatch) => {
   dispatch(setAllDates(dates));
   dispatch(setFilteredDates(dates));
   dispatch(setAllItems(items));
-  dispatch(setAllStores(stores));
+  dispatch(setAllStores(STORES));
   dispatch(setAllPrices(prices));
   dispatch(setAllSalesData(sale_count));
 };
@@ -67,7 +67,7 @@ export const computeSalesNumber = (
   salesData
 ) => {
   const startDate = moment(dates[0], 'DD-MM-YY');
-  const endDate = moment();
+  const endDate = moment().endOf('week');
   let sales = 0;
   let gmv = 0;
   let j = 0;
@@ -207,8 +207,19 @@ export const applyInventoryFilters = (
   dispatch(setAllWarehouseList(WARE_LIST));
 
   setStocklist({
-    ALL: [...INV_LIST, WARE_LIST],
+    ALL: [...INV_LIST, ...WARE_LIST],
     INVENTORY: [...INV_LIST],
     WAREHOUSE: [...WARE_LIST],
   });
+};
+
+export const reduceImages = (arr, setSrclist) => {
+  let reducedSrc = arr.map((meta) => {
+    return {
+      ...meta,
+      image: meta.image.replace('engine-omniflo', 'engine-omniflo-reduced'),
+    };
+  });
+
+  setSrclist(reducedSrc);
 };
