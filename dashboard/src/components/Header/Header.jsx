@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { MdPerson } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
-import { useFilter } from '../../context/FilterContext/FilterContext';
 import { Button } from '../Buttons';
-
+import { useDispatch } from 'react-redux';
+import {
+  setAuthToken,
+  setBrandName,
+  setloginStatus,
+} from '../../redux/features/authSlice';
 export const Header = () => {
   const [profileOption, setProfileOption] = useState(false);
-  const { filterDispatch } = useFilter();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const Logout = () => {
-    filterDispatch({ type: 'LOGOUT' });
+    dispatch(setloginStatus(false));
+    dispatch(setBrandName(''));
+    dispatch(setAuthToken(''));
     navigate('/');
     localStorage.clear();
   };

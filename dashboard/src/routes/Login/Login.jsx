@@ -3,18 +3,21 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useFilter } from '../../context/FilterContext/FilterContext';
-
+import { useDispatch } from 'react-redux';
+import {
+  setAuthToken,
+  setBrandName,
+  setloginStatus,
+} from '../../redux/features/authSlice';
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: '', password: '' });
-
+  const dispatch = useDispatch();
   const loginUser = () => {
     return axios.post('https://api.omniflo.in/doauth', form);
   };
   const { mutate, data: res, isLoading } = useMutation(loginUser);
-  const { filterDispatch } = useFilter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,17 +34,15 @@ export const Login = () => {
       toast.error(`Couldn't sign you in`, { id: loginToast });
     }
     if (!isLoading && res?.data && res?.data?.token) {
-      let BRANDNAME =
-        form.username.charAt(0).toUpperCase() + form.username.slice(1);
       localStorage.setItem('Token', JSON.stringify(res?.data.token));
-      localStorage.setItem('Name', JSON.stringify(res?.data.name));
-      filterDispatch({
-        type: 'SET_BRANDNAME',
-        payload: res?.data.name,
-      });
-      filterDispatch({ type: 'LOGIN' });
+      localStorage.setItem('Name', JSON.stringify(res?.data?.name));
+
+      dispatch(setloginStatus(true));
+      dispatch(setAuthToken(res?.data.token));
+      dispatch(setBrandName(res?.data.name));
+
       navigate('/dashboard');
-      toast.success(`Welcome Back ${res?.data.name}`, { id: loginToast });
+      toast.success(`Welcome Back ${res?.data?.name}`, { id: loginToast });
     }
   };
 

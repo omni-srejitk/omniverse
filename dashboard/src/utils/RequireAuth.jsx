@@ -1,9 +1,9 @@
 import { Navigate, useLocation, Outlet } from 'react-router';
 import React from 'react';
-import { useFilter } from '../context/FilterContext/FilterContext';
 
 const RequireAuth = () => {
-  const { ISLOGGED } = useFilter();
+  const ISLOGGED =
+    localStorage.getItem('Name') && localStorage.getItem('Token');
   const location = useLocation();
 
   return ISLOGGED ? (
