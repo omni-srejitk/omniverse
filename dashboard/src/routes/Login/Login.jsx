@@ -35,7 +35,7 @@ export const Login = () => {
     }
     if (!isLoading && res?.data && res?.data?.token) {
       localStorage.setItem('Token', JSON.stringify(res?.data.token));
-      localStorage.setItem('Name', JSON.stringify(res?.data?.name));
+      localStorage.setItem('Name', res?.data?.name.trim());
 
       dispatch(setloginStatus(true));
       dispatch(setAuthToken(res?.data.token));

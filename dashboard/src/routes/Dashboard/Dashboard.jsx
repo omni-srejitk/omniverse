@@ -37,7 +37,7 @@ export const Dashboard = () => {
     productFilter: false,
   });
 
-  const BRAND = JSON.parse(localStorage.getItem('Name'));
+  const BRAND = localStorage.getItem('Name');
 
   const { isLoading: isInventoryLoading, data: resData } =
     fetchInventoryCount(BRAND);
@@ -53,7 +53,7 @@ export const Dashboard = () => {
   const FILTERED_STORES = useSelector(selectAllFilteredStores);
 
   const LIVESTORES_LENGTH = ALLSTORES?.length;
-  const TOKEN = localStorage.getItem('Token');
+  const TOKEN = JSON.parse(localStorage.getItem('Token'));
   const NAME = localStorage.getItem('Name');
   const GMV_SALES_DATA = useSelector(selectAllGMVSalesData);
   useEffect(() => {

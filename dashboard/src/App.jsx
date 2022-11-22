@@ -12,7 +12,7 @@ import { setLoadingState } from './redux/features/authSlice';
 import { setAllGMVSaleData } from './redux/features/dataSlice';
 function App() {
   const { pathname } = useLocation();
-  let BRAND = JSON.parse(localStorage.getItem('Name'));
+  let BRAND = localStorage.getItem('Name');
 
   const { isLoading: isGMVDataLoading, data: gmvSaleRes } =
     fetchSalesData(BRAND);

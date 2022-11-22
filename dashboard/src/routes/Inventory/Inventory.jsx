@@ -30,7 +30,7 @@ import {
 import { applyInventoryFilters } from '../../utils/helperFunctions';
 
 export const Inventory = () => {
-  const BRAND = JSON.parse(localStorage.getItem('Name'));
+  const BRAND = localStorage.getItem('Name');
   const { isLoading: isInventoryLoading, data: inventoryRes } =
     fetchDeployedQuantity(BRAND);
 
