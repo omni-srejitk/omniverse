@@ -31,9 +31,7 @@ function App() {
       !isLiveStoresLoading &&
       gmvSaleRes?.data['message']
     ) {
-      const STORES =
-        !isLiveStoresLoading &&
-        storesRes?.data?.message?.map((store) => store.customer_name);
+      const STORES = !isLiveStoresLoading && storesRes?.data?.message;
 
       prepareData(GMV_SALES_DATA, STORES, dispatch);
       dispatch(setAllGMVSaleData(GMV_SALES_DATA));
