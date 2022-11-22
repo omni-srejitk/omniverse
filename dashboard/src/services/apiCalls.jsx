@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from '../axios';
+import { cleanAllStoresData } from '../utils/helperFunctions';
 
 export const fetchInventoryCount = (BRAND) => {
   return useQuery(['inventory_count'], () => {
@@ -62,4 +63,19 @@ export const fetchAllLiveStores = (BRAND) => {
         `.stores_lives?brand=${encodeURI(BRAND)}`
     );
   });
+};
+
+export const fetchAllStoresData = (BRAND) => {
+  return useQuery(
+    ['customer_profile'],
+    () => {
+      return axios.get(
+        `${import.meta.env.VITE_BASE_URL}` +
+          `.customer_profile?brand=${encodeURI(BRAND)}`
+      );
+    },
+    {
+      select: (data) => cleanAllStoresData(data?.data?.message),
+    }
+  );
 };
