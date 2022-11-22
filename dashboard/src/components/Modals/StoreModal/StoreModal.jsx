@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal } from '../Modal/Modal';
+import { ModalGallery } from '../../ModalGallery/ModalGallery';
 
 export const StoreModal = ({ store }) => {
   return (
