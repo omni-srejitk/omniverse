@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-export const ComposedChartComp = ({ data }) => {
+export const ComposedChartComp = (data) => {
  
   // data should have three arrays : for both charts, and XAxis 
   // let data.barChartValue array;  barChartValue for barChart 
@@ -26,7 +26,7 @@ export const ComposedChartComp = ({ data }) => {
         data={data}
         >
         <XAxis 
-        dataKey={XAxisValue} 
+        dataKey={data.XAxisValue} 
         style={{
             fontSize: '0.7rem',
             margin: '1rem 0 0',
@@ -46,9 +46,8 @@ export const ComposedChartComp = ({ data }) => {
           labelStyle={{ color: "white" }}
           itemStyle={{ color: "cyan" }}
         />        
-        {/* <Area type="monotone" dataKey="" fill="#8884d8" stroke="#8884d8" /> */}
-        <Bar dataKey={barChartValue} stackOffset='sign' barSize={8} fill="#413ea0" />
-        <Line dataKey={lineChartValue} stroke="black" dot={false}/>
+        <Bar dataKey={data.barChartValue} stackOffset='sign' barSize={8} fill="#413ea0" />
+        <Line dataKey={data.lineChartValue} stroke="black" dot={false}/>
         <CartesianGrid stroke="#f5f5f5" opacity='0.2'/>
       </ComposedChart>
     </ResponsiveContainer>

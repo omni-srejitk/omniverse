@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
-export const VerticalBarChart = ({ data }) => {
+export const VerticalBarChart = (data) => {
   // data = array of objects and 
   // BarChartData for Bar chart component, XAxisValue and YAxisValue
 
@@ -21,7 +21,7 @@ export const VerticalBarChart = ({ data }) => {
       layout="vertical"
       >
         <XAxis
-          dataKey={'XAxisValue'}
+          dataKey={data.XAxisValue}
           style={{
             fontSize: '0.7rem',
             margin: '1rem 0 0',
@@ -34,7 +34,7 @@ export const VerticalBarChart = ({ data }) => {
           type="number"
         />
         <YAxis
-          dataKey={'YAxisValue'}
+          dataKey={data.YAxisValue}
           style={{
             fontSize: '0.7rem',
             fontFamily: 'Inter',
@@ -51,7 +51,7 @@ export const VerticalBarChart = ({ data }) => {
           labelStyle={{ color: "white" }}
           itemStyle={{ color: "cyan" }}
         />
-        <Bar dataKey={'BarChartData'} fill={'#86efac'} axisLine={false} />
+        <Bar dataKey={data.XAxisValue} fill={'#86efac'} axisLine={false} />
       </BarChart>
     </ResponsiveContainer>
   );

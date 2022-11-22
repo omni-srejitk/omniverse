@@ -6,7 +6,7 @@ import {
   Cell,
   Tooltip } from 'recharts';
 
-export const PieChartComp = ({colors, data}) => {
+export const PieChartComp = ({colors}, data) => {
 
   // Data format for pie chart => an array of objects with name and value keys and their respective values and pass colors array with colors that you want to show there 
   // const data = [{  "name": "Group A", "value": 400  }]
@@ -23,7 +23,7 @@ export const PieChartComp = ({colors, data}) => {
       >
         <Pie 
         data={data} 
-        dataKey="value" 
+        dataKey={data.value}
         nameKey="name" 
         cx="50%" 
         cy="50%" 
