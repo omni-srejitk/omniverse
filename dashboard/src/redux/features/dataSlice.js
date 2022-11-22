@@ -51,9 +51,22 @@ const dataSlice = createSlice({
     setAllWarehouseList: (state, action) => {
       state.warehouseList = action.payload;
     },
+    resetDataSlice: (state) =>
+      (state = {
+        stores: [],
+        dates: [],
+        items: [],
+        prices: [],
+        salesData: {},
+        sold: 0,
+        inventory: 0,
+        warehouse: 0,
+        inventoryList: [],
+        warehouseList: [],
+        gmvSaleData: [],
+      }),
   },
 });
-
 
 export const {
   setAllStores,
@@ -67,6 +80,7 @@ export const {
   setAllGMVSaleData,
   setAllInventoryList,
   setAllWarehouseList,
+  resetDataSlice,
 } = dataSlice.actions;
 
 export default dataSlice.reducer;

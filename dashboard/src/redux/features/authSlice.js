@@ -24,9 +24,15 @@ const authSlice = createSlice({
     setLoadingState: (state, action) => {
       state.isLoading = action.payload;
     },
+    resetAuthSlice: (state) =>
+      (state = {
+        name: '',
+        token: '',
+        isLogged: false,
+        isLoading: false,
+      }),
   },
 });
-
 
 export const {
   setAuthToken,
@@ -34,6 +40,7 @@ export const {
   setBrandName,
   resetAuthStatus,
   setLoadingState,
+  resetAuthSlice,
 } = authSlice.actions;
 
 export default authSlice.reducer;
