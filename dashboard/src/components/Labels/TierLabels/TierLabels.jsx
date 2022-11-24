@@ -4,7 +4,11 @@ import { useState } from 'react';
 export const TierLabel = ({ type = 'FLAGSHIP' }) => {
   const [showLabel, setShowLabel] = useState(false);
   const FLAGSHIP = (
-    <div className='max-w-40 absolute top-6 right-0 flex w-fit items-center justify-start gap-4 rounded-l-lg bg-blue-300 px-2 py-1'>
+    <div
+      className={`max-w-40 absolute top-12 right-0 flex w-fit items-center justify-start gap-4 rounded-l-lg bg-blue-300 px-2 py-1 ${
+        showLabel ? 'hidden' : 'flex'
+      }`}
+    >
       <div className='flex h-6 w-6 items-center justify-center rounded-full bg-blue-400'>
         <span className='material-icons flex h-4 w-4 items-center justify-center rounded-full bg-white text-sm text-blue-500'>
           bolt
