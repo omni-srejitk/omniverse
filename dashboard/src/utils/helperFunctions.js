@@ -214,10 +214,10 @@ export const applyInventoryFilters = (
 };
 
 export const reduceImages = (arr, setSrclist) => {
-  let reducedSrc = arr.map((meta) => {
+  let reducedSrc = arr?.map((meta) => {
     return {
       ...meta,
-      image: meta.image.replace('engine-omniflo', 'engine-omniflo-reduced'),
+      image: meta?.image?.replace('engine-omniflo', 'engine-omniflo-reduced'),
     };
   });
 
@@ -234,8 +234,8 @@ export const cleanAllStoresData = (data) => {
       }
     }
 
-    let address = store.address.split(',');
-    let locality = address.at(-3).trim();
+    let address = store?.address?.split(',');
+    let locality = address?.at(-3)?.trim();
 
     return { ...store, brand_present: affliatedBrands, locality };
   });
