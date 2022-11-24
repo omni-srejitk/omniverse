@@ -73,11 +73,11 @@ export const StoreCard = ({
         <div>
           <h1
             title={customer_name}
-            className='h-8 text-ellipsis text-lg font-semibold'
+            className='h-8 overflow-ellipsis whitespace-pre break-words text-lg font-semibold'
           >
             {customer_name}
           </h1>
-          <p className='my-1 font-medium text-gray-400'>
+          <p className='my-1 h-8 font-medium text-gray-400'>
             {`${sub_type} | ${locality}`}
           </p>
         </div>

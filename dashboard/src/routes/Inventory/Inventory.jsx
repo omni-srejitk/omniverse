@@ -73,7 +73,7 @@ export const Inventory = () => {
 
   const FILTERS = {
     'By Product': ALLITEMS,
-    'By Store': ALLSTORES,
+    'By Store': ALLSTORES.map((store) => store.customer_name),
   };
 
   const INVENTORY_FILTERS = (
