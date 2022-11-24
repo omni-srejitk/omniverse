@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import moment from 'moment';
 import axios from '../axios';
 import { cleanAllStoresData } from '../utils/helperFunctions';
 
@@ -76,6 +77,24 @@ export const fetchAllStoresData = (BRAND) => {
     },
     {
       select: (data) => cleanAllStoresData(data?.data?.message),
+    }
+  );
+};
+
+export const fetchDailyGMV = (BRAND) => {
+  return useQuery(
+    ['daily_gmv'],
+    () => {
+      return axios.get(
+        `${import.meta.env.VITE_BASE_URL}` +
+          `.calculate_gmv?brand=${encodeURI(BRAND)}`
+      );
+    },
+    {
+      select: (data) =>
+        data?.data?.message.sort(
+          (a, b) => moment(a, 'DD-MM-YY') - moment(b, 'DD-MM-YY')
+        ),
     }
   );
 };
