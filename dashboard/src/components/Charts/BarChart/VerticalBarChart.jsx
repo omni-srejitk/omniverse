@@ -10,7 +10,7 @@ import {
 } from 'recharts';
 export const VerticalBarChart = (data) => {
   // data = array of objects and 
-  // BarChartData for Bar chart component, XAxisValue and YAxisValue
+  // BarChartData for Bar chart component
 
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
