@@ -39,10 +39,17 @@ const filterSlice = createSlice({
         state.filterByItem.push(action.payload);
       }
     },
+    resetFilterSlice: (state) =>
+      (state = {
+        filterDuration: 'All Time',
+        filterByItem: [],
+        filterByStore: [],
+        filteredDates: [],
+        filteredItems: [],
+        filteredStores: [],
+      }),
   },
 });
-
-
 
 export const {
   setFilteredStores,
@@ -51,6 +58,7 @@ export const {
   setDurationFilter,
   setItemFilter,
   setStoreFilter,
+  resetFilterSlice,
 } = filterSlice.actions;
 
 export default filterSlice.reducer;

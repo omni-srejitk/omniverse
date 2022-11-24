@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { fetchInventoryCount, fetchStoreImages } from '../../services/apiCalls';
+import {
+  fetchDailyGMV,
+  fetchInventoryCount,
+  fetchStoreImages,
+} from '../../services/apiCalls';
 import { computeSalesNumber } from '../../utils/helperFunctions';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -37,7 +41,23 @@ export const Dashboard = () => {
     productFilter: false,
   });
 
-  const BRAND = JSON.parse(localStorage.getItem('Name'));
+  const BRAND = localStorage.getItem('Name');
+  const { isLoading: isCalculateGMVLoading, data } = fetchDailyGMV(BRAND);
+
+  const calculateDailyGMV = (arr) => {
+    let SALE = arr?.reduce((acc, curr) => (acc += curr[2]), 0);
+    let GMV = arr?.reduce((acc, curr) => (acc += curr[7]), 0);
+  };
+
+  const filterByStore = (state, arr) => {
+    return arr?.filter((sale) => state.includes(sale[1]));
+  };
+
+  const filterByItem = (state, arr) => {
+    return arr?.filter((sale) => state.includes(sale[6]));
+  };
+
+  calculateDailyGMV(data);
 
   const { isLoading: isInventoryLoading, data: resData } =
     fetchInventoryCount(BRAND);
@@ -53,7 +73,7 @@ export const Dashboard = () => {
   const FILTERED_STORES = useSelector(selectAllFilteredStores);
 
   const LIVESTORES_LENGTH = ALLSTORES?.length;
-  const TOKEN = localStorage.getItem('Token');
+  const TOKEN = JSON.parse(localStorage.getItem('Token'));
   const NAME = localStorage.getItem('Name');
   const GMV_SALES_DATA = useSelector(selectAllGMVSalesData);
   useEffect(() => {
@@ -65,7 +85,10 @@ export const Dashboard = () => {
   }, [TOKEN, NAME]);
 
   const { cumlativeSalesReport } = useMemo(() => {
-    const STORES = FILTERED_STORES?.length === 0 ? ALLSTORES : FILTERED_STORES;
+    const STORES =
+      FILTERED_STORES?.length === 0
+        ? ALLSTORES.map((store) => store.customer_name)
+        : FILTERED_STORES;
     const ITEMS = FILTERED_ITEMS?.length === 0 ? ALLITEMS : FILTERED_ITEMS;
     return computeSalesNumber(
       FILTERED_DATES,
@@ -88,7 +111,7 @@ export const Dashboard = () => {
 
   const DASHBOARD_FILTERS = {
     'By Product': ALLITEMS,
-    'By Store': ALLSTORES,
+    'By Store': ALLSTORES.map((store) => store.customer_name),
   };
 
   const { isLoading: ImageLoading, data: ImageData } = fetchStoreImages(BRAND);
@@ -110,7 +133,7 @@ export const Dashboard = () => {
     ISLOGGED && (
       <main className='page__content'>
         <section className='h-fit w-full'>
-          <h1 className='page__title'>Welcome {BRAND}</h1>
+          <h1 className='page__title'>Welcome {BRAND}! 👋</h1>
           <Card title='Overview' cardHeader={OVERVIEW_FILTERS}>
             <div className='card_body flex h-fit w-full justify-start overflow-x-auto scrollbar-thin'>
               <StatCard
@@ -143,7 +166,7 @@ export const Dashboard = () => {
               />
               <StatCard
                 icon='store'
-                title='In Inventory'
+                title='Total Deployed'
                 metric={InventoryData}
                 loading={isInventoryLoading}
                 tooltip={'Total no of items in inventory deployed.'}

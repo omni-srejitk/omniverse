@@ -12,7 +12,7 @@ import { setLoadingState } from './redux/features/authSlice';
 import { setAllGMVSaleData } from './redux/features/dataSlice';
 function App() {
   const { pathname } = useLocation();
-  let BRAND = JSON.parse(localStorage.getItem('Name'));
+  let BRAND = localStorage.getItem('Name');
 
   const { isLoading: isGMVDataLoading, data: gmvSaleRes } =
     fetchSalesData(BRAND);
@@ -31,9 +31,7 @@ function App() {
       !isLiveStoresLoading &&
       gmvSaleRes?.data['message']
     ) {
-      const STORES =
-        !isLiveStoresLoading &&
-        storesRes?.data?.message?.map((store) => store.customer_name);
+      const STORES = !isLiveStoresLoading && storesRes?.data?.message;
 
       prepareData(GMV_SALES_DATA, STORES, dispatch);
       dispatch(setAllGMVSaleData(GMV_SALES_DATA));

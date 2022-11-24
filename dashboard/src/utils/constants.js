@@ -18,7 +18,7 @@ export const SIDEBAR_LINKS = [
     icon: 'shopping_bag',
     title: 'Stores',
     link: '/stores',
-    active: false,
+    active: true,
   },
   {
     id: 4,

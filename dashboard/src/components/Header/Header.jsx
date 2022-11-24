@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { MdPerson } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import {
-  setAuthToken,
-  setBrandName,
-  setloginStatus,
-} from '../../redux/features/authSlice';
+import { resetAuthSlice } from '../../redux/features/authSlice';
 import { Button } from '../Buttons';
+import { resetDataSlice } from '../../redux/features/dataSlice';
+import { resetFilterSlice } from '../../redux/features/filterSlice';
 
 export const Header = () => {
   const [profileOption, setProfileOption] = useState(false);
@@ -15,9 +13,9 @@ export const Header = () => {
   const navigate = useNavigate();
 
   const Logout = () => {
-    dispatch(setloginStatus(false));
-    dispatch(setBrandName(''));
-    dispatch(setAuthToken(''));
+    dispatch(resetAuthSlice());
+    dispatch(resetDataSlice());
+    dispatch(resetFilterSlice());
     navigate('/');
     localStorage.clear();
   };
