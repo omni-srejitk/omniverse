@@ -240,3 +240,41 @@ export const cleanAllStoresData = (data) => {
     return { ...store, brand_present: affliatedBrands, locality };
   });
 };
+
+//accepts the same arguement as computeSalesNumber
+
+export const computeAnalyticsSalesNumber = (
+  dates = [],
+  stores = [],
+  items = [],
+  prices,
+  salesData,
+  days // days arguement will tell how many days to go behind
+) => {
+  // finding the previous date 
+  const lastSevenDaysDate = moment().subtract(days, 'days').format('DD-MM-YY');
+
+  const presentDate = moment().format('DD-MM-YY');
+  const { checkThis } = computeSalesNumber(
+    dates,
+    stores,
+    items,
+    prices,
+    salesData
+  );
+
+  const lastSevenDaysData = checkThis[lastSevenDaysDate];
+  const presentData = checkThis[presentDate];
+
+  //calculate percent change only when the data is present
+  let percentageChangeGMV
+  let percentageChangeSales
+  if (lastSevenDaysData && presentData) {
+    percentageChangeGMV =
+      (presentData.TOTAL_GMV - lastSevenDaysData.TOTAL_GMV) / 100;
+    percentageChangeSales =
+      (presentData.TOTAL_SALES - lastSevenDaysData.TOTAL_SALES) / 100;
+  }
+
+  return { presentData, percentageChangeSales, percentageChangeGMV };
+};
