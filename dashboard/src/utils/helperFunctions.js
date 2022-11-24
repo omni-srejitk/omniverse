@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 import {
   setAllDates,
   setAllInventory,
@@ -9,8 +9,8 @@ import {
   setAllStores,
   setAllWarehouse,
   setAllWarehouseList,
-} from "../redux/features/dataSlice";
-import { setFilteredDates } from "../redux/features/filterSlice";
+} from '../redux/features/dataSlice';
+import { setFilteredDates } from '../redux/features/filterSlice';
 
 export const prepareData = (salesData = [], STORES, dispatch) => {
   let stores = new Set();
@@ -19,7 +19,7 @@ export const prepareData = (salesData = [], STORES, dispatch) => {
   const dates = [];
   const sale_count = {};
   for (let date in salesData) {
-    dates.push(moment(date, "DD-MM-YY").format("DD-MM-YY"));
+    dates.push(moment(date, 'DD-MM-YY').format('DD-MM-YY'));
     for (let store_names in salesData[date]) {
       stores.add(store_names);
       for (let item in salesData[date][store_names]) {
@@ -36,11 +36,11 @@ export const prepareData = (salesData = [], STORES, dispatch) => {
         sale_count[date][item] += salesData[date][store_names][item][0];
       }
     }
-    sale_count[date]["All"] = Object.values(sale_count[date]).reduce(
+    sale_count[date]['All'] = Object.values(sale_count[date]).reduce(
       (a, b) => (a += +b),
       0
     );
-    sale_count[date]["Cumalative"] = Object.values(sale_count)?.reduce(
+    sale_count[date]['Cumalative'] = Object.values(sale_count)?.reduce(
       (acc, curr) => {
         return (acc += +curr.All);
       },
@@ -66,8 +66,8 @@ export const computeSalesNumber = (
   prices,
   salesData
 ) => {
-  const startDate = moment(dates[0], "DD-MM-YY");
-  const endDate = moment().endOf("week");
+  const startDate = moment(dates[0], 'DD-MM-YY');
+  const endDate = moment().endOf('week');
   let sales = 0;
   let gmv = 0;
   let j = 0;
@@ -75,9 +75,9 @@ export const computeSalesNumber = (
   let cumlativeSalesReport = {};
   let checkThis = {};
 
-  for (let i = startDate; i <= endDate; i = moment(i).add(1, "d")) {
-    if (i.isSame(moment(dates[j], "DD-MM-YY"))) {
-      const d = moment(dates[j], "DD-MM-YY").format("DD-MM-YY");
+  for (let i = startDate; i <= endDate; i = moment(i).add(1, 'd')) {
+    if (i.isSame(moment(dates[j], 'DD-MM-YY'))) {
+      const d = moment(dates[j], 'DD-MM-YY').format('DD-MM-YY');
       for (let store in salesData[d]) {
         for (let item of items) {
           if (stores.includes(store) && item in salesData[d][store]) {
@@ -90,7 +90,7 @@ export const computeSalesNumber = (
       j++;
     }
 
-    checkThis[moment(i).format("DD-MM-YY")] = {
+    checkThis[moment(i).format('DD-MM-YY')] = {
       TOTAL_SALES: sales,
       TOTAL_GMV: gmv,
       UNIT_SALE,
@@ -104,8 +104,8 @@ export const computeSalesNumber = (
   }
   SALES_DATA = SALES_DATA?.sort(
     (a, b) =>
-      moment(a.Date, "DD-MM-YY").format("DD-MM-YY") -
-      moment(b.Date, "DD-MM-YY").format("DD-MM-YY")
+      moment(a.Date, 'DD-MM-YY').format('DD-MM-YY') -
+      moment(b.Date, 'DD-MM-YY').format('DD-MM-YY')
   );
 
   cumlativeSalesReport = {
@@ -119,11 +119,11 @@ export const computeSalesNumber = (
 
 export const calcTickCount = (duration) => {
   switch (duration) {
-    case "All Time":
+    case 'All Time':
       return 8;
-    case "This Week":
+    case 'This Week':
       return 8;
-    case "This Month":
+    case 'This Month':
       return 10;
     default:
       return 10;
@@ -135,7 +135,7 @@ export const cacheImages = async (srcArray, setLoading) => {
     return new Promise(function (resolve, reject) {
       const img = new Image();
 
-      img.src = src["image"];
+      img.src = src['image'];
       img.onload = () => resolve();
       img.onerror = () => reject();
     });
@@ -147,25 +147,25 @@ export const cacheImages = async (srcArray, setLoading) => {
 
 export const filterDates = (val, DATES, dispatch) => {
   switch (val) {
-    case "This Week":
-      const firstDayOfWeek = moment().startOf("week");
-      const currDayOfWeek = moment().endOf("week");
+    case 'This Week':
+      const firstDayOfWeek = moment().startOf('week');
+      const currDayOfWeek = moment().endOf('week');
 
       const filteredWeek = DATES?.filter((date) =>
-        moment(date, "DD-MM-YY").isBetween(
-          moment(firstDayOfWeek, "DD-MM-YY"),
-          moment(currDayOfWeek, "DD-MM-YY")
+        moment(date, 'DD-MM-YY').isBetween(
+          moment(firstDayOfWeek, 'DD-MM-YY'),
+          moment(currDayOfWeek, 'DD-MM-YY')
         )
       );
       return dispatch(setFilteredDates(filteredWeek));
 
-    case "This Month":
-      const firstDayOfMonth = moment().startOf("month");
-      const currDayOfMonth = moment().endOf("month");
+    case 'This Month':
+      const firstDayOfMonth = moment().startOf('month');
+      const currDayOfMonth = moment().endOf('month');
       const filteredMonth = DATES?.filter((date) =>
-        moment(date, "DD-MM-YY").isBetween(
-          moment(firstDayOfMonth, "DD-MM-YY"),
-          moment(currDayOfMonth, "DD-MM-YY")
+        moment(date, 'DD-MM-YY').isBetween(
+          moment(firstDayOfMonth, 'DD-MM-YY'),
+          moment(currDayOfMonth, 'DD-MM-YY')
         )
       );
       return dispatch(setFilteredDates(filteredMonth));
@@ -217,7 +217,7 @@ export const reduceImages = (arr, setSrclist) => {
   let reducedSrc = arr.map((meta) => {
     return {
       ...meta,
-      image: meta.image.replace("engine-omniflo", "engine-omniflo-reduced"),
+      image: meta.image.replace('engine-omniflo', 'engine-omniflo-reduced'),
     };
   });
 
@@ -231,12 +231,13 @@ export const computeAnalyticsSalesNumber = (
   stores = [],
   items = [],
   prices,
-  salesData
+  salesData,
+  days // days arguement will tell how many days to go behind
 ) => {
-  // finding the previous date
-  const lastSevenDaysDate = moment().subtract(7, "days").format("DD-MM-YY");
+  // finding the previous date 
+  const lastSevenDaysDate = moment().subtract(days, 'days').format('DD-MM-YY');
 
-  const presentDate = moment().format("DD-MM-YY");
+  const presentDate = moment().format('DD-MM-YY');
   const { checkThis } = computeSalesNumber(
     dates,
     stores,
@@ -249,10 +250,12 @@ export const computeAnalyticsSalesNumber = (
   const presentData = checkThis[presentDate];
 
   //calculate percent change only when the data is present
+  let percentageChangeGMV
+  let percentageChangeSales
   if (lastSevenDaysData && presentData) {
-    const percentageChangeGMV =
+    percentageChangeGMV =
       (presentData.TOTAL_GMV - lastSevenDaysData.TOTAL_GMV) / 100;
-    const percentageChangeSales =
+    percentageChangeSales =
       (presentData.TOTAL_SALES - lastSevenDaysData.TOTAL_SALES) / 100;
   }
 
