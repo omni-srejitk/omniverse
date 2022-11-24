@@ -62,7 +62,7 @@ export const StoreCard = ({
     <div
       onClick={() => {
         setShowModal(true);
-        setStoreDetail(store);
+        setStoreDetail({ ...store, STORE_INV, STORE_DEP });
       }}
       className='relative w-full rounded-lg bg-white px-6 py-5'
     >

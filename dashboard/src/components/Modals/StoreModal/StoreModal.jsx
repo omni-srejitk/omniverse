@@ -12,6 +12,8 @@ export const StoreModal = ({ store = {} }) => {
     brand_present,
     rating,
     review_count,
+    STORE_INV,
+    STORE_DEP,
   } = store;
 
   const BRAND_COLORS = [
@@ -22,7 +24,6 @@ export const StoreModal = ({ store = {} }) => {
     'bg-yellow-200',
   ];
 
-  console.log(store);
   return (
     <div className='z-10 flex h-full w-full flex-col items-center justify-start rounded-xl border-2 lg:flex-row lg:items-start lg:justify-between'>
       <div className='flex h-[15rem] w-full justify-center rounded-xl lg:my-10 lg:mx-10 lg:h-[440px] lg:w-[225px]'>
@@ -45,7 +46,7 @@ export const StoreModal = ({ store = {} }) => {
         <div className='flex flex-row justify-between'>
           <div className='mr-4 mt-4 flex h-[74px] w-full flex-col items-center justify-center rounded border-2 '>
             <div className='text-[24px] font-semibold leading-8 text-[#404040]'>
-              24
+              {STORE_INV}
             </div>
             <div className='text-base font-medium text-[#404040]'>
               Total Units Sold
@@ -53,7 +54,7 @@ export const StoreModal = ({ store = {} }) => {
           </div>
           <div className='mt-4 flex h-[74px] w-full flex-col items-center justify-center rounded border-2'>
             <div className='text-[24px] font-semibold leading-8 text-[#404040]'>
-              16
+              {STORE_DEP}
             </div>
             <div className='text-base font-medium text-[#404040]'>
               Currently in store
@@ -76,7 +77,8 @@ export const StoreModal = ({ store = {} }) => {
             </span>
           </div>
         </div>
-        <div className='mt-2 flex flex-col border-b-4 pb-4 text-[#404040]'>
+        {/* //TODO TO be added in the next PR */}
+        {/* <div className='mt-2 flex flex-col border-b-4 pb-4 text-[#404040]'>
           <div className='text-[16px] font-medium leading-6'>
             Few other Brands present in the store
           </div>
@@ -89,7 +91,7 @@ export const StoreModal = ({ store = {} }) => {
               ))}
           </div>
         </div>
-        <h3 className='mt-4 text-base text-[#404040]'>Amenities</h3>
+        <h3 className='mt-4 text-base text-[#404040]'>Amenities</h3> */}
       </div>
     </div>
   );
