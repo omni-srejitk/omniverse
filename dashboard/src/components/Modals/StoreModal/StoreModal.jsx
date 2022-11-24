@@ -67,7 +67,7 @@ export const StoreModal = ({ store = {} }) => {
             <span className='w-full'>{asile}</span>
           </div>
           <div className='flex w-80 flex-row justify-start'>
-            <div className='w-full text-[#737373]'>Monthly Footfall:</div>
+            <div className='w-full text-[#737373]'>Daily Footfall:</div>
             <span className='w-full'>{daily_footfall}</span>
           </div>
           <div className='flex w-80 flex-row justify-start'>
