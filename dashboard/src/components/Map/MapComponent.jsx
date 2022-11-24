@@ -5,7 +5,12 @@ import { useState } from 'react';
 import { StoreModal } from '../Modals/StoreModal/StoreModal';
 import { Modal } from '../Modals';
 
-function MapComponent({ storesData, showModal, setShowModal }) {
+function MapComponent({
+  storesData = [],
+  showModal,
+  setShowModal,
+  setStoreDetail = {},
+}) {
   const [selectedLocation, setSelectedLocation] = useState({});
 
   return (
@@ -23,40 +28,42 @@ function MapComponent({ storesData, showModal, setShowModal }) {
       mapboxAccessToken={import.meta.env.VITE_MAP_TOKEN}
       mapStyle={import.meta.env.VITE_MAP_STYLE}
     >
-      {storesData.map((store) => (
-        <div key={store.longitude}>
-          <Marker
-            longitude={store.longitude}
-            latitude={store.latitude}
-            offsetLeft={-20}
-            offsetTop={-10}
-          >
-            <p
-              role='img'
-              onClick={() => {
-                setSelectedLocation(store);
-                setShowModal(true);
-              }}
-              className='cursor-pointer rounded-md bg-red-500 p-2
+      {storesData &&
+        storesData?.map((store) => (
+          <div key={store.customer}>
+            <Marker
+              longitude={store.longitude}
+              latitude={store.latitude}
+              offsetLeft={-20}
+              offsetTop={-10}
+            >
+              <p
+                role='img'
+                onClick={() => {
+                  setSelectedLocation(store);
+                  setShowModal(true);
+                  setStoreDetail(store);
+                }}
+                className='cursor-pointer rounded-lg bg-white p-2 font-medium
     transition-all duration-150 ease-out hover:scale-125'
-            >
-              {store.storeName}
-            </p>
-            <div className='flex flex-row justify-center'>
-              <span className='material-icons'>room</span>
-            </div>
-          </Marker>
-          {selectedLocation.longitude === store.longitude && (
-            <Modal
-              open={showModal}
-              onClose={() => setShowModal(false)}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <StoreModal />
-            </Modal>
-          )}
-        </div>
-      ))}
+              >
+                {store.customer_name}
+              </p>
+              <div className='flex flex-row justify-center'>
+                <span className='material-icons text-red-500'>room</span>
+              </div>
+            </Marker>
+            {selectedLocation.longitude === store.longitude && (
+              <Modal
+                open={showModal}
+                onClose={() => setShowModal(false)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <StoreModal store={store} />
+              </Modal>
+            )}
+          </div>
+        ))}
     </Map>
   );
 }
