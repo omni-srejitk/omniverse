@@ -25,4 +25,11 @@ export {
   selectAllWarehouse,
   selectInventoryList,
   selectWarehouseList,
+  selectSaleAmount,
+  selectUnitsSold,
 } from './dataActions';
+
+export {
+  selectCumlativeAmtData,
+  selectCumlativeCountData,
+} from './graphActions';
