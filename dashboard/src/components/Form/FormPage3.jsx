@@ -15,16 +15,6 @@ export const FormPage3 = ({register, campaignArray}) => {
         productOptionsref.current.style.display = 'none'
         console.log('register',register);
     }
-    let ifMoreItemsFunc = () => {
-        if(campaignArray.includes('Discount')){
-            return (
-                <button onClick={() => dicountPageFunc()}>Go to Discount page</button>
-            )
-        }
-    }
-    let dicountPageFunc = () => {
-        <FormPage4 register={register} campaignArray={campaignArray}/>
-    }
   return (
     <div>
         <div className='mb-[1rem]'>
@@ -73,7 +63,6 @@ export const FormPage3 = ({register, campaignArray}) => {
                 <p className='mt-3'>Hint: We'll share the Address to send the shipment after finalizing.</p>                
             </div>
         </div>
-        {ifMoreItemsFunc()}
     </div>
   )
 }
