@@ -3,11 +3,12 @@ import {
   fetchDailyGMV,
   fetchDeployedQuantity,
 } from '../../../services/apiCalls';
+import { StoreLabels } from '../../Labels';
 import { TierLabel } from '../../Labels/TierLabels/TierLabels';
 
 export const StoreCard = ({
   store,
-  tags,
+  tags = {},
   label = 'FLAGSHIP',
   setShowModal,
   setStoreDetail,
@@ -58,6 +59,39 @@ export const StoreCard = ({
 
   const STORE_INV = createStoreWiseInventory(dailyGMVData, store.customer);
 
+  const fetchStoreIcon = (type) => {
+    if (type === 'Grocery Store') {
+      return (
+        <span className='material-icons flex h-full w-full items-center justify-center text-blue-500'>
+          shopping_cart
+        </span>
+      );
+    } else if (type === 'Supermarket') {
+      return (
+        <span className='material-icons flex h-full w-full items-center justify-center text-blue-500'>
+          store
+        </span>
+      );
+    } else if (type === 'Hypermarket') {
+      return (
+        <span className='material-icons flex h-full w-full items-center justify-center text-green-500'>
+          shopping_cart
+        </span>
+      );
+    } else if (type === 'Not Found' || type === undefined) {
+      return (
+        <span className='material-icons flex h-full w-full items-center justify-center text-orange-500'>
+          shopping_cart
+        </span>
+      );
+    } else {
+      return (
+        <span className='material-icons flex h-full w-full items-center justify-center text-yellow-500'>
+          crown
+        </span>
+      );
+    }
+  };
   return (
     <div
       onClick={() => {
@@ -66,14 +100,14 @@ export const StoreCard = ({
       }}
       className='relative w-full rounded-lg bg-white px-6 py-5'
     >
-      <div className='flex items-center justify-start gap-6'>
-        <div className='flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-100 '>
-          <span className='material-icons  text-gray-600'>store</span>
+      <div className='flex w-full items-center justify-start'>
+        <div className='flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-50/50 '>
+          {fetchStoreIcon(sub_type)}
         </div>
-        <div>
+        <div className='ml-4 w-full overflow-hidden'>
           <h1
             title={customer_name}
-            className='h-8 overflow-ellipsis whitespace-pre break-words text-lg font-semibold'
+            className='overflow-ellipsis whitespace-pre break-words text-lg font-semibold'
           >
             {customer_name}
           </h1>
@@ -127,24 +161,9 @@ export const StoreCard = ({
           </div>
         </div>
       </div>
-      {/* //TODO  TAGS : TO be added later */}
-      {/* <div className='my-6 flex max-h-[8rem] flex-wrap items-center justify-start gap-2 overflow-hidden overflow-x-scroll scrollbar'>
-        {tags?.slice(0, 3).map(({ id, name, icon, color }) => (
-          <div
-            className={`flex items-center justify-between gap-2 whitespace-pre break-words rounded-md bg-blue-100 px-1 py-1`}
-            key={id}
-          >
-            <div className='flex h-4 w-4 items-center justify-center rounded-full'>
-              {' '}
-              <span className='material-icons text-sm text-blue-300'>
-                {icon}
-              </span>
-            </div>
-            <p className=' font-medium'>{name}</p>
-          </div>
-        ))}
-        {tags?.slice(3)?.length > 0 ? `+${tags?.slice(3)?.length}` : ''}
-      </div> */}
+      <div className='my-6 flex max-h-[8rem] flex-wrap items-center justify-start gap-2 overflow-hidden overflow-x-scroll scrollbar'>
+        <StoreLabels TAGS={tags} />
+      </div>
       {!showLabel && <TierLabel type={label} />}
       {/* //TODO FIX THIS LATER ON : The select stores and mail to Team feature  */}
       {/* {wishlist?.includes((store) => store?.id === id) ? (
