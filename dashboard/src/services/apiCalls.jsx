@@ -4,12 +4,18 @@ import axios from '../axios';
 import { cleanAllStoresData } from '../utils/helperFunctions';
 
 export const fetchInventoryCount = (BRAND) => {
-  return useQuery(['inventory_count'], () => {
-    return axios.get(
-      `${import.meta.env.VITE_BASE_URL}` +
-        `.total_inventory?brand=${encodeURI(BRAND)}`
-    );
-  });
+  return useQuery(
+    ['inventory_count'],
+    () => {
+      return axios.get(
+        `${import.meta.env.VITE_BASE_URL}` +
+          `.total_inventory?brand=${encodeURI(BRAND)}`
+      );
+    },
+    {
+      select: (data) => data?.data?.message,
+    }
+  );
 };
 
 export const fetchSalesData = (BRAND) => {
@@ -91,10 +97,7 @@ export const fetchDailyGMV = (BRAND) => {
       );
     },
     {
-      select: (data) =>
-        data?.data?.message.sort(
-          (a, b) => moment(a, 'DD-MM-YY') - moment(b, 'DD-MM-YY')
-        ),
+      select: (data) => data?.data?.message,
     }
   );
 };
