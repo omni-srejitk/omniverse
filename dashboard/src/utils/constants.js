@@ -32,7 +32,7 @@ export const SIDEBAR_LINKS = [
     icon: 'podcasts',
     title: 'Marketing',
     link: '/marketing',
-    active: true,
+    active: false,
   },
 ];
 
