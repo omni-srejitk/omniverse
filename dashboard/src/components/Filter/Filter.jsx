@@ -55,10 +55,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
           {filter['By Product']?.map((filterBy) => (
             <div key={filterBy}>
               <div className=' my-2 flex max-h-[15rem] items-center justify-between overflow-y-auto'>
-                <div
-                  key={filterBy}
-                  className='mb-3 flex h-full w-80 items-start justify-between '
-                >
+                <div className='mb-3 flex h-full w-80 items-start justify-between '>
                   <label className='w-[90%] font-semibold' htmlFor={filterBy}>
                     {filterBy}
                   </label>
@@ -82,24 +79,24 @@ export const Filter = ({ filter, showState, setShowState }) => {
         <p className='my-2 font-medium text-gray-500'>By Store</p>
         <div className='mb-8 max-h-[15rem] overflow-y-auto pr-4 scrollbar-thin scrollbar-track-gray-50 scrollbar-thumb-blue-100 scrollbar-track-rounded-lg'>
           {filter['By Store']?.map((filterByStore) => (
-            <div key={filterByStore}>
+            <div key={filterByStore.customer}>
               <div className=' my-2'>
-                <div
-                  key={filterByStore}
-                  className='mb-3 flex w-80 items-start justify-between '
-                >
-                  <label className='font-semibold' htmlFor={filterByStore}>
-                    {filterByStore}
+                <div className='mb-3 flex w-80 items-start justify-between '>
+                  <label
+                    className='font-semibold'
+                    htmlFor={filterByStore.customer}
+                  >
+                    {filterByStore.customer_name}
                   </label>
                   <input
                     type={'checkbox'}
-                    id={filterByStore}
+                    id={filterByStore.customer}
                     onChange={(e) => handleStoreChange(e.target.dataset.value)}
                     checked={
-                      FILTERBYSTORE?.includes(filterByStore) ||
-                      storeFilters.includes(filterByStore)
+                      FILTERBYSTORE?.includes(filterByStore.customer) ||
+                      storeFilters.includes(filterByStore.customer)
                     }
-                    data-value={filterByStore}
+                    data-value={filterByStore.customer}
                     className=' h-6 w-6 cursor-pointer font-semibold text-gray-500 hover:text-black'
                   />
                 </div>

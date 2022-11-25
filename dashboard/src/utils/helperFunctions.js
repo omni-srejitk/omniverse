@@ -297,10 +297,10 @@ export const fetchAllDates = (sale_data = []) => {
   return DATES;
 };
 
-export const fetchCumalativeSaleCount = (sale_data = [], dispatch) => {
+export const fetchCumalativeSaleCount = (sale_data = [], dates, dispatch) => {
   const SALE_COUNT = new Map();
   let UNIT_SALE = 0;
-  let firstDate = moment(sale_data[0][0], 'DD-MM-YY');
+  let firstDate = moment(dates[0], 'DD-MM-YY');
   const endDate = moment();
   const ALL_DATES = [];
   const SALE_DATA = {};
@@ -310,17 +310,24 @@ export const fetchCumalativeSaleCount = (sale_data = [], dispatch) => {
     ALL_DATES.push(moment(i, 'DD-MM-YY').format('DD-MM-YY'));
   }
 
-  ALL_DATES.map((date) => {
-    sale_data?.map((sale) => {
-      if (moment(date, 'DD-MM-YY').isSame(moment(sale[0], 'DD-MM-YY'))) {
-        UNIT_SALE = +sale[2];
-        SALE_COUNT.set(sale[0], UNIT_SALE);
-      } else {
-        UNIT_SALE += 0;
-        SALE_COUNT.set(date, UNIT_SALE);
-      }
+  if (sale_data?.length > 0) {
+    ALL_DATES.map((date) => {
+      sale_data?.map((sale) => {
+        if (moment(date, 'DD-MM-YY').isSame(moment(sale[0], 'DD-MM-YY'))) {
+          UNIT_SALE += +sale[2];
+          SALE_COUNT.set(sale[0], UNIT_SALE);
+        } else {
+          UNIT_SALE += 0;
+          SALE_COUNT.set(date, UNIT_SALE);
+        }
+      });
     });
-  });
+  } else {
+    ALL_DATES.map((date) => {
+      UNIT_SALE = 0;
+      SALE_COUNT.set(date, UNIT_SALE);
+    });
+  }
 
   Array.from(SALE_COUNT)?.map((item) => (SALE_DATA[item[0]] = item[1]));
 
@@ -336,10 +343,10 @@ export const fetchCumalativeSaleCount = (sale_data = [], dispatch) => {
   dispatch(setCumlativeUnits(DAYWISE_SOLD));
 };
 
-export const fetchCumalativeSaleAmount = (sale_data = [], dispatch) => {
+export const fetchCumalativeSaleAmount = (sale_data = [], dates, dispatch) => {
   const SALE_COUNT = new Map();
   let UNIT_AMT = 0;
-  let firstDate = moment(sale_data[0][0], 'DD-MM-YY');
+  let firstDate = moment(dates[0], 'DD-MM-YY');
   const endDate = moment();
   const ALL_DATES = [];
   const SALE_DATA = {};
@@ -349,17 +356,24 @@ export const fetchCumalativeSaleAmount = (sale_data = [], dispatch) => {
     ALL_DATES.push(moment(i, 'DD-MM-YY').format('DD-MM-YY'));
   }
 
-  ALL_DATES.map((date) => {
-    sale_data?.map((sale) => {
-      if (moment(date, 'DD-MM-YY').isSame(moment(sale[0], 'DD-MM-YY'))) {
-        UNIT_AMT += +sale[7];
-        SALE_COUNT.set(sale[0], UNIT_AMT);
-      } else {
-        UNIT_AMT += 0;
-        SALE_COUNT.set(date, UNIT_AMT);
-      }
+  if (sale_data?.length > 0) {
+    ALL_DATES.map((date) => {
+      sale_data?.map((sale) => {
+        if (moment(date, 'DD-MM-YY').isSame(moment(sale[0], 'DD-MM-YY'))) {
+          UNIT_AMT += +sale[7];
+          SALE_COUNT.set(sale[0], UNIT_AMT);
+        } else {
+          UNIT_AMT += 0;
+          SALE_COUNT.set(date, UNIT_AMT);
+        }
+      });
     });
-  });
+  } else {
+    ALL_DATES.map((date) => {
+      UNIT_AMT = 0;
+      SALE_COUNT.set(date, UNIT_AMT);
+    });
+  }
 
   Array.from(SALE_COUNT)?.map((item) => (SALE_DATA[item[0]] = item[1]));
 
@@ -390,19 +404,34 @@ export const fetchAllItems = (sale_data = []) => {
 };
 
 export const calculateDailyGMV = (arr, dispatch) => {
-  let SALE = arr?.reduce((acc, curr) => (acc += curr[2]), 0);
-  let GMV = arr?.reduce((acc, curr) => (acc += curr[7]), 0);
+  let SALE =
+    arr.length === 0 ? 0 : arr?.reduce((acc, curr) => (acc += curr[2]), 0);
+  let GMV =
+    arr.length === 0 ? 0 : arr?.reduce((acc, curr) => (acc += curr[7]), 0);
 
   dispatch(setAllUnitsSold(SALE));
   dispatch(setAllSaleAmount(GMV));
 };
+//  * DONE
+const filterByStore = ({ filteredStores }, arr) => {
+  if (filteredStores?.length > 0) {
+    let filteredByStores = arr?.filter((sale) => {
+      return filteredStores?.includes(sale[1]);
+    });
 
-const filterByStore = ({ filterByStore }, arr) => {
-  return arr?.filter((sale) => filterByStore.includes(sale[1]));
+    return filteredByStores;
+  } else {
+    return arr;
+  }
 };
 
-const filterByItem = ({ filterByItem }, arr) => {
-  return arr?.filter((sale) => filterByItem.includes(sale[6]));
+// * DONE
+const filterByItem = ({ filteredItems }, arr) => {
+  if (filteredItems?.length > 0) {
+    return arr?.filter((sale) => filteredItems.includes(sale[6]));
+  } else {
+    return arr;
+  }
 };
 
 // * DONE.
@@ -443,7 +472,12 @@ const applyFilters =
   };
 
 export const getFilteredData = (filterState, data, dispatch) => {
-  const res = applyFilters(filterState, filterByDate)(data);
+  const res = applyFilters(
+    filterState,
+    filterByDate,
+    filterByItem,
+    filterByStore
+  )(data);
   dispatch(setFilteredSaleData(res));
 };
 
@@ -451,12 +485,8 @@ export const prepareSaleData = (sale_data, dispatch) => {
   const ALL_SALE_DATES = fetchAllDates(sale_data);
   const ALL_STORES = fetchAllStores(sale_data);
   const ALL_ITEMS = fetchAllItems(sale_data);
-  // const CUMLATIVE_UNITS = fetchCumalativeSaleCount(sale_data);
-  // const CUMLATIVE_SALE = fetchCumalativeSaleAmount(sale_data);
 
   dispatch(setAllDates(ALL_SALE_DATES));
   dispatch(setAllStores(ALL_STORES));
   dispatch(setAllItems(ALL_ITEMS));
-  // dispatch(setCumlativeUnits(CUMLATIVE_UNITS));
-  // dispatch(setCumlativeSum(CUMLATIVE_SALE));
 };
