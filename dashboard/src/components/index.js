@@ -6,6 +6,7 @@ export { Sidebar } from './Sidebar/Sidebar';
 export { Spinner } from './Loaders';
 export { Button } from './Buttons';
 export { TierLabel } from './Labels';
+export { StoreLabels } from './Labels';
 export { Modal, StoreModal } from './Modals';
 export { Carousal } from './Carousal';
 export {
