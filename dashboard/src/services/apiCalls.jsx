@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import moment from 'moment';
 import axios from '../axios';
 import { cleanAllStoresData } from '../utils/helperFunctions';
 
@@ -37,12 +36,18 @@ export const fetchLiveStoreCount = (BRAND) => {
 };
 
 export const fetchStoreImages = (BRAND) => {
-  return useQuery(['carousal_images'], () => {
-    return axios.get(
-      `${import.meta.env.VITE_BASE_URL}` +
-        `.image_api?brand=${encodeURI(BRAND)}`
-    );
-  });
+  return useQuery(
+    ['carousal_images'],
+    () => {
+      return axios.get(
+        `${import.meta.env.VITE_BASE_URL}` +
+          `.image_api?brand=${encodeURI(BRAND)}`
+      );
+    },
+    {
+      select: (data) => data?.data?.message,
+    }
+  );
 };
 
 export const fetchDeployedQuantity = (BRAND) => {
