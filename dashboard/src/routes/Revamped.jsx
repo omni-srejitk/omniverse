@@ -5,6 +5,7 @@ import {
   AreaCharts,
   BarCharts,
   Card,
+  Carousal,
   Filter,
   Select,
   Spinner,
@@ -18,11 +19,20 @@ import {
   selectUnitsSold,
 } from '../redux/actions';
 import {
+  selectAllDates,
   selectAllItems,
   selectFilteredSalesData,
 } from '../redux/actions/dataActions';
-import { setAllSaleAmount, setAllUnitsSold } from '../redux/features/dataSlice';
-import { fetchDailyGMV, fetchInventoryCount } from '../services/apiCalls';
+import {
+  setAuthToken,
+  setBrandName,
+  setloginStatus,
+} from '../redux/features/authSlice';
+import {
+  fetchDailyGMV,
+  fetchInventoryCount,
+  fetchStoreImages,
+} from '../services/apiCalls';
 import {
   calculateDailyGMV,
   fetchCumalativeSaleAmount,
@@ -40,21 +50,34 @@ export const Revamped = () => {
   const { isLoading: isGMVLoading, data: dailyGMVData } = fetchDailyGMV(BRAND);
   const { isLoading: isInventoryLoading, data: inventoryData } =
     fetchInventoryCount(BRAND);
+  const { isLoading: ImageLoading, data: imageData } = fetchStoreImages(BRAND);
   const dispatch = useDispatch();
   const UNITS_SOLD = useSelector(selectUnitsSold);
   const SALE_AMT = useSelector(selectSaleAmount);
-  const LIVESTORES = useSelector(selectAllStores)?.length;
+  const LIVESTORES = useSelector(selectAllStores);
+  const LIVESTORES_COUNT = useSelector(selectAllStores)?.length;
   const BARCHART = useSelector(selectCumlativeCountData);
   const AREACHART = useSelector(selectCumlativeAmtData);
   const FILTERSTATE = useSelector((state) => state.filter);
   const FILTEREDSALEDATA = useSelector(selectFilteredSalesData);
   const ALLITEMS = useSelector(selectAllItems);
+  const ALLDATES = useSelector(selectAllDates);
+  const TOKEN = JSON.parse(localStorage.getItem('Token'));
+  const NAME = localStorage.getItem('Name');
 
   useEffect(() => {
-    if (FILTEREDSALEDATA?.length > 0) {
+    if (TOKEN) {
+      dispatch(setloginStatus(true));
+      dispatch(setAuthToken(TOKEN));
+      dispatch(setBrandName(NAME));
+    }
+  }, [TOKEN, NAME]);
+
+  useEffect(() => {
+    if (!isGMVLoading && FILTEREDSALEDATA) {
       calculateDailyGMV(FILTEREDSALEDATA, dispatch);
-      fetchCumalativeSaleCount(FILTEREDSALEDATA, dispatch);
-      fetchCumalativeSaleAmount(FILTEREDSALEDATA, dispatch);
+      fetchCumalativeSaleCount(FILTEREDSALEDATA, ALLDATES, dispatch);
+      fetchCumalativeSaleAmount(FILTEREDSALEDATA, ALLDATES, dispatch);
     }
   }, [FILTEREDSALEDATA]);
 
@@ -66,7 +89,7 @@ export const Revamped = () => {
 
   const DASHBOARD_FILTERS = {
     'By Product': ALLITEMS,
-    // 'By Store': ALLSTORES.map((store) => store.customer_name),
+    'By Store': LIVESTORES,
   };
 
   const OVERVIEW_FILTERS = (
@@ -114,7 +137,7 @@ export const Revamped = () => {
               icon='store'
               title='Total Stores'
               loading={isGMVLoading}
-              metric={LIVESTORES}
+              metric={LIVESTORES_COUNT}
               background='bg-purple-100'
               spinner={'border-purple-200'}
               tooltip={'Total no of stores where item is active.'}
@@ -155,6 +178,14 @@ export const Revamped = () => {
               />
             )}
           </div>
+        </Card>
+        <Card
+          title='Showcase'
+          classes={
+            'row-span-2 flex-grow max-h-[42rem] col-span-1 order-3 lg:order-2 '
+          }
+        >
+          <Carousal src={imageData} loading={ImageLoading} />
         </Card>
         <Card
           title='Sales '

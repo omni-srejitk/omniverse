@@ -6,12 +6,14 @@ import { Marketing } from '../routes/Marketing/Marketing';
 import RequireAuth from '../utils/RequireAuth';
 import { Stores } from '../routes/Stores/Stores';
 import { Inventory } from '../routes/Inventory/Inventory';
+import { Revamped } from '../routes/Revamped';
 
 export const RouterConfig = () => {
   return (
     <Routes>
       <Route path='/' element={<Login />} />
       <Route element={<RequireAuth />}>
+        <Route path='/test' element={<Revamped />} />
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/inventory' element={<Inventory />} />
         <Route path='/stores' element={<Stores />} />
