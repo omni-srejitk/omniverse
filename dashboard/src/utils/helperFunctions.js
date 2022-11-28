@@ -297,6 +297,20 @@ export const fetchAllDates = (sale_data = []) => {
   return DATES;
 };
 
+export const fetchAllStores = (sale_data = []) => {
+  const STORE_MAP = new Set();
+  sale_data?.map((sale) => STORE_MAP.add(sale[1]));
+  const STORES = Array.from(STORE_MAP);
+  return STORES;
+};
+
+export const fetchAllItems = (sale_data = []) => {
+  const ITEM_MAP = new Set();
+  sale_data?.map((sale) => ITEM_MAP.add(sale[6]));
+  const ITEMS = Array.from(ITEM_MAP);
+  return ITEMS;
+};
+
 export const fetchCumalativeSaleCount = (sale_data = [], dates, dispatch) => {
   const SALE_COUNT = new Map();
   let UNIT_SALE = 0;
@@ -387,20 +401,6 @@ export const fetchCumalativeSaleAmount = (sale_data = [], dates, dispatch) => {
   );
 
   dispatch(setCumlativeSum(DAYWISE_SALE));
-};
-
-export const fetchAllStores = (sale_data = []) => {
-  const STORE_MAP = new Set();
-  sale_data?.map((sale) => STORE_MAP.add(sale[1]));
-  const STORES = Array.from(STORE_MAP);
-  return STORES;
-};
-
-export const fetchAllItems = (sale_data = []) => {
-  const ITEM_MAP = new Set();
-  sale_data?.map((sale) => ITEM_MAP.add(sale[6]));
-  const ITEMS = Array.from(ITEM_MAP);
-  return ITEMS;
 };
 
 export const calculateDailyGMV = (arr, dispatch) => {
