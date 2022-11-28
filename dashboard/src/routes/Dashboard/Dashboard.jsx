@@ -8,40 +8,41 @@ import {
   Carousal,
   Filter,
   Select,
-  Spinner,
   StatCard,
-} from '../components';
+  Spinner,
+} from '../../components';
 import {
   selectAllStores,
   selectCumlativeAmtData,
   selectCumlativeCountData,
   selectSaleAmount,
   selectUnitsSold,
-} from '../redux/actions';
+} from '../../redux/actions';
 import {
   selectAllDates,
   selectAllItems,
   selectFilteredSalesData,
-} from '../redux/actions/dataActions';
+} from '../../redux/actions/dataActions';
 import {
   setAuthToken,
   setBrandName,
   setloginStatus,
-} from '../redux/features/authSlice';
+} from '../../redux/features/authSlice';
 import {
   fetchDailyGMV,
   fetchInventoryCount,
+  fetchLiveStoreCount,
   fetchStoreImages,
-} from '../services/apiCalls';
+} from '../../services/apiCalls';
 import {
   calculateDailyGMV,
   fetchCumalativeSaleAmount,
   fetchCumalativeSaleCount,
   getFilteredData,
   prepareSaleData,
-} from '../utils/helperFunctions';
+} from '../../utils/helperFunctions';
 
-export const Revamped = () => {
+export const Dashboard = () => {
   const BRAND = localStorage.getItem('Name');
   const [showState, setShowState] = useState({
     durationFilter: false,
@@ -50,12 +51,14 @@ export const Revamped = () => {
   const { isLoading: isGMVLoading, data: dailyGMVData } = fetchDailyGMV(BRAND);
   const { isLoading: isInventoryLoading, data: inventoryData } =
     fetchInventoryCount(BRAND);
+  const { isLoading: isInventoryCountLoading, data: inventoryCountData } =
+    fetchLiveStoreCount(BRAND);
   const { isLoading: ImageLoading, data: imageData } = fetchStoreImages(BRAND);
   const dispatch = useDispatch();
   const UNITS_SOLD = useSelector(selectUnitsSold);
   const SALE_AMT = useSelector(selectSaleAmount);
   const LIVESTORES = useSelector(selectAllStores);
-  const LIVESTORES_COUNT = useSelector(selectAllStores)?.length;
+  const LIVESTORES_COUNT = inventoryCountData;
   const BARCHART = useSelector(selectCumlativeCountData);
   const AREACHART = useSelector(selectCumlativeAmtData);
   const FILTERSTATE = useSelector((state) => state.filter);
@@ -136,7 +139,7 @@ export const Revamped = () => {
             <StatCard
               icon='store'
               title='Total Stores'
-              loading={isGMVLoading}
+              loading={isInventoryCountLoading}
               metric={LIVESTORES_COUNT}
               background='bg-purple-100'
               spinner={'border-purple-200'}

@@ -52,18 +52,19 @@ export const StoreCard = ({
 
     return res[storeName];
   };
+
   const STORE_DEP = createStoreWiseDeployed(
-    deployedQtyData?.data?.message,
+    deployedQtyData,
     store.customer_name
   );
 
   const STORE_INV = createStoreWiseInventory(dailyGMVData, store.customer);
 
   const fetchStoreIcon = (type) => {
-    if (type === 'Grocery Store') {
+    if (type === 'Grocery store') {
       return (
         <span className='material-icons flex h-full w-full items-center justify-center text-blue-500'>
-          shopping_cart
+          storefront
         </span>
       );
     } else if (type === 'Supermarket') {
@@ -81,13 +82,13 @@ export const StoreCard = ({
     } else if (type === 'Not Found' || type === undefined) {
       return (
         <span className='material-icons flex h-full w-full items-center justify-center text-orange-500'>
-          shopping_cart
+          local_mall
         </span>
       );
     } else {
       return (
         <span className='material-icons flex h-full w-full items-center justify-center text-yellow-500'>
-          crown
+          local_mall
         </span>
       );
     }
@@ -143,7 +144,7 @@ export const StoreCard = ({
                 info
               </span>
             </div>
-            <h3 className='text-4xl font-semibold'>{STORE_INV}</h3>
+            <h3 className='text-4xl font-semibold'>{STORE_INV || 0}</h3>
           </div>
         </div>
         <div className=' flex w-1/2 flex-col gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 p-4 shadow-sm'>
@@ -157,7 +158,7 @@ export const StoreCard = ({
                 info
               </span>
             </div>
-            <h3 className='text-4xl font-semibold'>{STORE_DEP}</h3>
+            <h3 className='text-4xl font-semibold'>{STORE_DEP || 0}</h3>
           </div>
         </div>
       </div>

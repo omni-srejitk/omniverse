@@ -7,38 +7,6 @@ import MapComponent from '../../components/Map/MapComponent';
 import { fetchAllStoresData } from '../../services/apiCalls';
 
 export const Stores = () => {
-  const TAGS = [
-    {
-      id: 1,
-      name: 'High Footfall',
-      color: 'purple',
-      icon: 'groups',
-    },
-    {
-      id: 2,
-      name: 'Super Popular',
-      color: 'yellow',
-      icon: 'favorite',
-    },
-    {
-      id: 3,
-      name: 'Organic',
-      color: 'green',
-      icon: 'spa',
-    },
-    {
-      id: 4,
-      name: 'In Society',
-      color: 'teal',
-      icon: 'other_houses',
-    },
-    {
-      id: 5,
-      name: 'Posh Locality',
-      color: 'pink',
-      icon: 'villa',
-    },
-  ];
   const [storeDetail, setStoreDetail] = useState({});
   const BRAND = localStorage.getItem('Name');
 
