@@ -17,7 +17,6 @@ import {
 import {
   selectAllInventory,
   selectAllItems,
-  selectAllStores,
   selectAllWarehouse,
   selectAllFilteredItems,
   selectAllFilteredStores,
@@ -30,7 +29,7 @@ import {
 import { applyInventoryFilters } from '../../utils/helperFunctions';
 
 export const Inventory = () => {
-  const BRAND = JSON.parse(localStorage.getItem('Name'));
+  const BRAND = localStorage.getItem('Name');
   const { isLoading: isInventoryLoading, data: inventoryRes } =
     fetchDeployedQuantity(BRAND);
 
@@ -39,18 +38,17 @@ export const Inventory = () => {
   const [showState, setShowState] = useState({
     productFilter: false,
   });
-  const [options, setOptions] = useState('ALL');
+  const [options, setOptions] = useState('INVENTORY');
   const [stocklist, setStocklist] = useState({});
   const dispatch = useDispatch();
 
-  const INVENTORY_LIST = !isInventoryLoading && inventoryRes?.data?.message;
-  const WAREHOUSE_LIST = !isWarehouseLoading && warehouseRes?.data?.message;
+  const INVENTORY_LIST = !isInventoryLoading && inventoryRes;
+  const WAREHOUSE_LIST = !isWarehouseLoading && warehouseRes;
   const INVENTORY_COUNT = useSelector(selectAllInventory);
   const WAREHOUSE_COUNT = useSelector(selectAllWarehouse);
   const FILTERED_ITEMS = useSelector(selectAllFilteredItems);
   const FILTERED_STORES = useSelector(selectAllFilteredStores);
   const ALLITEMS = useSelector(selectAllItems);
-  const ALLSTORES = useSelector(selectAllStores);
 
   useEffect(() => {
     if (!isInventoryLoading && !isWarehouseLoading) {
@@ -73,7 +71,6 @@ export const Inventory = () => {
 
   const FILTERS = {
     'By Product': ALLITEMS,
-    'By Store': ALLSTORES,
   };
 
   const INVENTORY_FILTERS = (
@@ -85,10 +82,7 @@ export const Inventory = () => {
   );
 
   const INVENTORY_OPTIONS = (
-    <div className='flex h-fit w-fit flex-col items-center justify-between lg:flex-row'>
-      <Button active={options === 'ALL'} clickFunc={() => setOptions('ALL')}>
-        All
-      </Button>
+    <div className='flex h-fit w-fit flex-row items-center justify-between'>
       <Button
         active={options === 'INVENTORY'}
         clickFunc={() => setOptions('INVENTORY')}
@@ -155,7 +149,6 @@ export const Inventory = () => {
                   <TableHeader>Product Name</TableHeader>
                   <TableHeader>SKU</TableHeader>
                   <TableHeader>Quantity</TableHeader>
-                  <TableHeader>Category</TableHeader>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -171,20 +164,6 @@ export const Inventory = () => {
                       <TableData>{item_name}</TableData>
                       <TableData>{item_code}</TableData>
                       <TableData>{qty}</TableData>
-                      <TableData>
-                        {customer_name ? (
-                          <div
-                            className='rounded-md bg-green-200 px-2 font-semibold
-                          '
-                          >
-                            Inventory
-                          </div>
-                        ) : (
-                          <div className='rounded-md bg-orange-200 px-2 font-semibold '>
-                            Warehouse
-                          </div>
-                        )}
-                      </TableData>
                     </TableRow>
                   )
                 )}

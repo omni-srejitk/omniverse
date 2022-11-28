@@ -15,7 +15,7 @@ export const Modal = ({ open, children, onClose, obj }) => {
           className='fixed top-0 left-1/2 z-50 m-0 mb-auto flex h-screen w-full -translate-x-1/2 translate-y-0 rounded-lg bg-white lg:top-1/2 lg:h-[32rem] lg:w-[45rem] lg:-translate-y-1/2'
           onClick={(e) => e.stopPropagation()}
         >
-          <Button type={'LOGO_BUTTON'} clickFunc={onClose}>
+          <Button absolute type={'LOGO_BUTTON'} clickFunc={onClose}>
             close
           </Button>
           {children}

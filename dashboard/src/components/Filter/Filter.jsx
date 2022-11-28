@@ -5,14 +5,18 @@ import {
   setFilteredItems,
   setFilteredStores,
 } from '../../redux/features/filterSlice';
+import { fetchAllLiveStores } from '../../services/apiCalls';
+import { Spinner } from '../Loaders';
 
 export const Filter = ({ filter, showState, setShowState }) => {
   const [itemFilters, setItemFilters] = useState([]);
   const [storeFilters, setStoreFilters] = useState([]);
-
+  const BRAND = localStorage.getItem('Name');
   const dispatch = useDispatch();
   const FILTERBYITEM = useSelector(selectItemFilters);
   const FILTERBYSTORE = useSelector(selectStoreFilters);
+  const { data: liveStoreData, isloading: isStoresLoading } =
+    fetchAllLiveStores(BRAND);
 
   const handleItemChange = (val) => {
     if (itemFilters?.includes(val)) {
@@ -55,10 +59,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
           {filter['By Product']?.map((filterBy) => (
             <div key={filterBy}>
               <div className=' my-2 flex max-h-[15rem] items-center justify-between overflow-y-auto'>
-                <div
-                  key={filterBy}
-                  className='mb-3 flex h-full w-80 items-start justify-between '
-                >
+                <div className='mb-3 flex h-full w-80 items-start justify-between '>
                   <label className='w-[90%] font-semibold' htmlFor={filterBy}>
                     {filterBy}
                   </label>
@@ -81,31 +82,39 @@ export const Filter = ({ filter, showState, setShowState }) => {
         <div className='divider h-[2px] w-full bg-gray-100'></div>
         <p className='my-2 font-medium text-gray-500'>By Store</p>
         <div className='mb-8 max-h-[15rem] overflow-y-auto pr-4 scrollbar-thin scrollbar-track-gray-50 scrollbar-thumb-blue-100 scrollbar-track-rounded-lg'>
-          {filter['By Store']?.map((filterByStore) => (
-            <div key={filterByStore}>
-              <div className=' my-2'>
-                <div
-                  key={filterByStore}
-                  className='mb-3 flex w-80 items-start justify-between '
-                >
-                  <label className='font-semibold' htmlFor={filterByStore}>
-                    {filterByStore}
-                  </label>
-                  <input
-                    type={'checkbox'}
-                    id={filterByStore}
-                    onChange={(e) => handleStoreChange(e.target.dataset.value)}
-                    checked={
-                      FILTERBYSTORE?.includes(filterByStore) ||
-                      storeFilters.includes(filterByStore)
-                    }
-                    data-value={filterByStore}
-                    className=' h-6 w-6 cursor-pointer font-semibold text-gray-500 hover:text-black'
-                  />
+          {isStoresLoading ? (
+            <div className='relative h-full w-full'>
+              <Spinner loading={isStoresLoading} />
+            </div>
+          ) : (
+            liveStoreData?.map((filterByStore) => (
+              <div key={filterByStore.customer}>
+                <div className=' my-2'>
+                  <div className='mb-3 flex w-80 items-start justify-between '>
+                    <label
+                      className='font-semibold'
+                      htmlFor={filterByStore.customer}
+                    >
+                      {filterByStore.customer_name}
+                    </label>
+                    <input
+                      type={'checkbox'}
+                      id={filterByStore.customer}
+                      onChange={(e) =>
+                        handleStoreChange(e.target.dataset.value)
+                      }
+                      checked={
+                        FILTERBYSTORE?.includes(filterByStore.customer) ||
+                        storeFilters.includes(filterByStore.customer)
+                      }
+                      data-value={filterByStore.customer}
+                      className=' h-6 w-6 cursor-pointer font-semibold text-gray-500 hover:text-black'
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
         <div className='mw-full flex items-center gap-4'>
           <button
