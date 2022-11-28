@@ -203,7 +203,7 @@ export const applyInventoryFilters = (
   }
   if (FILTERED_STORES?.length > 0) {
     INV_LIST = INV_LIST?.filter((item) =>
-      FILTERED_STORES?.includes(item.customer_name)
+      FILTERED_STORES?.includes(item.customer)
     );
   }
   INV_COUNT = INV_LIST?.reduce((acc, curr) => (acc += curr.qty), 0);
@@ -214,7 +214,6 @@ export const applyInventoryFilters = (
   dispatch(setAllWarehouseList(WARE_LIST));
 
   setStocklist({
-    ALL: [...INV_LIST, ...WARE_LIST],
     INVENTORY: [...INV_LIST],
     WAREHOUSE: [...WARE_LIST],
   });
@@ -483,10 +482,8 @@ export const getFilteredData = (filterState, data, dispatch) => {
 
 export const prepareSaleData = (sale_data, dispatch) => {
   const ALL_SALE_DATES = fetchAllDates(sale_data);
-  const ALL_STORES = fetchAllStores(sale_data);
   const ALL_ITEMS = fetchAllItems(sale_data);
 
   dispatch(setAllDates(ALL_SALE_DATES));
-  dispatch(setAllStores(ALL_STORES));
   dispatch(setAllItems(ALL_ITEMS));
 };

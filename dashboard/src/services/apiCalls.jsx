@@ -27,12 +27,18 @@ export const fetchSalesData = (BRAND) => {
 };
 
 export const fetchLiveStoreCount = (BRAND) => {
-  return useQuery(['livestore_count'], () => {
-    return axios.get(
-      `${import.meta.env.VITE_BASE_URL}` +
-        `.total_live_store?brand=${encodeURI(BRAND)}`
-    );
-  });
+  return useQuery(
+    ['livestore_count'],
+    () => {
+      return axios.get(
+        `${import.meta.env.VITE_BASE_URL}` +
+          `.total_live_store?brand=${encodeURI(BRAND)}`
+      );
+    },
+    {
+      select: (data) => data?.data?.message[0][0],
+    }
+  );
 };
 
 export const fetchStoreImages = (BRAND) => {
@@ -51,30 +57,48 @@ export const fetchStoreImages = (BRAND) => {
 };
 
 export const fetchDeployedQuantity = (BRAND) => {
-  return useQuery(['deployed_qty'], () => {
-    return axios.get(
-      `${import.meta.env.VITE_BASE_URL}` +
-        `.deployed_quantity?brand=${encodeURI(BRAND)}`
-    );
-  });
+  return useQuery(
+    ['deployed_qty'],
+    () => {
+      return axios.get(
+        `${import.meta.env.VITE_BASE_URL}` +
+          `.deployed_quantity?brand=${encodeURI(BRAND)}`
+      );
+    },
+    {
+      select: (data) => data?.data?.message,
+    }
+  );
 };
 
 export const fetchWarehouseQuantity = (BRAND) => {
-  return useQuery(['warehouse_qty'], () => {
-    return axios.get(
-      `${import.meta.env.VITE_BASE_URL}` +
-        `.warehouse_quantity?brand=${encodeURI(BRAND)}`
-    );
-  });
+  return useQuery(
+    ['warehouse_qty'],
+    () => {
+      return axios.get(
+        `${import.meta.env.VITE_BASE_URL}` +
+          `.warehouse_quantity?brand=${encodeURI(BRAND)}`
+      );
+    },
+    {
+      select: (data) => data?.data?.message,
+    }
+  );
 };
 
 export const fetchAllLiveStores = (BRAND) => {
-  return useQuery(['live-stores'], () => {
-    return axios.get(
-      `${import.meta.env.VITE_BASE_URL}` +
-        `.stores_lives?brand=${encodeURI(BRAND)}`
-    );
-  });
+  return useQuery(
+    ['live-stores'],
+    () => {
+      return axios.get(
+        `${import.meta.env.VITE_BASE_URL}` +
+          `.stores_lives?brand=${encodeURI(BRAND)}`
+      );
+    },
+    {
+      select: (data) => data?.data?.message,
+    }
+  );
 };
 
 export const fetchAllStoresData = (BRAND) => {
