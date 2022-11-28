@@ -13,6 +13,7 @@ export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: '', password: '' });
+  const [error, setError] = useState('');
   const dispatch = useDispatch();
   const loginUser = () => {
     return axios.post('https://api.omniflo.in/doauth', form);
@@ -29,10 +30,17 @@ export const Login = () => {
   };
 
   const updateUserDetails = () => {
-    const loginToast = isLoading && toast.loading('Signing you in...');
-    if (!isLoading && res?.msg === 'Unauthorized') {
+    const loginToast = toast.loading('Signing you in...');
+
+    if (!isLoading) {
+      toast.dismiss(loginToast);
+    }
+    if (res?.data?.msg === 'Unauthorized') {
+      setError('Please check your username/password again.');
       toast.error(`Couldn't sign you in`, { id: loginToast });
     }
+
+    console.log(error);
     if (!isLoading && res?.data && res?.data?.token) {
       localStorage.setItem('Token', JSON.stringify(res?.data.token));
       localStorage.setItem('Name', res?.data?.name.trim());
@@ -47,7 +55,9 @@ export const Login = () => {
   };
 
   useEffect(() => {
-    !isLoading && updateUserDetails();
+    if (!isLoading) {
+      updateUserDetails();
+    }
   }, [isLoading]);
 
   useEffect(() => {
@@ -59,13 +69,14 @@ export const Login = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     mutate(form);
+    setForm({ username: '', password: '' });
   };
 
   return (
     <main className='mx-auto flex min-h-screen w-screen items-center justify-center bg-white pl-0 lg:pl-0'>
       <form className=' ' onSubmit={onSubmit}>
         <h1 className=' mb-8 text-5xl font-semibold'>Sign in</h1>
-        <p className='mb-4 text-sm font-semibold'>Sign in with email address</p>
+        <p className='mb-4 text-sm font-semibold'>Enter the Omniverse</p>
         <div className='relative my-2 w-72'>
           <input
             type={'text'}
@@ -76,7 +87,7 @@ export const Login = () => {
             className=' h-12 w-full rounded-xl border-2 border-transparent bg-gray-100 py-[10px] pl-12 font-semibold text-gray-600 placeholder:text-gray-400'
           />
           <span className='material-symbols-rounded pointer-events-none  absolute top-0 bottom-0 left-0 flex w-12 items-center justify-center text-gray-500'>
-            email
+            alternate_email
           </span>
         </div>
         <div className='relative my-2 w-72'>
@@ -98,6 +109,13 @@ export const Login = () => {
             {showPassword ? 'visibility_off' : 'visibility'}
           </span>
         </div>
+        <p
+          className={`text-center text-sm font-medium text-red-500 ${
+            error ? 'flex' : 'hidden'
+          }`}
+        >
+          {error}
+        </p>
         <button
           type='submit'
           className='my-2 flex w-72 cursor-pointer items-center justify-center rounded-xl border-2   border-transparent bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'

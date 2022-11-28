@@ -10,7 +10,13 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
-export const BarCharts = ({ data = [], filter = 'All Time', color }) => {
+export const BarCharts = ({
+  data = [],
+  XAxisKey,
+  YAxisKey,
+  DataKey,
+  color,
+}) => {
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'INR',
@@ -27,7 +33,7 @@ export const BarCharts = ({ data = [], filter = 'All Time', color }) => {
         </defs>
 
         <XAxis
-          dataKey='Date'
+          dataKey={XAxisKey}
           style={{
             fontSize: '0.7rem',
             margin: '1rem 0 0',
@@ -42,7 +48,7 @@ export const BarCharts = ({ data = [], filter = 'All Time', color }) => {
           }}
         />
         <YAxis
-          dataKey='TOTAL_GMV'
+          dataKey={YAxisKey}
           style={{
             fontSize: '0.7rem',
             margin: '1rem 0 0',
@@ -63,7 +69,7 @@ export const BarCharts = ({ data = [], filter = 'All Time', color }) => {
           )}
         />
 
-        <Bar dataKey={'TOTAL_GMV'} fill={color} axisLine={false} />
+        <Bar dataKey={DataKey} fill={color} axisLine={false} />
       </BarChart>
     </ResponsiveContainer>
   );

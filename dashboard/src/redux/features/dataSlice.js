@@ -7,10 +7,13 @@ const initialState = {
   prices: [],
   salesData: {},
   sold: 0,
+  units_sold: 0,
+  sale_amount: 0,
   inventory: 0,
   warehouse: 0,
   inventoryList: [],
   warehouseList: [],
+  filteredSalesData: [],
   gmvSaleData: [],
 };
 
@@ -39,6 +42,12 @@ const dataSlice = createSlice({
     setAllPrices: (state, action) => {
       state.prices = action.payload;
     },
+    setAllUnitsSold: (state, action) => {
+      state.units_sold = action.payload;
+    },
+    setAllSaleAmount: (state, action) => {
+      state.sale_amount = action.payload;
+    },
     setAllSalesData: (state, action) => {
       state.salesData = action.payload;
     },
@@ -51,6 +60,10 @@ const dataSlice = createSlice({
     setAllWarehouseList: (state, action) => {
       state.warehouseList = action.payload;
     },
+
+    setFilteredSaleData: (state, action) => {
+      state.filteredSalesData = action.payload;
+    },
     resetDataSlice: (state) =>
       (state = {
         stores: [],
@@ -61,6 +74,7 @@ const dataSlice = createSlice({
         sold: 0,
         inventory: 0,
         warehouse: 0,
+        filteredSalesData: [],
         inventoryList: [],
         warehouseList: [],
         gmvSaleData: [],
@@ -75,11 +89,14 @@ export const {
   setAllPrices,
   setAllSold,
   setAllSalesData,
+  setAllUnitsSold,
+  setAllSaleAmount,
   setAllInventory,
   setAllWarehouse,
   setAllGMVSaleData,
   setAllInventoryList,
   setAllWarehouseList,
+  setFilteredSaleData,
   resetDataSlice,
 } = dataSlice.actions;
 

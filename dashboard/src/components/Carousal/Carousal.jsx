@@ -24,20 +24,21 @@ export const Carousal = ({ src, loading }) => {
   }, [src, loading]);
 
   useEffect(() => {
-    if (currentIndex > MAX_LENGTH) {
+    if (!loading && currentIndex > MAX_LENGTH) {
       MAX_LENGTH += IMAGES_LOADED;
     }
     if (
       currentIndex > MAX_LENGTH &&
+      !loading &&
       currentIndex === Object.keys(src)?.length - 1
     ) {
       MAX_LENGTH = IMAGES_LOADED;
       setCurrentIndex(0);
     }
-    if (currentIndex > Object.keys(src)?.length - 1) {
+    if (!loading && currentIndex > Object.keys(src)?.length - 1) {
       setCurrentIndex(0);
     }
-    if (currentIndex < 0) {
+    if (!loading && currentIndex < 0) {
       const PICS_LENGTH = Object.keys(src)?.length - 1;
       setCurrentIndex(PICS_LENGTH);
     }

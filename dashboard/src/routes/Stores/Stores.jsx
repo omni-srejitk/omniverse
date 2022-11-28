@@ -7,38 +7,6 @@ import MapComponent from '../../components/Map/MapComponent';
 import { fetchAllStoresData } from '../../services/apiCalls';
 
 export const Stores = () => {
-  const TAGS = [
-    {
-      id: 1,
-      name: 'High Footfall',
-      color: 'purple',
-      icon: 'groups',
-    },
-    {
-      id: 2,
-      name: 'Super Popular',
-      color: 'yellow',
-      icon: 'favorite',
-    },
-    {
-      id: 3,
-      name: 'Organic',
-      color: 'green',
-      icon: 'spa',
-    },
-    {
-      id: 4,
-      name: 'In Society',
-      color: 'teal',
-      icon: 'other_houses',
-    },
-    {
-      id: 5,
-      name: 'Posh Locality',
-      color: 'pink',
-      icon: 'villa',
-    },
-  ];
   const [storeDetail, setStoreDetail] = useState({});
   const BRAND = localStorage.getItem('Name');
 
@@ -49,6 +17,41 @@ export const Stores = () => {
   const [showModal, setShowModal] = useState(false);
 
   const [wishlist, setWishlist] = useState([]);
+  const [labels, setLabels] = useState({});
+
+  const checkPopularity = (rating, review_count) => {
+    if (rating > 4 && review_count > 50) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const checkFootfall = (daily_footfall) => {
+    if (daily_footfall > 250) {
+      return true;
+    }
+    return false;
+  };
+
+  const checkIfPosh = (locality_area) => {
+    if (locality_area === 'Posh') {
+      return true;
+    }
+    return false;
+  };
+
+  const checkForStoreTags = (store) => {
+    const IFPOSH = checkIfPosh(store.locality_area);
+    const HIGH_FOOTFALL = checkFootfall(store.daily_footfall);
+    const SUPER_POPULAR = checkPopularity(store.rating, store.review_count);
+
+    return {
+      IFPOSH,
+      HIGH_FOOTFALL,
+      SUPER_POPULAR,
+    };
+  };
 
   return (
     <main className='page__content'>
@@ -60,7 +63,7 @@ export const Stores = () => {
               <StoreCard
                 key={store.customer}
                 store={store}
-                tags={TAGS}
+                tags={checkForStoreTags(store)}
                 label={LABELS.FLAGSHIP}
                 setShowModal={setShowModal}
                 showModal={showModal}

@@ -39,6 +39,7 @@ const filterSlice = createSlice({
         state.filterByItem.push(action.payload);
       }
     },
+    
     resetFilterSlice: (state) =>
       (state = {
         filterDuration: 'All Time',

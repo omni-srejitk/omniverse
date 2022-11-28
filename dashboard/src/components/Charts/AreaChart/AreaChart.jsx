@@ -11,7 +11,13 @@ import {
   Legend,
 } from 'recharts';
 
-export const AreaCharts = ({ data = [], color }) => {
+export const AreaCharts = ({
+  data = [],
+  XAxisKey,
+  YAxisKey,
+  DataKey,
+  color,
+}) => {
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       <AreaChart width={'100%'} height={'50%'} data={data}>
@@ -22,7 +28,7 @@ export const AreaCharts = ({ data = [], color }) => {
           </linearGradient>
         </defs>
         <XAxis
-          dataKey='Date'
+          dataKey={XAxisKey}
           style={{
             fontSize: '0.7rem',
             margin: '1rem 0 0',
@@ -38,7 +44,7 @@ export const AreaCharts = ({ data = [], color }) => {
           }}
         />
         <YAxis
-          dataKey='TOTAL_SALES'
+          dataKey={YAxisKey}
           style={{
             fontSize: '0.7rem',
             margin: '1rem 0 0',
@@ -57,7 +63,7 @@ export const AreaCharts = ({ data = [], color }) => {
         />
         <Area
           type='monotone'
-          dataKey={'TOTAL_SALES'}
+          dataKey={DataKey}
           width={'100%'}
           height={'90%'}
           stroke={color}
