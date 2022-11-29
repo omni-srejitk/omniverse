@@ -5,7 +5,7 @@ import {
   setAllInventoryList,
   setAllItems,
   setAllSaleAmount,
-    setAllUnitsSold,
+  setAllUnitsSold,
   setAllWarehouse,
   setAllWarehouseList,
   setFilteredSaleData,
@@ -378,4 +378,44 @@ export const prepareSaleData = (sale_data, dispatch) => {
 
   dispatch(setAllDates(ALL_SALE_DATES));
   dispatch(setAllItems(ALL_ITEMS));
+};
+
+export const computeAnalyticsSalesNumber2 = (count, amount, days) => {
+  // days tell us how many days to go behind
+  try {
+    //code here
+    const presentDate = moment().format('DD-MM-YY');
+    const previousDate = moment().subtract(days, 'days').format('DD-MM-YY');
+    let previousCount, previousGMV, presentCount, presentGMV;
+    let presentDateIndex, previousDateIndex; // for saving the index of present and previousDate
+    console.log(count)
+    console.log(amount)
+    for (let i = 0; i < count.length; i++) {
+      if (count[i].Date == previousDate) {
+        previousCount = count[i].Unit_Sold;
+        previousGMV = amount[i].Unit_Amt;
+        previousDateIndex = i
+      } else if (count[i].Date == presentDate) {
+        presentCount = count[i].Unit_Sold;
+        presentGMV = amount[i].Unit_Amt;
+        presentDateIndex = i
+      }
+    }
+    let percentageChangeCount = (presentCount - previousCount) / 100;
+    let percentageChangeGMV = (presentGMV - previousGMV) / 100;
+    return {
+      percentageChangeCount,
+      percentageChangeGMV,
+      presentData: {
+        count: count[presentDateIndex],
+        amount: amount[presentDateIndex],
+      },
+      previousData: {
+        count: count[previousDateIndex],
+        amount: amount[previousDateIndex],
+      },
+    };
+  } catch (error) {
+    console.log(error);
+  }
 };
