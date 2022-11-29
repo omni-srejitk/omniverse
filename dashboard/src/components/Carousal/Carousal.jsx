@@ -3,9 +3,8 @@ import { reduceImages } from '../../utils/helperFunctions';
 import { Spinner } from '../Loaders';
 import { encode } from 'blurhash';
 
-export const Carousal = ({ src, loading }) => {
+export const Carousal = ({ src = {}, loading }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [images, setImages] = useState([]);
   let MAX_LENGTH = 5;
   const IMAGES_LOADED = 5;
 
@@ -17,11 +16,6 @@ export const Carousal = ({ src, loading }) => {
     }
   };
 
-  useEffect(() => {
-    if (!loading) {
-      reduceImages(src, setImages);
-    }
-  }, [src, loading]);
 
   useEffect(() => {
     if (!loading && currentIndex > MAX_LENGTH) {
@@ -79,13 +73,13 @@ export const Carousal = ({ src, loading }) => {
     <div className='flex h-full max-h-full flex-col items-center justify-start overflow-hidden rounded-lg pb-20'>
       <div className='mb-4 flex w-full items-center justify-between overflow-hidden'>
         <div>
-          {!loading && Object.keys(images)?.length > 0 ? (
+          {!loading && src && Object.keys(src)?.length > 0 ? (
             <h2 className='text-xl font-medium capitalize'>
-              {loading ? 'Loading...' : images[currentIndex]['customer']}
+              {loading ? 'Loading...' : src[currentIndex]['customer']}
             </h2>
           ) : null}
         </div>
-        {!loading && Object.keys(images)?.length > 1 ? (
+        {!loading && src && Object.keys(src)?.length > 1 ? (
           <div className='flex h-14 w-fit items-center justify-between gap-4'>
             <button
               className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
@@ -95,7 +89,7 @@ export const Carousal = ({ src, loading }) => {
               <span className='material-icons m-0 p-0 '>chevron_left</span>
             </button>
             <button
-              disabled={Object.keys(images)?.length - 1 === currentIndex}
+              disabled={src && Object.keys(src)?.length - 1 === currentIndex}
               className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
               onClick={() => handleClick('NEXT')}
             >
@@ -117,13 +111,14 @@ export const Carousal = ({ src, loading }) => {
           <div
             className={` flex h-full w-full flex-grow justify-center gap-4 overflow-hidden `}
           >
-            {!loading && Object.keys(images)?.length > 0 ? (
+            {!loading && src && Object.keys(src)?.length > 0 ? (
               <img
                 className='z-10  h-full w-full rounded-xl object-cover'
                 src={
                   !loading &&
-                  images[currentIndex]['status'] &&
-                  images[currentIndex]['image']
+                  src &&
+                  src[currentIndex]['status'] &&
+                  src[currentIndex]['image']
                 }
               />
             ) : (
