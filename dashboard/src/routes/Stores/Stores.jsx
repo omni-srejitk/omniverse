@@ -16,9 +16,6 @@ export const Stores = () => {
 
   const [showModal, setShowModal] = useState(false);
 
-  const [wishlist, setWishlist] = useState([]);
-  const [labels, setLabels] = useState({});
-
   const checkPopularity = (rating, review_count) => {
     if (rating > 4 && review_count > 50) {
       return true;
