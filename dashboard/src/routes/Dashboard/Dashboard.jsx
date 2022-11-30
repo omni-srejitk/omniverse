@@ -188,7 +188,7 @@ export const Dashboard = () => {
             'row-span-2 flex-grow max-h-[42rem] col-span-1 order-3 lg:order-2 '
           }
         >
-          <Carousal src={imageData} loading={ImageLoading} />
+          <Carousal imagelist={imageData} loading={ImageLoading} />
         </Card>
         <Card
           title='Sales '
