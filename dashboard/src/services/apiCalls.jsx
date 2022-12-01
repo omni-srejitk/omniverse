@@ -130,3 +130,34 @@ export const fetchDailyGMV = (BRAND) => {
     }
   );
 };
+
+// * Feat : New + Faster API
+export const fetchDateWiseSales = (BRAND) => {
+  return useQuery(
+    ['datewise_sales'],
+    () => {
+      return axios.get(
+        `${import.meta.env.VITE_BASE_URL}` +
+          `.calculate_sales_date_wise?brand=${encodeURI(BRAND)}`
+      );
+    },
+    {
+      select: (data) => data?.data?.message,
+    }
+  );
+};
+
+export const fetchAgeandGenderData = (BRAND) => {
+  return useQuery(
+    ['age_and_gender'],
+    () => {
+      return axios.get(
+        `${import.meta.env.VITE_BASE_URL}` +
+          `.age_and_gender?brand=${encodeURI(BRAND)}`
+      );
+    },
+    {
+      select: (data) => data?.data?.message,
+    }
+  );
+};
