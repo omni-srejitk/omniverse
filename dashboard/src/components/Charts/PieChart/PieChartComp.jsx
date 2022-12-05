@@ -41,14 +41,13 @@ export const PieChartComp = ({ data = {} }) => {
   };
 
   const CustomLegend = ({ payload }) => {
-    console.log(payload);
     if (payload && payload.length) {
       return (
         <div className='mt-8 flex w-full justify-between'>
           {payload?.map(({ payload }) => (
             <div
               key={payload.cell}
-              className='flex h-24 w-40 flex-col items-center rounded-lg bg-white/90'
+              className='flex h-24 w-40 flex-col items-start overflow-hidden text-ellipsis whitespace-nowrap break-words rounded-lg  bg-white/90'
             >
               <div
                 style={{ background: payload.fill }}
@@ -56,6 +55,7 @@ export const PieChartComp = ({ data = {} }) => {
               ></div>
 
               <p
+                title={payload.name}
                 style={{ color: payload.fill }}
                 className='mb-2 font-semibold text-gray-400'
               >{`${payload.name} `}</p>
