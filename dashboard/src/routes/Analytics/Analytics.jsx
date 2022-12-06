@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Card,
+  Filter,
+  Select,
   TableBody,
   TableContainer,
   TableData,
@@ -13,13 +15,21 @@ import {
 import { GenderChart } from '../../components/Charts';
 import { LineCharts } from '../../components/Charts/LineChart/LineChart';
 import { PieChartComp } from '../../components/Charts/PieChart/PieChartComp';
-import { selectFilteredSalesData } from '../../redux/actions/dataActions';
+import {
+  selectAllItems,
+  selectAllStores,
+  selectFilteredAgeGenderData,
+  selectFilteredSalesData,
+} from '../../redux/actions/dataActions';
 import {
   fetchAgeandGenderData,
   fetchAllLiveStores,
   fetchDailyGMV,
 } from '../../services/apiCalls';
-import { getFilteredData } from '../../utils/helperFunctions';
+import {
+  getFilteredAgeGenderData,
+  getFilteredData,
+} from '../../utils/helperFunctions';
 export const Analytics = () => {
   const [genderData, setGenderData] = useState({});
   const [ageData, setAgeData] = useState([]);
@@ -33,16 +43,38 @@ export const Analytics = () => {
 
   const BRAND = localStorage.getItem('Name');
 
+  const LIVESTORES = useSelector(selectAllStores);
+  const ALLITEMS = useSelector(selectAllItems);
+
   const { isLoading: isGMVLoading, data: dailyGMVData } = fetchDailyGMV(BRAND);
   const FILTEREDSALEDATA = useSelector(selectFilteredSalesData);
-
+  const FILTEREDAGEGENDERDATA = useSelector(selectFilteredAgeGenderData);
   const { data: genderStatsData, isLoading: isGenderStatsLoading } =
     fetchAgeandGenderData(BRAND);
   const FILTERSTATE = useSelector((state) => state.filter);
   const dispatch = useDispatch();
-  const { isLoading, data: liveStoresData } = fetchAllLiveStores(BRAND);
+  const { isLoading: isLiveStoresDataLoading, data: liveStoresData } =
+    fetchAllLiveStores(BRAND);
 
-  console.log(liveStoresData);
+  const [showState, setShowState] = useState({
+    durationFilter: false,
+    productFilter: false,
+  });
+  const DASHBOARD_FILTERS = {
+    'By Product': ALLITEMS,
+    'By Store': LIVESTORES,
+  };
+
+  const OVERVIEW_FILTERS = (
+    <div className='flex items-center gap-4'>
+      <Select showState={showState} setShowState={setShowState} />
+      <Filter
+        filter={DASHBOARD_FILTERS}
+        showState={showState}
+        setShowState={setShowState}
+      />
+    </div>
+  );
   useEffect(() => {
     if (isGMVLoading) return;
     getFilteredData(FILTERSTATE, dailyGMVData, dispatch);
@@ -85,11 +117,11 @@ export const Analytics = () => {
 
       let tempsss = topStores.map((sale) => {
         let foundSale = liveStoresData?.find(
-          (store) => store.customer === sale[0]
+          (store) => store?.customer === sale[0]
         );
 
         return {
-          name: foundSale.customer_name,
+          name: foundSale?.customer_name,
           value: sale[1],
         };
       });
@@ -98,8 +130,7 @@ export const Analytics = () => {
     }
   };
 
-  const parseAgeData = (arr, loading) => {
-    if (loading) return;
+  const parseAgeData = (arr) => {
     let ageMap = new Map();
 
     arr?.map((sale) => {
@@ -152,38 +183,33 @@ export const Analytics = () => {
   comparatorFn();
 
   useEffect(() => {
-    parseGenderData(genderStatsData, isGenderStatsLoading);
-    parseAgeData(genderStatsData, isGenderStatsLoading);
-  }, [genderStatsData, isGenderStatsLoading]);
+    parseGenderData(FILTEREDAGEGENDERDATA, isGenderStatsLoading);
+    parseAgeData(FILTEREDAGEGENDERDATA, isGenderStatsLoading);
+  }, [FILTEREDAGEGENDERDATA, isGenderStatsLoading]);
 
   useEffect(() => {
     fetchTopStores(FILTEREDSALEDATA);
     fetchAuditData(FILTEREDSALEDATA);
   }, [FILTEREDSALEDATA]);
+
+  useEffect(() => {
+    if (isGMVLoading) return;
+    getFilteredData(FILTERSTATE, dailyGMVData, dispatch);
+  }, [isGMVLoading, FILTERSTATE, dailyGMVData]);
+
+  useEffect(() => {
+    if (isGenderStatsLoading) return;
+    getFilteredAgeGenderData(FILTERSTATE, genderStatsData, dispatch);
+  }, [isGenderStatsLoading, FILTERSTATE, genderStatsData]);
+
   return (
     <main className='page__content'>
-      <h1 className='page__title'>Analytics</h1>
+      <div className='flex w-full items-center justify-between'>
+        <h1 className='page__title'>Analytics</h1>
+        {OVERVIEW_FILTERS}
+      </div>
+
       <div className='mb-40 h-fit min-h-screen w-full flex-col items-center justify-start'>
-        <Card title={'Total Sales'}>
-          <div className='h-full w-full'>
-            <h1 className='text-4xl font-semibold'>&#8377; 55,000</h1>
-            <div className='my-2 flex w-fit items-center justify-between gap-3'>
-              <div className='my-2 flex w-fit items-center justify-center rounded-full bg-green-100 px-2 py-1'>
-                <span className='material-icons text-base text-green-500'>
-                  arrow_upwards
-                </span>
-                <p className='text-sm font-semibold text-green-500'> 37 %</p>
-              </div>
-              <p className='font-semibold text-gray-400/70'>
-                {' '}
-                vs Sept 8th 2022
-              </p>
-            </div>
-            <div className='h-40 w-full'>
-              <LineCharts />
-            </div>
-          </div>
-        </Card>
         <Card title='Gender Split'>
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>
             <GenderChart data={genderData} />

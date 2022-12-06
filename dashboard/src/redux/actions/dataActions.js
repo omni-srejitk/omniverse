@@ -11,3 +11,5 @@ export const selectAllWarehouse = (state) => state.data.warehouse;
 export const selectUnitsSold = (state) => state.data.units_sold;
 export const selectSaleAmount = (state) => state.data.sale_amount;
 export const selectFilteredSalesData = (state) => state.data.filteredSalesData;
+export const selectFilteredAgeGenderData = (state) =>
+  state.data.filteredGenderAgeData;
