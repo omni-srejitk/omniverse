@@ -8,6 +8,7 @@ import {
   setAllUnitsSold,
   setAllWarehouse,
   setAllWarehouseList,
+  setFilteredAgeGenderData,
   setFilteredSaleData,
 } from '../redux/features/dataSlice';
 import { setFilteredDates } from '../redux/features/filterSlice';
@@ -378,6 +379,67 @@ export const prepareSaleData = (sale_data, dispatch) => {
 
   dispatch(setAllDates(ALL_SALE_DATES));
   dispatch(setAllItems(ALL_ITEMS));
+};
+
+export const filterAgeGenderByDate = ({ filterDuration }, arr) => {
+  switch (filterDuration) {
+    case 'This Week':
+      const firstDayOfWeek = moment().startOf('week');
+      const currDayOfWeek = moment().endOf('week');
+      console.log(arr);
+
+      return arr?.filter((item) =>
+        moment(item.date, 'YYYY-MM-DD').isBetween(
+          moment(firstDayOfWeek, 'YYYY-MM-DD'),
+          moment(currDayOfWeek, 'YYYY-MM-DD')
+        )
+      );
+
+    case 'This Month':
+      const firstDayOfMonth = moment().startOf('month');
+      const currDayOfMonth = moment().endOf('month');
+
+      return arr?.filter((item) =>
+        moment(item.date, 'YYYY-MM-DD').isBetween(
+          moment(firstDayOfMonth, 'YYYY-MM-DD'),
+          moment(currDayOfMonth, 'YYYY-MM-DD')
+        )
+      );
+    default:
+      return arr;
+  }
+};
+
+//  * DONE
+const filterAgeGenderByStore = ({ filteredStores }, arr) => {
+  if (filteredStores?.length > 0) {
+    let filteredByStores = arr?.filter((sale) => {
+      return filteredStores?.includes(sale.customer);
+    });
+
+    return filteredByStores;
+  } else {
+    return arr;
+  }
+};
+
+// * DONE
+const filterAgeGenderByItem = ({ filteredItems }, arr) => {
+  if (filteredItems?.length > 0) {
+    return arr?.filter((sale) => filteredItems.includes(sale.item_name));
+  } else {
+    return arr;
+  }
+};
+
+export const getFilteredAgeGenderData = (filterState, data, dispatch) => {
+  const res = applyFilters(
+    filterState,
+    filterAgeGenderByDate,
+    filterAgeGenderByItem,
+    filterAgeGenderByStore
+  )(data);
+  dispatch(setFilteredAgeGenderData(res));
 };
 
 export const computeAnalyticsSalesNumber2 = (count, amount, days) => {

@@ -22,22 +22,30 @@ export const Header = () => {
   return (
     <header className=' fixed top-0  z-30 mx-auto flex h-20 w-screen items-center justify-between bg-white px-6 shadow-sm md:right-0 md:w-[calc(100vw-6rem)] md:pr-10 lg:w-[calc(100vw-20rem)]'>
       <img src={'/logo.png'} className='w-32 lg:hidden' />
-      <div className='ml-auto'>
-        <Button clickFunc={Logout} type='OUTLINED'>
-          Logout
-        </Button>
-      </div>
+
       <div
         onClick={() => setProfileOption((Prev) => !Prev)}
-        className={`relative hidden h-10 w-10 cursor-pointer items-center justify-center rounded-full border-2 lg:ml-auto ${
+        className={`relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border-2 lg:ml-auto ${
           profileOption
-            ? 'border-gray-300 bg-gray-200/50 hover:bg-gray-300'
-            : 'border-gray-200 bg-white hover:bg-gray-50'
+            ? 'border-gray-300 bg-gray-200/50'
+            : 'border-gray-200 bg-white'
         }   `}
       >
-        <MdPerson className='pointer-events-none fill-black' />
+        <span className='material-icons pointer-events-none flex select-none items-center justify-center text-sm text-gray-500'>
+          person
+        </span>
         {profileOption && (
-          <div className='absolute top-16 -right-4 flex h-fit w-full min-w-[10rem] flex-col justify-between overflow-hidden rounded-xl border-2 border-gray-300 bg-gray-50 shadow-sm'></div>
+          <div className='absolute top-16 -right-0  flex h-fit w-[17.5rem] min-w-[10rem] flex-col justify-between overflow-hidden rounded-xl bg-white p-4 shadow-md'>
+            <div className='h-full w-full'>
+              <div
+                className='flex h-12 w-full items-center justify-between rounded-xl px-3 font-semibold text-gray-500 hover:text-black'
+                onClick={Logout}
+              >
+                <p>Logout</p>
+                <span className='material-icons'>logout</span>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </header>

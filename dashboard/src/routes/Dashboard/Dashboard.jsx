@@ -58,12 +58,12 @@ export const Dashboard = () => {
   const UNITS_SOLD = useSelector(selectUnitsSold);
   const SALE_AMT = useSelector(selectSaleAmount);
   const LIVESTORES = useSelector(selectAllStores);
+  const ALLITEMS = useSelector(selectAllItems);
   const LIVESTORES_COUNT = inventoryCountData;
   const BARCHART = useSelector(selectCumlativeCountData);
   const AREACHART = useSelector(selectCumlativeAmtData);
   const FILTERSTATE = useSelector((state) => state.filter);
   const FILTEREDSALEDATA = useSelector(selectFilteredSalesData);
-  const ALLITEMS = useSelector(selectAllItems);
   const ALLDATES = useSelector(selectAllDates);
   const TOKEN = JSON.parse(localStorage.getItem('Token'));
   const NAME = localStorage.getItem('Name');
@@ -96,7 +96,7 @@ export const Dashboard = () => {
   };
 
   const OVERVIEW_FILTERS = (
-    <div className='items-centerS flex gap-4'>
+    <div className='items-center flex gap-4'>
       <Select showState={showState} setShowState={setShowState} />
       <Filter
         filter={DASHBOARD_FILTERS}
@@ -188,7 +188,7 @@ export const Dashboard = () => {
             'row-span-2 flex-grow max-h-[42rem] col-span-1 order-3 lg:order-2 '
           }
         >
-          <Carousal src={imageData} loading={ImageLoading} />
+          <Carousal imagelist={imageData} loading={ImageLoading} />
         </Card>
         <Card
           title='Sales '
