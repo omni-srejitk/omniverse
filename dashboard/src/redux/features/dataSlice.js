@@ -14,6 +14,7 @@ const initialState = {
   inventoryList: [],
   warehouseList: [],
   filteredSalesData: [],
+  filteredGenderAgeData: [],
   gmvSaleData: [],
 };
 
@@ -64,6 +65,9 @@ const dataSlice = createSlice({
     setFilteredSaleData: (state, action) => {
       state.filteredSalesData = action.payload;
     },
+    setFilteredAgeGenderData: (state, action) => {
+      state.filteredGenderAgeData = action.payload;
+    },
     resetDataSlice: (state) =>
       (state = {
         stores: [],
@@ -75,12 +79,15 @@ const dataSlice = createSlice({
         inventory: 0,
         warehouse: 0,
         filteredSalesData: [],
+        filteredGenderAgeData: [],
         inventoryList: [],
         warehouseList: [],
         gmvSaleData: [],
       }),
   },
 });
+
+export const selectGenderAgeData = (state) => state.data.filteredGenderAgeData;
 
 export const {
   setAllStores,
@@ -91,6 +98,7 @@ export const {
   setAllSalesData,
   setAllUnitsSold,
   setAllSaleAmount,
+  setFilteredAgeGenderData,
   setAllInventory,
   setAllWarehouse,
   setAllGMVSaleData,

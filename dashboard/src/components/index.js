@@ -3,7 +3,7 @@ export { Header } from './Header/Header';
 export { Sidebar } from './Sidebar/Sidebar';
 
 // * Utilities
-export { Spinner } from './Loaders';
+export { Spinner, ProgressBar } from './Loaders';
 export { Button } from './Buttons';
 export { TierLabel } from './Labels';
 export { StoreLabels } from './Labels';
