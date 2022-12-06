@@ -388,17 +388,15 @@ export const computeAnalyticsSalesNumber2 = (count, amount, days) => {
     const previousDate = moment().subtract(days, 'days').format('DD-MM-YY');
     let previousCount, previousGMV, presentCount, presentGMV;
     let presentDateIndex, previousDateIndex; // for saving the index of present and previousDate
-    console.log(count)
-    console.log(amount)
     for (let i = 0; i < count.length; i++) {
       if (count[i].Date == previousDate) {
         previousCount = count[i].Unit_Sold;
         previousGMV = amount[i].Unit_Amt;
-        previousDateIndex = i
+        previousDateIndex = i;
       } else if (count[i].Date == presentDate) {
         presentCount = count[i].Unit_Sold;
         presentGMV = amount[i].Unit_Amt;
-        presentDateIndex = i
+        presentDateIndex = i;
       }
     }
     let percentageChangeCount = (presentCount - previousCount) / 100;
@@ -415,6 +413,51 @@ export const computeAnalyticsSalesNumber2 = (count, amount, days) => {
         amount: amount[previousDateIndex],
       },
     };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const calculateDayWiseGMV = (data) => {
+  try {
+    console.log(data)
+    let dayWiseGMV = [];
+    for (let i = 0; i < data?.length; i++) {
+      dayWiseGMV.push({ date: data[i][0], gmv: data[i][7] });
+    }
+    return dayWiseGMV;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const calculateDayWiseItemsSold = (data) => {
+  try {
+    let dayWiseItemsSold = [];
+    for (let i = 0; i < data?.length; i++) {
+      dayWiseItemsSold.push({ date: data[i][0], unitsSold: data[i][2] });
+    }
+    return dayWiseSold;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchItemsSales = (data) => {
+  try {
+    let keyValue = {};
+    let itemSales = [];
+    for (let i = 0; i < data.length; i++) {
+      if (keyValue[data[i][6]]) {
+        keyValue[data[i][6]] += data[i][2];
+      } else {
+        keyValue[data[i][6]] = data[i][2];
+      }
+    }
+    for (let items in keyValue) {
+      itemSales.push({ items: items, qnt: keyValue[items] });
+    }
+    return itemSales;
   } catch (error) {
     console.log(error);
   }

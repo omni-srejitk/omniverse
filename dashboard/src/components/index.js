@@ -22,6 +22,6 @@ export {
 export { AreaCharts, BarCharts } from './Charts';
 
 // * Misc
-export { Card, StatCard, StoreCard } from './Cards';
+export { Card, StatCard, StoreCard, AnalyticsChart} from './Cards';
 export { Select } from './Select/Select';
 export { Filter } from './Filter/Filter';
