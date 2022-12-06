@@ -75,7 +75,7 @@ export const PieChartComp = ({ data = {} }) => {
       <PieChart width={'100%'} height={'100%'}>
         <Pie
           data={data}
-          dataKey={data.value}
+          dataKey='value'
           nameKey='name'
           cx='50%'
           cy='50%'
@@ -84,8 +84,9 @@ export const PieChartComp = ({ data = {} }) => {
           fill='#8884d8'
           labelLine={false}
         >
-          {data.map((entry, index) => (
+          {data?.map((entry, index) => (
             <Cell
+              key={entry}
               dataKey={`cell-${index}`}
               fill={colors[index % colors.length]}
             />

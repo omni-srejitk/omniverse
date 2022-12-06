@@ -25,7 +25,7 @@ export const SIDEBAR_LINKS = [
     icon: 'bar_chart',
     title: 'Analytics',
     link: '/analytics',
-    active: false,
+    active: true,
   },
   {
     id: 5,
