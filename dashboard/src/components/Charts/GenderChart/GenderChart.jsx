@@ -7,17 +7,17 @@ export const GenderChart = ({ data = {} }) => {
 
   return (
     <div className='flex h-full w-full items-center justify-between gap-8'>
-      <div className='relative flex h-full flex-grow flex-col items-center justify-start'>
-        <div className='relative h-full w-full '>
-          <span className='material-icons flex h-full w-full items-center justify-center text-[15rem] text-green-500'>
+      <div className=' flex h-full flex-grow flex-col items-start justify-start'>
+        <div className=' flex h-full w-full items-center'>
+          <span className='material-icons flex w-full items-center justify-center text-7xl text-green-400'>
             man
           </span>
         </div>
         <ProgressBar label='Male' value={MALE_PERC} />
       </div>
-      <div className='relative flex h-full flex-grow flex-col items-center justify-start'>
-        <div className='relative h-full w-full '>
-          <span className='material-icons flex h-full w-full items-center justify-center text-[15rem] text-red-500'>
+      <div className=' flex h-full flex-grow flex-col items-start justify-start'>
+        <div className=' flex h-full w-full items-center'>
+          <span className='material-icons flex w-full items-center justify-center text-7xl text-red-400'>
             woman
           </span>
         </div>
