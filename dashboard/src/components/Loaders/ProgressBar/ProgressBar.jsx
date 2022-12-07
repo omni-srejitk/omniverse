@@ -29,8 +29,8 @@ export const ProgressBar = ({ label, value }) => {
   let TEXT_COLOR = calculateTextColors(value);
 
   return (
-    <div className='h-fit w-full'>
-      <div className='mb-1 flex w-full justify-between'>
+    <div className='h-fit w-20'>
+      <div className='mb-1 flex w-full items-center justify-between gap-2'>
         <span
           className={`text-base font-medium dark:text-white`}
           style={{ color: TEXT_COLOR }}
