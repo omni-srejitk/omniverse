@@ -9,6 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
   CartesianGrid,
+  Brush,
 } from 'recharts';
 export const BarCharts = ({
   data = [],
@@ -24,7 +25,17 @@ export const BarCharts = ({
 
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
-      <BarChart width={'100%'} height={'50%'} data={data}>
+      <BarChart
+        width={'100%'}
+        height={'50%'}
+        margin={{
+          top: 20,
+          right: 30,
+          left: 20,
+          bottom: 45,
+        }}
+        data={data}
+      >
         <defs>
           <linearGradient id='color' x1='0' y1='0' x2='0' y2='1'>
             <stop offset='0%' stopColor={color} stopOpacity='0.9' />
@@ -68,7 +79,8 @@ export const BarCharts = ({
             <span className='text-color-class'>{value}</span>
           )}
         />
-
+        {/* // TODO  Add this only on developmenmt server */}
+        <Brush dataKey={DataKey} height={30} stroke={color} />
         <Bar dataKey={DataKey} fill={color} axisLine={false} />
       </BarChart>
     </ResponsiveContainer>
