@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  AnalyticsChart,
   Card,
   Filter,
   Select,
@@ -13,7 +14,8 @@ import {
   TableRow,
 } from '../../components';
 import { GenderChart } from '../../components/Charts';
-import { LineCharts } from '../../components/Charts/LineChart/LineChart';
+import { UnitSold } from '../../components/Charts/Analytics/UnitSold';
+import { VerticalBarChart } from '../../components/Charts/BarChart/VerticalBarChart';
 import { PieChartComp } from '../../components/Charts/PieChart/PieChartComp';
 import {
   selectAllItems,
@@ -27,6 +29,7 @@ import {
   fetchDailyGMV,
 } from '../../services/apiCalls';
 import {
+  fetchItemsSales,
   getFilteredAgeGenderData,
   getFilteredData,
 } from '../../utils/helperFunctions';
@@ -182,6 +185,8 @@ export const Analytics = () => {
 
   comparatorFn();
 
+  const TOP_SKU = fetchItemsSales(FILTEREDSALEDATA);
+
   useEffect(() => {
     parseGenderData(FILTEREDAGEGENDERDATA, isGenderStatsLoading);
     parseAgeData(FILTEREDAGEGENDERDATA, isGenderStatsLoading);
@@ -209,27 +214,44 @@ export const Analytics = () => {
         {OVERVIEW_FILTERS}
       </div>
 
-      <div className='mb-40 grid h-fit min-h-screen w-full grid-cols-3 grid-rows-3 flex-col items-center justify-start gap-8'>
-        <Card title='Hellloo' classes={'row-span-1 col-span-2'}>
-          <div>Hello</div>
+      <div className='grid-rows-[(repeat(3, minmax(25rem,1fr)))] mb-40 grid h-fit min-h-screen w-full grid-cols-3 flex-col items-center justify-start gap-8'>
+        <Card title='Total Sales' classes={'row-span-1 col-span-2'}>
+          <AnalyticsChart data={FILTEREDSALEDATA} />
         </Card>
-        <Card title='Hellloo'>
-          <div>Hello</div>
+        <Card title='Top SKU'>
+          <div className='h-full max-h-[25rem] w-full'>
+            <VerticalBarChart
+              data={TOP_SKU}
+              XAxisKey={'qty'}
+              YAxisKey={'item'}
+              dataKey={'qty'}
+              color={'#6ee7b7'}
+            />
+          </div>
         </Card>
-        <Card title='Hellloo'>
-          <div>Hello</div>
+        <Card title='Unit Sold' classes={'row-span-1 col-span-1 max-h-[35rem]'}>
+          <UnitSold
+            data={FILTEREDSALEDATA}
+            XAxisKey={'date'}
+            YAxisKey={'qty'}
+            DataKey={'qty'}
+            color={'#a7f3d0'}
+          />
         </Card>
-        <Card title='Gender Split'>
+        <Card title='Gender Split' classes={'max-h-[35rem]'}>
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>
             <GenderChart data={genderData} />
           </div>
         </Card>
-        <Card title='Age Split'>
+        <Card title='Age Split' classes={'max-h-[35rem]'}>
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>
             <PieChartComp data={ageData} />
           </div>
         </Card>
-        <Card title='Audit Log' classes={'row-span-1 col-span-2'}>
+        <Card
+          title='Audit Log'
+          classes={'row-span-1 col-span-2 max-h-[35rem] overflow-hidden'}
+        >
           <TableContainer>
             <TableHead>
               <TableRow>
