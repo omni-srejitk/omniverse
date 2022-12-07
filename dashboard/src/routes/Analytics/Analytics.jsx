@@ -209,7 +209,16 @@ export const Analytics = () => {
         {OVERVIEW_FILTERS}
       </div>
 
-      <div className='mb-40 h-fit min-h-screen w-full flex-col items-center justify-start'>
+      <div className='mb-40 grid h-fit min-h-screen w-full grid-cols-3 grid-rows-3 flex-col items-center justify-start gap-8'>
+        <Card title='Hellloo' classes={'row-span-1 col-span-2'}>
+          <div>Hello</div>
+        </Card>
+        <Card title='Hellloo'>
+          <div>Hello</div>
+        </Card>
+        <Card title='Hellloo'>
+          <div>Hello</div>
+        </Card>
         <Card title='Gender Split'>
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>
             <GenderChart data={genderData} />
@@ -220,12 +229,7 @@ export const Analytics = () => {
             <PieChartComp data={ageData} />
           </div>
         </Card>
-        <Card title='Top Stores'>
-          <div className='h-80 w-full rounded-xl border-2 border-transparent'>
-            <PieChartComp data={topStore} />
-          </div>
-        </Card>
-        <Card>
+        <Card title='Audit Log' classes={'row-span-1 col-span-2'}>
           <TableContainer>
             <TableHead>
               <TableRow>
@@ -270,6 +274,11 @@ export const Analytics = () => {
               ))}
             </TableBody>
           </TableContainer>
+        </Card>
+        <Card title='Top Stores'>
+          <div className='h-80 w-full rounded-xl border-2 border-transparent'>
+            <PieChartComp data={topStore} />
+          </div>
         </Card>
       </div>
     </main>
