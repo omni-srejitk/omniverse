@@ -14,7 +14,7 @@ export const VerticalBarChart = (props) => {
   const SLICE_LENGTH = data?.length > 5 ? 5 : data?.length;
   const SLICED_DATA = data?.slice(0, SLICE_LENGTH);
   return (
-    <ResponsiveContainer width={'100%'} height={'90%'}>
+    <ResponsiveContainer width={'90%'} height={'90%'}>
       <BarChart height={'100%'} data={SLICED_DATA} layout='vertical'>
         <XAxis
           dataKey={XAxisKey}

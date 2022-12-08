@@ -79,8 +79,11 @@ export const BarCharts = ({
             <span className='text-color-class'>{value}</span>
           )}
         />
+        {import.meta.env.DEV && (
+          <Brush dataKey={DataKey} height={30} stroke={color} />
+        )}
         {/* // TODO  Add this only on developmenmt server */}
-        <Brush dataKey={DataKey} height={30} stroke={color} />
+
         <Bar dataKey={DataKey} fill={color} axisLine={false} />
       </BarChart>
     </ResponsiveContainer>
