@@ -214,11 +214,14 @@ export const Analytics = () => {
         {OVERVIEW_FILTERS}
       </div>
 
-      <div className='grid-rows-[(repeat(3, minmax(25rem,1fr)))] mb-40 grid h-fit min-h-screen w-full grid-cols-3 flex-col items-center justify-start gap-8'>
-        <Card title='Total Sales' classes={'row-span-1 col-span-2'}>
+      <div className='lg:grid-rows-[(repeat(3, minmax(25rem,1fr)))]  max-w-screen mb-40 grid h-fit min-h-screen w-full grid-cols-1 grid-rows-[7] items-center  justify-start gap-8 lg:grid-cols-3'>
+        <Card
+          title='Total Sales'
+          classes={'row-span-1 w-full h-full col-span-1 lg:col-span-2'}
+        >
           <AnalyticsChart data={FILTEREDSALEDATA} />
         </Card>
-        <Card title='Top SKU'>
+        <Card title='Top SKU' classes={'w-full h-full col-span-1 row-span-1'}>
           <div className='h-full max-h-[25rem] w-full'>
             <VerticalBarChart
               data={TOP_SKU}
@@ -229,7 +232,7 @@ export const Analytics = () => {
             />
           </div>
         </Card>
-        <Card title='Unit Sold' classes={'row-span-1 col-span-1 max-h-[35rem]'}>
+        <Card title='Unit Sold' classes={'row-span-1 col-span-1 max-h-[25rem]'}>
           <UnitSold
             data={FILTEREDSALEDATA}
             XAxisKey={'date'}
@@ -238,19 +241,22 @@ export const Analytics = () => {
             color={'#a7f3d0'}
           />
         </Card>
-        <Card title='Gender Split' classes={'max-h-[35rem]'}>
-          <div className='h-80 w-full rounded-xl border-2 border-transparent'>
-            <GenderChart data={genderData} />
-          </div>
-        </Card>
-        <Card title='Age Split' classes={'max-h-[35rem]'}>
+
+        <Card title='Age Split' classes={'max-h-[25rem]'}>
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>
             <PieChartComp data={ageData} />
           </div>
         </Card>
+        <Card title='Gender Split' classes={'max-h-[25rem]'}>
+          <div className='h-80 w-full rounded-xl border-2 border-transparent'>
+            <GenderChart data={genderData} />
+          </div>
+        </Card>
         <Card
           title='Audit Log'
-          classes={'row-span-1 col-span-2 max-h-[35rem] overflow-hidden'}
+          classes={
+            'row-span-1 col-span-1 lg:col-span-2 max-h-[25rem] overflow-hidden'
+          }
         >
           <TableContainer>
             <TableHead>
@@ -297,9 +303,12 @@ export const Analytics = () => {
             </TableBody>
           </TableContainer>
         </Card>
-        <Card title='Top Stores'>
+        <Card
+          title='Top Stores'
+          classes={'max-h-[25rem] col-span-1 overflow-hidden'}
+        >
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>
-            <PieChartComp data={topStore} />
+            <PieChartComp data={topStore} vertical />
           </div>
         </Card>
       </div>

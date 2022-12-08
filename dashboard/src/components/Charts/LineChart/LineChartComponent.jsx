@@ -15,7 +15,7 @@ export const LineChartComponent = ({ data }) => {
   const chartData = calculateDayWiseGMV(data);
 
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
+    <ResponsiveContainer width={'100%'} height={'80%'}>
       <LineChart width={'95%'} height={'100%'} data={chartData}>
         <Line
           type='monotone'

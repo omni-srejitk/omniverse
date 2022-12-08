@@ -14,18 +14,13 @@ export const VerticalBarChart = (props) => {
   const SLICE_LENGTH = data?.length > 5 ? 5 : data?.length;
   const SLICED_DATA = data?.slice(0, SLICE_LENGTH);
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
-      <BarChart
-        width={'100%'}
-        height={'100%'}
-        data={SLICED_DATA}
-        layout='vertical'
-      >
+    <ResponsiveContainer width={'100%'} height={'90%'}>
+      <BarChart height={'100%'} data={SLICED_DATA} layout='vertical'>
         <XAxis
           dataKey={XAxisKey}
           style={{
             fontSize: '0.7rem',
-            margin: '1rem 0 0',
+            margin: '1rem',
             fontFamily: 'Inter',
           }}
           axisLine={false}
@@ -39,6 +34,12 @@ export const VerticalBarChart = (props) => {
           tickLine={false}
           axisLine={false}
           tickMargin={5}
+          style={{
+            fontSize: '0.7rem',
+            margin: '1rem',
+            fontFamily: 'Inter',
+            textAlign: 'start',
+          }}
           interval={'preserveStartEnd'}
           type='category'
         />

@@ -8,10 +8,8 @@ import {
   Legend,
 } from 'recharts';
 
-export const PieChartComp = ({ data = {} }) => {
-  // Data format for pie chart => an array of objects with name and value keys and their respective values and pass colors array with colors that you want to show there
-  // const data = [{  "name": "Group A", "value": 400  }]
-  // colors array like this =>
+export const PieChartComp = (props) => {
+  const { data = {}, vertical = false } = props;
   const colors = [
     '#0088FE',
     '#FFBB28',
@@ -43,7 +41,7 @@ export const PieChartComp = ({ data = {} }) => {
   const CustomLegend = ({ payload }) => {
     if (payload && payload.length) {
       return (
-        <div className='mt-8 flex w-full justify-between'>
+        <div className={` flex w-full  justify-between`}>
           {payload?.map(({ payload }) => (
             <div
               key={payload.cell}
@@ -51,7 +49,7 @@ export const PieChartComp = ({ data = {} }) => {
             >
               <div
                 style={{ background: payload.fill }}
-                className={`mb-2 h-4 w-4 rounded-lg`}
+                className={`mb-2 h-4 w-4 rounded-lg border-2`}
               ></div>
 
               <p
@@ -71,16 +69,17 @@ export const PieChartComp = ({ data = {} }) => {
     return null;
   };
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'} margin={{ top: 0 }}>
-      <PieChart width={'100%'} height={'100%'}>
+    <ResponsiveContainer width={'100%'} height={'100%'}>
+      <PieChart align='center'>
         <Pie
           data={data}
           dataKey='value'
           nameKey='name'
           cx='50%'
-          cy='50%'
-          innerRadius={70}
-          outerRadius={95}
+          cy='40%'
+          ali
+          innerRadius={'50%'}
+          outerRadius={'60%'}
           fill='#8884d8'
           labelLine={false}
         >
@@ -94,7 +93,11 @@ export const PieChartComp = ({ data = {} }) => {
         </Pie>
 
         <Tooltip content={<CustomTooltip />} />
-        <Legend content={<CustomLegend />} />
+        <Legend
+          layout={vertical ? 'vertical' : 'horizontal'}
+          verticalAlign='bottom'
+          align={vertical ? 'start' : 'center'}
+        />
       </PieChart>
     </ResponsiveContainer>
   );
