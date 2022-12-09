@@ -24,7 +24,7 @@ export const PieChartComp = (props) => {
       return (
         <div className='flex flex-col items-start rounded-lg border-2 border-gray-200 bg-white/90 p-4'>
           <p className='font-thin'>
-            <span className=' font-medium text-black'>Range:</span>
+            <span className=' font-medium text-black'>Category:</span>
             {`${payload[0].name}`}
           </p>
           <p className='font-thin'>
@@ -83,13 +83,17 @@ export const PieChartComp = (props) => {
           fill='#8884d8'
           labelLine={false}
         >
-          {data?.map((entry, index) => (
-            <Cell
-              key={entry}
-              dataKey={`cell-${index}`}
-              fill={colors[index % colors.length]}
-            />
-          ))}
+          {data?.map((entry, index) => {
+            return (
+              entry?.name !== undefined && (
+                <Cell
+                  key={entry}
+                  dataKey={`cell-${index}`}
+                  fill={colors[index % colors.length]}
+                />
+              )
+            );
+          })}
         </Pie>
 
         <Tooltip content={<CustomTooltip />} />

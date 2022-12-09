@@ -8,6 +8,7 @@ import {
 } from '../../../redux/actions';
 import { computeAnalyticsSalesNumber2 } from '../../../utils/helperFunctions';
 import { LineChartComponent } from '../../Charts/LineChart/LineChartComponent';
+import { ComingSoon } from '../../Placeholders/comingSoon';
 
 export const AnalyticsChart = ({ data }) => {
   const FILTEREDDATE = useSelector(selectAllFilteredDates);
@@ -28,8 +29,15 @@ export const AnalyticsChart = ({ data }) => {
   return (
     <div className='h-full max-h-[18rem] w-full'>
       <h1 className='mb-6 text-3xl font-semibold'>&#8377;{TOTAL_SALES}</h1>
-
-      <LineChartComponent data={data} />
+      {data?.length === 0 ? (
+        <ComingSoon
+          logo={'auto_graph'}
+          title='No Data Found.'
+          subtitle='Please try again with different filters.'
+        />
+      ) : (
+        <LineChartComponent data={data} />
+      )}
     </div>
   );
 };

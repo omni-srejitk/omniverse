@@ -1,9 +1,10 @@
 import React from 'react';
 import { ProgressBar } from '../../Loaders';
+import { ComingSoon } from '../../Placeholders/comingSoon';
 
 export const GenderChart = ({ data = {} }) => {
-  const MALE_PERC = Math.round((+data.Male * 100) / +data.All);
-  const FEMALE_PERC = Math.round((+data.Female * 100) / +data.All);
+  const MALE_PERC = Math.round((+data.Male * 100) / +data.All) || 0;
+  const FEMALE_PERC = Math.round((+data.Female * 100) / +data.All) || 0;
 
   const GENDER_RATIO_CHART = ({ type }) => {
     return (
@@ -25,10 +26,20 @@ export const GenderChart = ({ data = {} }) => {
     );
   };
 
-  return (
+  const GENDER_STATS = (
     <div className='flex h-full w-full items-center justify-between gap-8'>
       <GENDER_RATIO_CHART type='MALE' />
       <GENDER_RATIO_CHART type='FEMALE' />
     </div>
+  );
+
+  return MALE_PERC === 0 && FEMALE_PERC === 0 ? (
+    <ComingSoon
+      logo={'insights'}
+      title={'No matching data.'}
+      subtitle={'You will soon see gender wise sale ratio here.'}
+    />
+  ) : (
+    GENDER_STATS
   );
 };
