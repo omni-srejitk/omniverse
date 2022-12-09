@@ -8,51 +8,54 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
-export const VerticalBarChart = (data) => {
-  // data = array of objects and 
-  // BarChartData for Bar chart component
+export const VerticalBarChart = React.memo((props) => {
+  const { data, dataKey, color = '#86efac', XAxisKey, YAxisKey } = props;
 
+  const SLICE_LENGTH = data?.length > 5 ? 5 : data?.length;
+  const SLICED_DATA = data?.slice(0, SLICE_LENGTH);
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
-      <BarChart 
-      width={'100%'} 
-      height={'100%'} 
-      data={data} 
-      layout="vertical"
-      >
+    <ResponsiveContainer width={'90%'} height={'90%'}>
+      <BarChart height={'100%'} data={SLICED_DATA} layout='vertical'>
         <XAxis
-          dataKey={data.XAxisValue}
+          dataKey={XAxisKey}
           style={{
             fontSize: '0.7rem',
-            margin: '1rem 0 0',
+            margin: '1rem',
             fontFamily: 'Inter',
           }}
           axisLine={false}
           tickLine={false}
           margin={{ top: -20 }}
           interval={'preserveStartEnd'}
-          type="number"
+          type='number'
         />
         <YAxis
-          dataKey={data.YAxisValue}
-          style={{
-            fontSize: '0.7rem',
-            fontFamily: 'Inter',
-          }}
+          dataKey={YAxisKey}
           tickLine={false}
           axisLine={false}
+          tickMargin={5}
+          style={{
+            fontSize: '0.7rem',
+            margin: '1rem',
+            fontFamily: 'Inter',
+            textAlign: 'start',
+          }}
           interval={'preserveStartEnd'}
-          type="category"
+          type='category'
         />
         <CartesianGrid opacity={'0.2'} />
-        <Tooltip 
-          contentStyle={{ backgroundColor: "black", opacity: '0.9', borderRadius: '1rem',}}
-          wrapperStyle={{outline: 'none'}}
-          labelStyle={{ color: "white" }}
-          itemStyle={{ color: "cyan" }}
+        <Tooltip
+          contentStyle={{
+            backgroundColor: 'black',
+            opacity: '0.9',
+            borderRadius: '1rem',
+          }}
+          wrapperStyle={{ outline: 'none' }}
+          labelStyle={{ color: 'white' }}
+          itemStyle={{ color: 'cyan' }}
         />
-        <Bar dataKey={data.XAxisValue} fill={'#86efac'} axisLine={false} />
+        <Bar dataKey={dataKey} fill={color} axisLine={false} />
       </BarChart>
     </ResponsiveContainer>
   );
-};
+});

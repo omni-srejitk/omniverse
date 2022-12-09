@@ -1,12 +1,22 @@
 import React from 'react';
 
-export const Card = ({ children, title, cardHeader = null, classes }) => {
+export const Card = ({
+  children,
+  title,
+  cardHeader = null,
+  classes,
+  info = '',
+}) => {
   return (
     <div className={`card ${classes}`}>
       <div className='card_head mb-4 flex items-center justify-between '>
-        <div className='flex items-center justify-between gap-4'>
-          <div className='h-8 w-4 rounded-md bg-purple-200'></div>
+        <div className='flex items-center justify-start'>
+          <div className='mr-4 h-8 w-4 rounded-md bg-purple-200'></div>
           <h4 className=' pr-4 text-lg md:text-3xl'>{title}</h4>
+          {/* //TODO To be added in Next PR */}
+          {/* <h1 title='info' className='material-icons text-sm text-black/70'>
+            info
+          </h1> */}
         </div>
         {cardHeader}
       </div>

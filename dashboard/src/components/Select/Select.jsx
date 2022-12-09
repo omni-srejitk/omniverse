@@ -20,7 +20,7 @@ export const Select = ({ showState, setShowState }) => {
             productFilter: false,
           })
         }
-        className='flex cursor-pointer items-center justify-between rounded-lg  border-2 border-gray-100 px-4 py-2 font-medium hover:border-gray-400'
+        className='flex cursor-pointer items-center justify-between rounded-lg border-2  border-gray-100 bg-white px-4 py-2 font-medium hover:border-gray-400'
       >
         {FILTERBYDURATION}
         <span className='material-icons'>

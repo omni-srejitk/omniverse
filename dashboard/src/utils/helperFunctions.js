@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { selectAllFilteredDates } from '../redux/actions';
 import {
   setAllDates,
   setAllInventory,
@@ -17,6 +18,7 @@ import {
   setCumlativeUnits,
 } from '../redux/features/graphSlice';
 
+const BRAND = localStorage.getItem('Name');
 export const calcTickCount = (duration) => {
   switch (duration) {
     case 'All Time':
@@ -378,6 +380,7 @@ export const prepareSaleData = (sale_data, dispatch) => {
   const ALL_ITEMS = fetchAllItems(sale_data);
 
   dispatch(setAllDates(ALL_SALE_DATES));
+  dispatch(setFilteredDates(ALL_SALE_DATES));
   dispatch(setAllItems(ALL_ITEMS));
 };
 
@@ -482,12 +485,21 @@ export const computeAnalyticsSalesNumber2 = (count, amount, days) => {
 
 export const calculateDayWiseGMV = (data) => {
   try {
-    console.log(data)
-    let dayWiseGMV = [];
-    for (let i = 0; i < data?.length; i++) {
-      dayWiseGMV.push({ date: data[i][0], gmv: data[i][7] });
+    let keyValue = {};
+    let itemSold = [];
+
+    for (let i = 0; i < data.length; i++) {
+      if (keyValue[data[i][0]]) {
+        keyValue[data[i][0]] += data[i][7];
+      } else {
+        keyValue[data[i][0]] = data[i][7];
+      }
     }
-    return dayWiseGMV;
+    for (let date in keyValue) {
+      itemSold.push({ date: date, gmv: keyValue[date] });
+    }
+
+    return itemSold;
   } catch (error) {
     console.log(error);
   }
@@ -495,17 +507,33 @@ export const calculateDayWiseGMV = (data) => {
 
 export const calculateDayWiseItemsSold = (data) => {
   try {
-    let dayWiseItemsSold = [];
-    for (let i = 0; i < data?.length; i++) {
-      dayWiseItemsSold.push({ date: data[i][0], unitsSold: data[i][2] });
+    let keyValue = {};
+    let itemSold = [];
+
+    for (let i = 0; i < data.length; i++) {
+      if (keyValue[data[i][0]]) {
+        keyValue[data[i][0]] += data[i][2];
+      } else {
+        keyValue[data[i][0]] = data[i][2];
+      }
     }
-    return dayWiseSold;
+    for (let date in keyValue) {
+      itemSold.push({ date: date, qty: keyValue[date] });
+    }
+
+    return itemSold;
   } catch (error) {
     console.log(error);
   }
 };
 
 export const fetchItemsSales = (data) => {
+  let word = 'Nutritatva';
+  let regex = new RegExp(
+    `(${word})|(\W|\D,_)|([0-9][a-z]*)(^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$)`,
+    'g'
+  );
+
   try {
     let keyValue = {};
     let itemSales = [];
@@ -517,8 +545,13 @@ export const fetchItemsSales = (data) => {
       }
     }
     for (let items in keyValue) {
-      itemSales.push({ items: items, qnt: keyValue[items] });
+      let parsedItemName = items.replace(regex, ' ');
+      itemSales.push({ item: parsedItemName, qty: keyValue[items] });
     }
+
+    console.log('ITEMSALE', itemSales);
+
+    itemSales.sort((a, b) => +b.qty - +a.qty);
     return itemSales;
   } catch (error) {
     console.log(error);

@@ -5,6 +5,11 @@ import { RouterConfig } from './config/RouterConfig';
 import { Toaster } from 'react-hot-toast';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  setFilteredItems,
+  setFilteredStores,
+} from './redux/features/filterSlice';
 
 function App() {
   const { pathname } = useLocation();
@@ -14,6 +19,13 @@ function App() {
   useEffect(() => {
     document.title = PAGETITLE + ' | Omniverse';
   }, [pathname]);
+
+  const dispatch = useDispatch();
+
+  if (pathname !== '/') {
+    dispatch(setFilteredItems([]));
+    dispatch(setFilteredStores([]));
+  }
 
   return (
     <div className='App'>

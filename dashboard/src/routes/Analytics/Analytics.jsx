@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  AnalyticsChart,
   Card,
   Filter,
   Select,
@@ -13,8 +14,11 @@ import {
   TableRow,
 } from '../../components';
 import { GenderChart } from '../../components/Charts';
-import { LineCharts } from '../../components/Charts/LineChart/LineChart';
+import { UnitSold } from '../../components/Charts/Analytics/UnitSold';
+import { VerticalBarChart } from '../../components/Charts/BarChart/VerticalBarChart';
 import { PieChartComp } from '../../components/Charts/PieChart/PieChartComp';
+import { ComingSoon } from '../../components/Placeholders/ComingSoon';
+
 import {
   selectAllItems,
   selectAllStores,
@@ -27,6 +31,7 @@ import {
   fetchDailyGMV,
 } from '../../services/apiCalls';
 import {
+  fetchItemsSales,
   getFilteredAgeGenderData,
   getFilteredData,
 } from '../../utils/helperFunctions';
@@ -98,7 +103,6 @@ export const Analytics = () => {
     setGenderData(genderData);
   };
 
-  //console.log(FILTEREDSALEDATA);
   const fetchTopStores = (arr) => {
     const storeData = new Map();
 
@@ -116,9 +120,9 @@ export const Analytics = () => {
         ?.slice(0, 3);
 
       let tempsss = topStores.map((sale) => {
-        let foundSale = liveStoresData?.find(
-          (store) => store?.customer === sale[0]
-        );
+        let foundSale = liveStoresData?.find((store) => {
+          return store?.customer === sale[0];
+        });
 
         return {
           name: foundSale?.customer_name,
@@ -182,6 +186,8 @@ export const Analytics = () => {
 
   comparatorFn();
 
+  const TOP_SKU = fetchItemsSales(FILTEREDSALEDATA);
+
   useEffect(() => {
     parseGenderData(FILTEREDAGEGENDERDATA, isGenderStatsLoading);
     parseAgeData(FILTEREDAGEGENDERDATA, isGenderStatsLoading);
@@ -209,67 +215,145 @@ export const Analytics = () => {
         {OVERVIEW_FILTERS}
       </div>
 
-      <div className='mb-40 h-fit min-h-screen w-full flex-col items-center justify-start'>
-        <Card title='Gender Split'>
+      <div className='max-w-screen  mb-40 grid h-fit min-h-screen w-full grid-cols-1 grid-rows-[7] items-center justify-start  gap-8 lg:grid-cols-3 lg:grid-rows-[repeat(3,minmax(25rem,1fr))]'>
+        <Card
+          title='Total Sales'
+          classes={'row-span-1 w-full h-full col-span-1 lg:col-span-2'}
+        >
+          <AnalyticsChart data={FILTEREDSALEDATA} />
+        </Card>
+        <Card title='Top SKU' classes={'w-full h-full col-span-1 row-span-1'}>
+          <div className='h-full max-h-[25rem] w-full'>
+            {TOP_SKU?.length === 0 ? (
+              <ComingSoon
+                logo={'assessment'}
+                title='No Data Found.'
+                subtitle='Please try again with different filters.'
+              />
+            ) : (
+              <VerticalBarChart
+                data={TOP_SKU}
+                XAxisKey={'qty'}
+                YAxisKey={'item'}
+                dataKey={'qty'}
+                color={'#6ee7b7'}
+              />
+            )}
+          </div>
+        </Card>
+        <Card title='Unit Sold' classes={'row-span-1 col-span-1 max-h-[25rem]'}>
+          {FILTEREDSALEDATA?.length === 0 ? (
+            <ComingSoon
+              logo={'insert_chart'}
+              title={'No matching data.'}
+              subtitle={'You will soon see unit wise sale data here.'}
+            />
+          ) : (
+            <UnitSold
+              data={FILTEREDSALEDATA}
+              XAxisKey={'date'}
+              YAxisKey={'qty'}
+              DataKey={'qty'}
+              color={'#a7f3d0'}
+            />
+          )}
+        </Card>
+
+        <Card title='Age Split' classes={'max-h-[25rem]'}>
+          <div className='h-80 w-full rounded-xl border-2 border-transparent'>
+            {ageData?.length === 0 ? (
+              <ComingSoon
+                logo={'pie_chart'}
+                title={'No matching data.'}
+                subtitle={'You will soon see age wise sale ratio here.'}
+              />
+            ) : (
+              <PieChartComp data={ageData} />
+            )}
+          </div>
+        </Card>
+        <Card title='Gender Split' classes={'max-h-[25rem]'}>
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>
             <GenderChart data={genderData} />
           </div>
         </Card>
-        <Card title='Age Split'>
-          <div className='h-80 w-full rounded-xl border-2 border-transparent'>
-            <PieChartComp data={ageData} />
-          </div>
+        <Card
+          title='Audit Log'
+          classes={
+            'row-span-1 col-span-1 lg:col-span-2 max-h-[25rem] overflow-hidden'
+          }
+        >
+          {auditLog?.length === 0 ? (
+            <ComingSoon
+              logo={'table_chart'}
+              title={'No matching data.'}
+              subtitle={'You will soon see unit wise ssale audits here.'}
+            />
+          ) : (
+            <TableContainer>
+              <TableHead>
+                <TableRow>
+                  <TableHeader>Date</TableHeader>
+                  <TableHeader>SKUs</TableHeader>
+                  <TableHeader>Quantity</TableHeader>
+                  <TableHeader>GMV</TableHeader>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {auditLog?.map((audit) => (
+                  <tr
+                    className='min-h-20 flex max-h-40 w-full'
+                    key={audit.Date}
+                  >
+                    <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-pre-wrap break-words px-2  font-semibold scrollbar-thin'>
+                      {audit.Date}
+                    </td>
+                    <td className='flex h-full w-full flex-grow flex-col items-start '>
+                      {audit.Value?.map((sale) => (
+                        <TableRow className='flex w-full flex-grow items-start justify-between'>
+                          <TableData>{sale[6] || 0}</TableData>
+                        </TableRow>
+                      ))}
+                    </td>
+                    <td className='flex h-full w-full flex-grow flex-col items-start '>
+                      {audit.Value?.map((sale) => (
+                        <TableRow className='flex w-full flex-grow items-start justify-between'>
+                          <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-nowrap break-words px-2  font-semibold scrollbar-thin'>
+                            {sale[2]}
+                          </td>
+                        </TableRow>
+                      ))}
+                    </td>
+                    <td className='flex h-full w-full flex-grow flex-col items-start '>
+                      {audit.Value?.map((sale) => (
+                        <TableRow className='flex w-full flex-grow items-start justify-between'>
+                          <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-nowrap break-words px-2  font-semibold scrollbar-thin'>
+                            {sale[7]}
+                          </td>
+                        </TableRow>
+                      ))}
+                    </td>
+                  </tr>
+                ))}
+              </TableBody>
+            </TableContainer>
+          )}
         </Card>
-        <Card title='Top Stores'>
+        <Card
+          title='Top Stores'
+          classes={'max-h-[25rem] col-span-1 overflow-hidden'}
+        >
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>
-            <PieChartComp data={topStore} />
+            {topStore?.length === 0 ? (
+              <ComingSoon
+                logo={'pie_chart'}
+                title={'No matching data.'}
+                subtitle={'You will soon see unit wise sale ratio here.'}
+              />
+            ) : (
+              <PieChartComp data={topStore} vertical />
+            )}
           </div>
-        </Card>
-        <Card>
-          <TableContainer>
-            <TableHead>
-              <TableRow>
-                <TableHeader>Date</TableHeader>
-                <TableHeader>SKUs</TableHeader>
-                <TableHeader>Quantity</TableHeader>
-                <TableHeader>GMV</TableHeader>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {auditLog?.map((audit) => (
-                <tr className='min-h-20 flex max-h-40 w-full' key={audit.Date}>
-                  <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-pre-wrap break-words px-2  font-semibold scrollbar-thin'>
-                    {audit.Date}
-                  </td>
-                  <td className='flex h-full w-full flex-grow flex-col items-start '>
-                    {audit.Value?.map((sale) => (
-                      <TableRow className='flex w-full flex-grow items-start justify-between'>
-                        <TableData>{sale[6] || 0}</TableData>
-                      </TableRow>
-                    ))}
-                  </td>
-                  <td className='flex h-full w-full flex-grow flex-col items-start '>
-                    {audit.Value?.map((sale) => (
-                      <TableRow className='flex w-full flex-grow items-start justify-between'>
-                        <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-nowrap break-words px-2  font-semibold scrollbar-thin'>
-                          {sale[2]}
-                        </td>
-                      </TableRow>
-                    ))}
-                  </td>
-                  <td className='flex h-full w-full flex-grow flex-col items-start '>
-                    {audit.Value?.map((sale) => (
-                      <TableRow className='flex w-full flex-grow items-start justify-between'>
-                        <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-nowrap break-words px-2  font-semibold scrollbar-thin'>
-                          {sale[7]}
-                        </td>
-                      </TableRow>
-                    ))}
-                  </td>
-                </tr>
-              ))}
-            </TableBody>
-          </TableContainer>
         </Card>
       </div>
     </main>

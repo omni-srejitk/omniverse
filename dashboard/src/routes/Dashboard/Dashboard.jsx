@@ -96,7 +96,7 @@ export const Dashboard = () => {
   };
 
   const OVERVIEW_FILTERS = (
-    <div className='items-center flex gap-4'>
+    <div className='flex items-center gap-4'>
       <Select showState={showState} setShowState={setShowState} />
       <Filter
         filter={DASHBOARD_FILTERS}
@@ -115,7 +115,7 @@ export const Dashboard = () => {
     <main className='page__content'>
       <section className='h-fit w-full'>
         <h1 className='page__title'>Welcome {BRAND}! 👋</h1>
-        <Card title='Overview' cardHeader={OVERVIEW_FILTERS}>
+        <Card title='Overview'>
           <div className='card_body flex h-fit w-full justify-start overflow-x-auto scrollbar-thin'>
             <StatCard
               icon='home'

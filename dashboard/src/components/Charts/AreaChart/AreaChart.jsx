@@ -11,13 +11,8 @@ import {
   Legend,
 } from 'recharts';
 
-export const AreaCharts = ({
-  data = [],
-  XAxisKey,
-  YAxisKey,
-  DataKey,
-  color,
-}) => {
+export const AreaCharts = React.memo((props) => {
+  const { data = [], XAxisKey, YAxisKey, DataKey, color } = props;
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       <AreaChart width={'100%'} height={'50%'} data={data}>
@@ -73,4 +68,4 @@ export const AreaCharts = ({
       </AreaChart>
     </ResponsiveContainer>
   );
-};
+});

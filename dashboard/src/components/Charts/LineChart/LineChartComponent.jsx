@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import {
   LineChart,
@@ -6,23 +7,43 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  ResponsiveContainer,
 } from 'recharts';
-import { fetchDailyGMV } from '../../../services/apiCalls';
 import { calculateDayWiseGMV } from '../../../utils/helperFunctions';
 
-const BRAND = localStorage.getItem('Name');
+export const LineChartComponent = React.memo((props) => {
+  const { data } = props;
+  const chartData = calculateDayWiseGMV(data);
 
-export const LineChartComponent = () => {
-  const { isLoading: isCalculateGMVLoading, data: dailyGMVData } =
-    fetchDailyGMV(BRAND);
-  const chartData = calculateDayWiseGMV(dailyGMVData);
   return (
-    <LineChart width={600} height={300} data={chartData}>
-      <Line type='monotone' dataKey='gmv' stroke='#8884d8' />
-      <CartesianGrid stroke='#ccc' />
-      <XAxis dataKey='date' />
-      <YAxis />
-      <Tooltip />
-    </LineChart>
+    <ResponsiveContainer width={'100%'} height={'80%'}>
+      <LineChart width={'95%'} height={'100%'} data={chartData}>
+        <Line
+          type='monotone'
+          strokeWidth={3}
+          dataKey='gmv'
+          stroke='#60a5fa'
+          dot={false}
+        />
+        <CartesianGrid
+          strokeDasharray='3 0'
+          stroke='#d1d5db'
+          opacity={'0.7'}
+          vertical={false}
+        />
+        <XAxis
+          axisLine={false}
+          tickLine={false}
+          dataKey='date'
+          interval={'preserveEnd'}
+          tickFormatter={(str) => {
+            return moment(str, 'DD-MM-YY').format('MMM D');
+          }}
+          minTickGap={35}
+        />
+        <YAxis axisLine={false} tickLine={false} />
+        <Tooltip />
+      </LineChart>
+    </ResponsiveContainer>
   );
-};
+});
