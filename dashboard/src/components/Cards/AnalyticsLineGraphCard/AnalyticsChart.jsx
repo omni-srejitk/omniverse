@@ -8,7 +8,7 @@ import {
 } from '../../../redux/actions';
 import { computeAnalyticsSalesNumber2 } from '../../../utils/helperFunctions';
 import { LineChartComponent } from '../../Charts/LineChart/LineChartComponent';
-import { ComingSoon } from '../../Placeholders/comingSoon';
+import { ComingSoon } from '../../Placeholders/ComingSoon';
 
 export const AnalyticsChart = ({ data }) => {
   const FILTEREDDATE = useSelector(selectAllFilteredDates);

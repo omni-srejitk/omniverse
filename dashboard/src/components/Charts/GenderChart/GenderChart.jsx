@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProgressBar } from '../../Loaders';
-import { ComingSoon } from '../../Placeholders/comingSoon';
+import { ComingSoon } from '../../Placeholders/ComingSoon';
 
 export const GenderChart = React.memo((props) => {
   const { data = {} } = props;

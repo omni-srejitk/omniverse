@@ -17,7 +17,8 @@ import { GenderChart } from '../../components/Charts';
 import { UnitSold } from '../../components/Charts/Analytics/UnitSold';
 import { VerticalBarChart } from '../../components/Charts/BarChart/VerticalBarChart';
 import { PieChartComp } from '../../components/Charts/PieChart/PieChartComp';
-import { ComingSoon } from '../../components/Placeholders/comingSoon';
+import { ComingSoon } from '../../components/Placeholders/ComingSoon';
+
 import {
   selectAllItems,
   selectAllStores,
