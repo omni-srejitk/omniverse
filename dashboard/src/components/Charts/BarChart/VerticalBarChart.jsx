@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
-export const VerticalBarChart = (props) => {
+export const VerticalBarChart = React.memo((props) => {
   const { data, dataKey, color = '#86efac', XAxisKey, YAxisKey } = props;
 
   const SLICE_LENGTH = data?.length > 5 ? 5 : data?.length;
@@ -58,4 +58,4 @@ export const VerticalBarChart = (props) => {
       </BarChart>
     </ResponsiveContainer>
   );
-};
+});

@@ -11,7 +11,8 @@ import {
 } from 'recharts';
 import { calculateDayWiseGMV } from '../../../utils/helperFunctions';
 
-export const LineChartComponent = ({ data }) => {
+export const LineChartComponent = React.memo((props) => {
+  const { data } = props;
   const chartData = calculateDayWiseGMV(data);
 
   return (
@@ -45,4 +46,4 @@ export const LineChartComponent = ({ data }) => {
       </LineChart>
     </ResponsiveContainer>
   );
-};
+});

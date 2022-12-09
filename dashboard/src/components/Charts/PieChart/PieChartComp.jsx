@@ -8,7 +8,7 @@ import {
   Legend,
 } from 'recharts';
 
-export const PieChartComp = (props) => {
+export const PieChartComp = React.memo((props) => {
   const { data = {}, vertical = false } = props;
   const colors = [
     '#0088FE',
@@ -105,4 +105,4 @@ export const PieChartComp = (props) => {
       </PieChart>
     </ResponsiveContainer>
   );
-};
+});

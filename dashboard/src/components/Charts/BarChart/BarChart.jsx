@@ -11,13 +11,8 @@ import {
   CartesianGrid,
   Brush,
 } from 'recharts';
-export const BarCharts = ({
-  data = [],
-  XAxisKey,
-  YAxisKey,
-  DataKey,
-  color,
-}) => {
+export const BarCharts = React.memo((props) => {
+  const { data = [], XAxisKey, YAxisKey, DataKey, color } = props;
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'INR',
@@ -88,4 +83,4 @@ export const BarCharts = ({
       </BarChart>
     </ResponsiveContainer>
   );
-};
+});

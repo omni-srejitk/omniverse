@@ -2,7 +2,8 @@ import React from 'react';
 import { ProgressBar } from '../../Loaders';
 import { ComingSoon } from '../../Placeholders/comingSoon';
 
-export const GenderChart = ({ data = {} }) => {
+export const GenderChart = React.memo((props) => {
+  const { data = {} } = props;
   const MALE_PERC = Math.round((+data.Male * 100) / +data.All) || 0;
   const FEMALE_PERC = Math.round((+data.Female * 100) / +data.All) || 0;
 
@@ -42,4 +43,4 @@ export const GenderChart = ({ data = {} }) => {
   ) : (
     GENDER_STATS
   );
-};
+});

@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import { calculateDayWiseItemsSold } from '../../../utils/helperFunctions';
 
-export const UnitSold = (props) => {
+export const UnitSold = React.memo((props) => {
   const { data, XAxisKey, YAxisKey, DataKey, color } = props;
   const SALE_UNIT =
     data.length === 0 ? 0 : data?.reduce((acc, curr) => (acc += curr[2]), 0);
@@ -69,4 +69,4 @@ export const UnitSold = (props) => {
       </ResponsiveContainer>
     </div>
   );
-};
+});
