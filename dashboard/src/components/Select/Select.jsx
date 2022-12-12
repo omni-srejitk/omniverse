@@ -1,46 +1,62 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DATE_FILTERS } from '../../utils/constants';
-import { selectDurationFilter, selectAllDates } from '../../redux/actions';
+import {
+  selectDurationFilter,
+  selectAllDates,
+  selectPopupState,
+} from '../../redux/actions';
 import { filterDates } from '../../utils/helperFunctions';
-import { setDurationFilter } from '../../redux/features/filterSlice';
+import {
+  setDurationFilter,
+  setFilterEndDate,
+  setFilterStartDate,
+} from '../../redux/features/filterSlice';
+import {
+  setDatePickerPopup,
+  setDurationPopup,
+} from '../../redux/features/popupSlice';
 
 export const Select = ({ showState, setShowState }) => {
   const dispatch = useDispatch();
   const DATES = useSelector(selectAllDates);
   const FILTERBYDURATION = useSelector(selectDurationFilter);
-
+  const SHOWPOPUP = useSelector(selectPopupState);
   return (
     <div className='relative w-max '>
       <div
         onClick={() =>
-          setShowState({
-            ...showState,
-            durationFilter: !showState.durationFilter,
-            productFilter: false,
-          })
+          SHOWPOPUP.durationFilter
+            ? dispatch(setDurationPopup(false))
+            : dispatch(setDurationPopup(true))
         }
         className='flex cursor-pointer items-center justify-between rounded-lg border-2  border-gray-100 bg-white px-4 py-2 font-medium hover:border-gray-400'
       >
         {FILTERBYDURATION}
         <span className='material-icons'>
-          {showState.durationFilter ? 'expand_less' : 'expand_more'}
+          {SHOWPOPUP.durationFilter ? 'expand_less' : 'expand_more'}
         </span>
       </div>
       <ul
         className={` ${
-          !showState.durationFilter ? 'invisible h-0' : 'h-fit'
-        } absolute z-20 my-1 flex w-32 flex-col items-center justify-start rounded-lg border-2 border-gray-50 bg-white `}
+          !SHOWPOPUP.durationFilter ? 'invisible h-0' : 'h-fit'
+        } absolute right-0 z-20 my-1 flex w-40 flex-col items-center justify-start rounded-lg border-2 border-gray-50 bg-white `}
       >
         {DATE_FILTERS?.map((item) => (
           <li
             key={item.id}
             onClick={(e) => {
               dispatch(setDurationFilter(item.title));
-              filterDates(item.title, DATES, dispatch);
-              setShowState({ ...showState, durationFilter: false });
+              if (item.title === 'Custom Range') {
+                dispatch(setDatePickerPopup(true));
+              } else {
+                dispatch(setFilterStartDate(item.startDate));
+                dispatch(setFilterEndDate(item.endDate));
+              }
+
+              dispatch(setDurationPopup(false));
             }}
-            className=' cursor-pointer px-4 py-2 font-semibold text-gray-500 hover:text-black'
+            className=' w-full cursor-pointer px-4 py-2 text-right font-semibold text-gray-500 hover:bg-gray-100 hover:text-black'
           >
             {item.title}
           </li>
