@@ -2,11 +2,11 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DATE_FILTERS } from '../../utils/constants';
 import {
-  selectDurationFilter,
   selectAllDates,
+  selectDurationFilter,
   selectPopupState,
 } from '../../redux/actions';
-import { filterDates } from '../../utils/helperFunctions';
+
 import {
   setDurationFilter,
   setFilterEndDate,
@@ -19,9 +19,9 @@ import {
 
 export const Select = ({ showState, setShowState }) => {
   const dispatch = useDispatch();
-  const DATES = useSelector(selectAllDates);
   const FILTERBYDURATION = useSelector(selectDurationFilter);
   const SHOWPOPUP = useSelector(selectPopupState);
+  const FIRSTSALEDATE = useSelector(selectAllDates)[0];
   return (
     <div className='relative w-max '>
       <div
@@ -49,12 +49,14 @@ export const Select = ({ showState, setShowState }) => {
               dispatch(setDurationFilter(item.title));
               if (item.title === 'Custom Range') {
                 dispatch(setDatePickerPopup(true));
+              } else if (item.title === 'Lifetime') {
+                dispatch(setFilterStartDate(FIRSTSALEDATE));
+                dispatch(setFilterEndDate(item.endDate));
               } else {
                 dispatch(setFilterStartDate(item.startDate));
                 dispatch(setFilterEndDate(item.endDate));
+                dispatch(setDurationPopup(false));
               }
-
-              dispatch(setDurationPopup(false));
             }}
             className=' w-full cursor-pointer px-4 py-2 text-right font-semibold text-gray-500 hover:bg-gray-100 hover:text-black'
           >

@@ -15,14 +15,26 @@ const popupSlice = createSlice({
   reducers: {
     setProfilePopup: (state, action) => {
       state.popups.profile = action.payload;
+      state.popups.durationFilter = false;
+      state.popups.productFilter = false;
+      state.popups.datePicker = false;
     },
     setDurationPopup: (state, action) => {
+      state.popups.profile = false;
       state.popups.durationFilter = action.payload;
+      state.popups.productFilter = false;
+      state.popups.datePicker = false;
     },
     setProductPopup: (state, action) => {
+      state.popups.profile = false;
+      state.popups.durationFilter = false;
       state.popups.productFilter = action.payload;
+      state.popups.datePicker = false;
     },
     setDatePickerPopup: (state, action) => {
+      state.popups.profile = false;
+      state.popups.durationFilter = false;
+      state.popups.productFilter = false;
       state.popups.datePicker = action.payload;
     },
     closeAll: (state) =>
