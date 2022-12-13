@@ -14,9 +14,8 @@ import {
 
 function App() {
   if (import.meta.env.PROD == true) {
-    console.log(import.meta.env)
     const tagManagerArgs = {
-      gtmId: 'GTM-M5WBFHC',
+      gtmId: import.meta.env.VITE_GTM_TOKEN,
     };
 
     TagManager.initialize(tagManagerArgs);
