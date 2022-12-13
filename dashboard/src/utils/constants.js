@@ -43,7 +43,7 @@ export const DATE_FILTERS = [
     id: 1,
     title: 'Lifetime',
     startDate: '',
-    endDate: moment().endOf('week').format('DD-MM-YY'),
+    endDate: moment().format('DD-MM-YY'),
   },
   {
     id: 2,
