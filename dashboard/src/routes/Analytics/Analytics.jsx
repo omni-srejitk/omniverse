@@ -183,10 +183,6 @@ export const Analytics = () => {
       (a, b) => moment(b.Date, 'DD-MM-YY') - moment(a.Date, 'DD-MM-YY')
     );
 
-    auditLog.sort(
-      (a, b) => moment(b.Date, 'DD-MM-YY') - moment(a.Date, 'DD-MM-YY')
-    );
-
     setAuditLog(auditLog);
   };
 
