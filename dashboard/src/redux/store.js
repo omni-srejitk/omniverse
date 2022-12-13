@@ -3,6 +3,7 @@ import authReducer from './features/authSlice';
 import dataReducer from './features/dataSlice';
 import filterReducer from './features/filterSlice';
 import graphReducer from './features/graphSlice';
+import popupReducer from './features/popupSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     data: dataReducer,
     filter: filterReducer,
     graph: graphReducer,
+    popup: popupReducer,
   },
 });

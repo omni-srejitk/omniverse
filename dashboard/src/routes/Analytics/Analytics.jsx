@@ -17,7 +17,13 @@ import { GenderChart } from '../../components/Charts';
 import { UnitSold } from '../../components/Charts/Analytics/UnitSold';
 import { VerticalBarChart } from '../../components/Charts/BarChart/VerticalBarChart';
 import { PieChartComp } from '../../components/Charts/PieChart/PieChartComp';
+import { DateSelector } from '../../components/DateSelector/DateSelector';
 import { ComingSoon } from '../../components/Placeholders/ComingSoon';
+import {
+  selectFilterEndDate,
+  selectFilterStartDate,
+  selectPopupState,
+} from '../../redux/actions';
 
 import {
   selectAllItems,
@@ -50,7 +56,7 @@ export const Analytics = () => {
 
   const LIVESTORES = useSelector(selectAllStores);
   const ALLITEMS = useSelector(selectAllItems);
-
+  const SHOWPOPUP = useSelector(selectPopupState);
   const { isLoading: isGMVLoading, data: dailyGMVData } = fetchDailyGMV(BRAND);
   const FILTEREDSALEDATA = useSelector(selectFilteredSalesData);
   const FILTEREDAGEGENDERDATA = useSelector(selectFilteredAgeGenderData);
@@ -61,23 +67,17 @@ export const Analytics = () => {
   const { isLoading: isLiveStoresDataLoading, data: liveStoresData } =
     fetchAllLiveStores(BRAND);
 
-  const [showState, setShowState] = useState({
-    durationFilter: false,
-    productFilter: false,
-  });
   const DASHBOARD_FILTERS = {
     'By Product': ALLITEMS,
     'By Store': LIVESTORES,
   };
 
+  const STARTDATE = useSelector(selectFilterStartDate);
+  const ENDDATE = useSelector(selectFilterEndDate);
   const OVERVIEW_FILTERS = (
     <div className='flex items-center gap-4'>
-      <Select showState={showState} setShowState={setShowState} />
-      <Filter
-        filter={DASHBOARD_FILTERS}
-        showState={showState}
-        setShowState={setShowState}
-      />
+      <Select />
+      <Filter filter={DASHBOARD_FILTERS} />
     </div>
   );
   useEffect(() => {
@@ -188,6 +188,21 @@ export const Analytics = () => {
 
   const TOP_SKU = fetchItemsSales(FILTEREDSALEDATA);
 
+  const SELECTED_RANGE = (
+    <div className='flex w-fit  items-center gap-1 rounded-full p-2'>
+      <p>
+        From{' '}
+        <span className='mx-1 rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-700'>
+          {STARTDATE}
+        </span>{' '}
+        to{' '}
+        <span className='mx-1 rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-700'>
+          {ENDDATE}
+        </span>
+      </p>
+    </div>
+  );
+
   useEffect(() => {
     parseGenderData(FILTEREDAGEGENDERDATA, isGenderStatsLoading);
     parseAgeData(FILTEREDAGEGENDERDATA, isGenderStatsLoading);
@@ -215,15 +230,19 @@ export const Analytics = () => {
         {OVERVIEW_FILTERS}
       </div>
 
-      <div className='max-w-screen  mb-40 grid h-fit min-h-screen w-full grid-cols-1 grid-rows-[7] items-center justify-start  gap-8 lg:grid-cols-3 lg:grid-rows-[repeat(3,minmax(25rem,1fr))]'>
+      <div className='max-w-screen mb-40 grid h-fit min-h-screen w-full grid-cols-1 grid-rows-[7] items-center justify-start  gap-8 lg:grid-cols-3 lg:grid-rows-[repeat(3,minmax(25rem,1fr))]'>
         <Card
           title='Total Sales'
           classes={'row-span-1 w-full h-full col-span-1 lg:col-span-2'}
+          cardHeader={SELECTED_RANGE}
         >
           <AnalyticsChart data={FILTEREDSALEDATA} />
         </Card>
-        <Card title='Top SKU' classes={'w-full h-full col-span-1 row-span-1'}>
-          <div className='h-full max-h-[25rem] w-full'>
+        <Card
+          title='Top SKU'
+          classes={'w-full h-[25rem] col-span-1 row-span-1'}
+        >
+          <div className='h-full w-full'>
             {TOP_SKU?.length === 0 ? (
               <ComingSoon
                 logo={'assessment'}
@@ -356,6 +375,8 @@ export const Analytics = () => {
           </div>
         </Card>
       </div>
+
+      {SHOWPOPUP.datePicker && <DateSelector />}
     </main>
   );
 };

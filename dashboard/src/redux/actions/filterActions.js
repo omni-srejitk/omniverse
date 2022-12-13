@@ -9,3 +9,7 @@ export const selectDurationFilter = (state) => state.filter.filterDuration;
 export const selectItemFilters = (state) => state.filter.filterByItem;
 
 export const selectStoreFilters = (state) => state.filter.filterByStore;
+
+export const selectFilterStartDate = (state) => state.filter.filterStartDate;
+
+export const selectFilterEndDate = (state) => state.filter.filterEndDate;
