@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -6,21 +6,21 @@ import {
   BarCharts,
   Card,
   Carousal,
-  Filter,
   Select,
   StatCard,
   Spinner,
 } from '../../components';
+import { DateSelector } from '../../components/DateSelector/DateSelector';
+import { ComingSoon } from '../../components/Placeholders/ComingSoon';
 import {
-  selectAllStores,
   selectCumlativeAmtData,
   selectCumlativeCountData,
+  selectPopupState,
   selectSaleAmount,
   selectUnitsSold,
 } from '../../redux/actions';
 import {
   selectAllDates,
-  selectAllItems,
   selectFilteredSalesData,
 } from '../../redux/actions/dataActions';
 import {
@@ -44,10 +44,6 @@ import {
 
 export const Dashboard = () => {
   const BRAND = localStorage.getItem('Name');
-  const [showState, setShowState] = useState({
-    durationFilter: false,
-    productFilter: false,
-  });
   const { isLoading: isGMVLoading, data: dailyGMVData } = fetchDailyGMV(BRAND);
   const { isLoading: isInventoryLoading, data: inventoryData } =
     fetchInventoryCount(BRAND);
@@ -57,8 +53,6 @@ export const Dashboard = () => {
   const dispatch = useDispatch();
   const UNITS_SOLD = useSelector(selectUnitsSold);
   const SALE_AMT = useSelector(selectSaleAmount);
-  const LIVESTORES = useSelector(selectAllStores);
-  const ALLITEMS = useSelector(selectAllItems);
   const LIVESTORES_COUNT = inventoryCountData;
   const BARCHART = useSelector(selectCumlativeCountData);
   const AREACHART = useSelector(selectCumlativeAmtData);
@@ -67,6 +61,7 @@ export const Dashboard = () => {
   const ALLDATES = useSelector(selectAllDates);
   const TOKEN = JSON.parse(localStorage.getItem('Token'));
   const NAME = localStorage.getItem('Name');
+  const SHOWPOPUP = useSelector(selectPopupState);
 
   useEffect(() => {
     if (TOKEN) {
@@ -90,19 +85,9 @@ export const Dashboard = () => {
     }
   }, [isGMVLoading, dailyGMVData]);
 
-  const DASHBOARD_FILTERS = {
-    'By Product': ALLITEMS,
-    'By Store': LIVESTORES,
-  };
-
   const OVERVIEW_FILTERS = (
     <div className='flex items-center gap-4'>
-      <Select showState={showState} setShowState={setShowState} />
-      <Filter
-        filter={DASHBOARD_FILTERS}
-        showState={showState}
-        setShowState={setShowState}
-      />
+      <Select />
     </div>
   );
 
@@ -115,7 +100,7 @@ export const Dashboard = () => {
     <main className='page__content'>
       <section className='h-fit w-full'>
         <h1 className='page__title'>Welcome {BRAND}! 👋</h1>
-        <Card title='Overview'>
+        <Card title='Overview' cardHeader={OVERVIEW_FILTERS}>
           <div className='card_body flex h-fit w-full justify-start overflow-x-auto scrollbar-thin'>
             <StatCard
               icon='home'
@@ -171,6 +156,12 @@ export const Dashboard = () => {
                 position={'top-1/2 left-1/2'}
                 loading={isGMVLoading}
               />
+            ) : AREACHART?.length === 0 ? (
+              <ComingSoon
+                logo={'insert_chart'}
+                title='No Data Found.'
+                subtitle='Please try again with different filters.'
+              />
             ) : (
               <AreaCharts
                 data={AREACHART}
@@ -203,6 +194,12 @@ export const Dashboard = () => {
                 position={'top-1/2 left-1/2'}
                 loading={isGMVLoading}
               />
+            ) : BARCHART?.length === 0 ? (
+              <ComingSoon
+                logo={'insert_chart'}
+                title='No Data Found.'
+                subtitle='Please try again with different filters.'
+              />
             ) : (
               <BarCharts
                 data={BARCHART}
@@ -215,6 +212,7 @@ export const Dashboard = () => {
           </div>
         </Card>
       </section>
+      {SHOWPOPUP.datePicker && <DateSelector />}
     </main>
   );
 };
