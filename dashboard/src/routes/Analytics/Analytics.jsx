@@ -213,7 +213,6 @@ export const Analytics = () => {
     fetchAuditData(FILTEREDSALEDATA);
   }, [FILTEREDSALEDATA]);
 
-
   useEffect(() => {
     if (isGenderStatsLoading) return;
     getFilteredAgeGenderData(FILTERSTATE, genderStatsData, dispatch);
@@ -327,7 +326,16 @@ export const Analytics = () => {
                       <table className='flex h-full w-full flex-grow flex-col'>
                         <tbody className='h-full w-full'>
                           {audit.Value?.map((sale) => (
-                            <tr className='flex h-full w-full'>
+                            <tr
+                              key={`${sale[0]} -
+                              ${sale[1]} -
+                                ${sale[2]} -
+                                ${sale[3]} -
+                                ${sale[4]} -
+                                ${sale[5]} -
+                                ${sale[6]}-    ${sale[7]} -`}
+                              className='flex h-full w-full'
+                            >
                               <td className='flex h-20 w-1/3 flex-grow items-center justify-start overflow-x-scroll text-ellipsis whitespace-pre-wrap  break-words border-2 border-gray-100 px-2 font-medium  text-gray-600 scrollbar-thin'>
                                 {sale[6] || 0}
                               </td>

@@ -59,6 +59,7 @@ export const MonthCalendar = ({
 
       arr.push(
         <td
+          key={date}
           className={`group flex h-[3rem] w-[3rem]  cursor-pointer items-center justify-center
           ${
             disableFutureDates && moment(date, 'DD-MM-YY').isAfter(today)
