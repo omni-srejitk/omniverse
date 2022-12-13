@@ -9,7 +9,13 @@ import {
 } from 'recharts';
 
 export const PieChartComp = React.memo((props) => {
-  const { data = {}, vertical = false } = props;
+  const {
+    data = {},
+    vertical = false,
+    customLabel = false,
+    cx = '50%',
+    cy = '50%',
+  } = props;
   const colors = [
     '#0088FE',
     '#FFBB28',
@@ -18,6 +24,7 @@ export const PieChartComp = React.memo((props) => {
     '#00C49F',
     '#FF8042',
   ];
+  const RADIAN = Math.PI / 180;
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -68,6 +75,32 @@ export const PieChartComp = React.memo((props) => {
 
     return null;
   };
+
+  const renderCustomizedLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+    index,
+  }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.33;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill='white'
+        textAnchor={x > cx ? 'start' : 'end'}
+        dominantBaseline='central'
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       <PieChart align='center'>
@@ -75,13 +108,14 @@ export const PieChartComp = React.memo((props) => {
           data={data}
           dataKey='value'
           nameKey='name'
-          cx='50%'
-          cy='40%'
+          cx={cx}
+          cy={cy}
           ali
-          innerRadius={'50%'}
+          innerRadius={'20%'}
           outerRadius={'60%'}
           fill='#8884d8'
           labelLine={false}
+          label={customLabel ? renderCustomizedLabel : null}
         >
           {data?.map((entry, index) => {
             return (
@@ -98,6 +132,7 @@ export const PieChartComp = React.memo((props) => {
 
         <Tooltip content={<CustomTooltip />} />
         <Legend
+          iconType={'dot'}
           layout={vertical ? 'vertical' : 'horizontal'}
           verticalAlign='bottom'
           align={vertical ? 'start' : 'center'}

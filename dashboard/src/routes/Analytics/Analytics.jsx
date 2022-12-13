@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +9,6 @@ import {
   Select,
   TableBody,
   TableContainer,
-  TableData,
   TableHead,
   TableHeader,
   TableRow,
@@ -17,7 +17,14 @@ import { GenderChart } from '../../components/Charts';
 import { UnitSold } from '../../components/Charts/Analytics/UnitSold';
 import { VerticalBarChart } from '../../components/Charts/BarChart/VerticalBarChart';
 import { PieChartComp } from '../../components/Charts/PieChart/PieChartComp';
+import { DateSelector } from '../../components/DateSelector/DateSelector';
 import { ComingSoon } from '../../components/Placeholders/ComingSoon';
+import { usePrepareData } from '../../hooks/usePrepareData';
+import {
+  selectFilterEndDate,
+  selectFilterStartDate,
+  selectPopupState,
+} from '../../redux/actions';
 
 import {
   selectAllItems,
@@ -40,17 +47,12 @@ export const Analytics = () => {
   const [ageData, setAgeData] = useState([]);
   const [topStore, setTopStore] = useState([]);
   const [auditLog, setAuditLog] = useState([]);
-  const comparatorFn = (curr = 100, prev = 0, duration = 30) => {
-    let perc = (((curr - prev) * 100) / duration).toFixed(2);
-
-    return perc;
-  };
 
   const BRAND = localStorage.getItem('Name');
 
   const LIVESTORES = useSelector(selectAllStores);
   const ALLITEMS = useSelector(selectAllItems);
-
+  const SHOWPOPUP = useSelector(selectPopupState);
   const { isLoading: isGMVLoading, data: dailyGMVData } = fetchDailyGMV(BRAND);
   const FILTEREDSALEDATA = useSelector(selectFilteredSalesData);
   const FILTEREDAGEGENDERDATA = useSelector(selectFilteredAgeGenderData);
@@ -60,24 +62,19 @@ export const Analytics = () => {
   const dispatch = useDispatch();
   const { isLoading: isLiveStoresDataLoading, data: liveStoresData } =
     fetchAllLiveStores(BRAND);
+  const PREPARE_DATA = usePrepareData();
 
-  const [showState, setShowState] = useState({
-    durationFilter: false,
-    productFilter: false,
-  });
   const DASHBOARD_FILTERS = {
     'By Product': ALLITEMS,
     'By Store': LIVESTORES,
   };
 
+  const STARTDATE = useSelector(selectFilterStartDate);
+  const ENDDATE = useSelector(selectFilterEndDate);
   const OVERVIEW_FILTERS = (
     <div className='flex items-center gap-4'>
-      <Select showState={showState} setShowState={setShowState} />
-      <Filter
-        filter={DASHBOARD_FILTERS}
-        showState={showState}
-        setShowState={setShowState}
-      />
+      <Select />
+      <Filter filter={DASHBOARD_FILTERS} />
     </div>
   );
   useEffect(() => {
@@ -165,6 +162,7 @@ export const Analytics = () => {
     arr?.map((saleData) => {
       if (datemap.has(saleData[0])) {
         const foundField = datemap.get(saleData[0]);
+
         datemap.set(saleData[0], [...foundField, saleData]);
       } else {
         datemap.set(saleData[0], [saleData]);
@@ -181,13 +179,33 @@ export const Analytics = () => {
       });
     }
 
-    auditLog.reverse()
+    auditLog.sort(
+      (a, b) => moment(b.Date, 'DD-MM-YY') - moment(a.Date, 'DD-MM-YY')
+    );
+
+    auditLog.sort(
+      (a, b) => moment(b.Date, 'DD-MM-YY') - moment(a.Date, 'DD-MM-YY')
+    );
+
     setAuditLog(auditLog);
   };
 
-  comparatorFn();
-
   const TOP_SKU = fetchItemsSales(FILTEREDSALEDATA);
+
+  const SELECTED_RANGE = (
+    <div className='flex w-fit  items-center gap-1 rounded-full p-2'>
+      <p>
+        From{' '}
+        <span className='mx-1 rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-700'>
+          {STARTDATE}
+        </span>{' '}
+        to{' '}
+        <span className='mx-1 rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-700'>
+          {ENDDATE}
+        </span>
+      </p>
+    </div>
+  );
 
   useEffect(() => {
     parseGenderData(FILTEREDAGEGENDERDATA, isGenderStatsLoading);
@@ -198,11 +216,6 @@ export const Analytics = () => {
     fetchTopStores(FILTEREDSALEDATA);
     fetchAuditData(FILTEREDSALEDATA);
   }, [FILTEREDSALEDATA]);
-
-  useEffect(() => {
-    if (isGMVLoading) return;
-    getFilteredData(FILTERSTATE, dailyGMVData, dispatch);
-  }, [isGMVLoading, FILTERSTATE, dailyGMVData]);
 
   useEffect(() => {
     if (isGenderStatsLoading) return;
@@ -216,15 +229,19 @@ export const Analytics = () => {
         {OVERVIEW_FILTERS}
       </div>
 
-      <div className='max-w-screen  mb-40 grid h-fit min-h-screen w-full grid-cols-1 grid-rows-[7] items-center justify-start  gap-8 lg:grid-cols-3 lg:grid-rows-[repeat(3,minmax(25rem,1fr))]'>
+      <div className='max-w-screen mb-40 grid h-fit min-h-screen w-full grid-cols-1 grid-rows-[7] items-center justify-start  gap-8 lg:grid-cols-3 lg:grid-rows-[repeat(3,minmax(25rem,1fr))]'>
         <Card
           title='Total Sales'
           classes={'row-span-1 w-full h-full col-span-1 lg:col-span-2'}
+          cardHeader={SELECTED_RANGE}
         >
           <AnalyticsChart data={FILTEREDSALEDATA} />
         </Card>
-        <Card title='Top SKU' classes={'w-full h-full col-span-1 row-span-1'}>
-          <div className='h-full max-h-[25rem] w-full'>
+        <Card
+          title='Top SKU'
+          classes={'w-full h-[25rem] col-span-1 row-span-1'}
+        >
+          <div className='h-full w-full'>
             {TOP_SKU?.length === 0 ? (
               <ComingSoon
                 logo={'assessment'}
@@ -302,37 +319,40 @@ export const Analytics = () => {
               </TableHead>
               <TableBody>
                 {auditLog?.map((audit) => (
-                  <tr
-                    className='min-h-20 flex max-h-40 w-full'
-                    key={audit.Date}
-                  >
-                    <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-pre-wrap break-words px-2  font-semibold scrollbar-thin'>
+                  <tr className='min-h-20 flex w-full' key={audit.Date}>
+                    <td
+                      aria-colspan={audit?.Value?.length}
+                      className='flex w-1/4 flex-grow items-center  justify-start overflow-x-scroll text-ellipsis whitespace-pre-wrap break-words  border-y-2 border-gray-100 px-2  font-semibold scrollbar-thin'
+                    >
                       {audit.Date}
                     </td>
-                    <td className='flex h-full w-full flex-grow flex-col items-start '>
-                      {audit.Value?.map((sale) => (
-                        <TableRow className='flex w-full flex-grow items-start justify-between'>
-                          <TableData>{sale[6] || 0}</TableData>
-                        </TableRow>
-                      ))}
-                    </td>
-                    <td className='flex h-full w-full flex-grow flex-col items-start '>
-                      {audit.Value?.map((sale) => (
-                        <TableRow className='flex w-full flex-grow items-start justify-between'>
-                          <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-nowrap break-words px-2  font-semibold scrollbar-thin'>
-                            {sale[2]}
-                          </td>
-                        </TableRow>
-                      ))}
-                    </td>
-                    <td className='flex h-full w-full flex-grow flex-col items-start '>
-                      {audit.Value?.map((sale) => (
-                        <TableRow className='flex w-full flex-grow items-start justify-between'>
-                          <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-nowrap break-words px-2  font-semibold scrollbar-thin'>
-                            {sale[7]}
-                          </td>
-                        </TableRow>
-                      ))}
+                    <td className='h-full w-full '>
+                      <table className='flex h-full w-full flex-grow flex-col'>
+                        <tbody className='h-full w-full'>
+                          {audit.Value?.map((sale) => (
+                            <tr
+                              key={`${sale[0]} -
+                              ${sale[1]} -
+                                ${sale[2]} -
+                                ${sale[3]} -
+                                ${sale[4]} -
+                                ${sale[5]} -
+                                ${sale[6]}-    ${sale[7]} -`}
+                              className='flex h-full w-full'
+                            >
+                              <td className='flex h-20 w-1/3 flex-grow items-center justify-start overflow-x-scroll text-ellipsis whitespace-pre-wrap  break-words border-2 border-gray-100 px-2 font-medium  text-gray-600 scrollbar-thin'>
+                                {sale[6] || 0}
+                              </td>
+                              <td className='flex h-20 w-1/3 flex-grow items-center justify-start overflow-x-scroll text-ellipsis whitespace-pre-wrap  break-words border-2 border-gray-100 px-2 font-semibold  text-gray-600 scrollbar-thin'>
+                                {sale[2] || 0}
+                              </td>
+                              <td className='flex h-20 w-1/3 flex-grow items-center justify-start overflow-x-scroll text-ellipsis whitespace-pre-wrap break-words  border-2 border-gray-100 px-2 font-semibold text-gray-600  scrollbar-thin'>
+                                &#8377;{sale[7] || 0}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </td>
                   </tr>
                 ))}
@@ -352,11 +372,13 @@ export const Analytics = () => {
                 subtitle={'You will soon see unit wise sale ratio here.'}
               />
             ) : (
-              <PieChartComp data={topStore} vertical />
+              <PieChartComp data={topStore} vertical customLabel cy='30%' />
             )}
           </div>
         </Card>
       </div>
+
+      {SHOWPOPUP.datePicker && <DateSelector />}
     </main>
   );
 };

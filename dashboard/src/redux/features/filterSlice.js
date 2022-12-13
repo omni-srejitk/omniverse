@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  filterDuration: 'All Time',
+  filterDuration: 'Lifetime',
   filterByItem: [],
   filterByStore: [],
   filteredDates: [],
   filteredItems: [],
   filteredStores: [],
+  filterStartDate: '',
+  filterEndDate: '',
 };
 
 const filterSlice = createSlice({
@@ -18,6 +20,12 @@ const filterSlice = createSlice({
     },
     setFilteredDates: (state, action) => {
       state.filteredDates = action.payload;
+    },
+    setFilterStartDate: (state, action) => {
+      state.filterStartDate = action.payload;
+    },
+    setFilterEndDate: (state, action) => {
+      state.filterEndDate = action.payload;
     },
     setFilteredItems: (state, action) => {
       state.filteredItems = action.payload;
@@ -39,15 +47,17 @@ const filterSlice = createSlice({
         state.filterByItem.push(action.payload);
       }
     },
-    
+
     resetFilterSlice: (state) =>
       (state = {
-        filterDuration: 'All Time',
+        filterDuration: 'Lifetime',
         filterByItem: [],
         filterByStore: [],
         filteredDates: [],
         filteredItems: [],
         filteredStores: [],
+        filterStartDate: '',
+        filterEndDate: '',
       }),
   },
 });
@@ -56,6 +66,8 @@ export const {
   setFilteredStores,
   setFilteredItems,
   setFilteredDates,
+  setFilterStartDate,
+  setFilterEndDate,
   setDurationFilter,
   setItemFilter,
   setStoreFilter,

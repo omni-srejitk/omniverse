@@ -12,7 +12,11 @@ import {
   setFilteredAgeGenderData,
   setFilteredSaleData,
 } from '../redux/features/dataSlice';
-import { setFilteredDates } from '../redux/features/filterSlice';
+import {
+  setFilteredDates,
+  setFilterEndDate,
+  setFilterStartDate,
+} from '../redux/features/filterSlice';
 import {
   setCumlativeSum,
   setCumlativeUnits,
@@ -329,27 +333,23 @@ const filterByItem = ({ filteredItems }, arr) => {
 };
 
 // * DONE.
-export const filterByDate = ({ filterDuration }, arr) => {
+export const filterByDate = (
+  { filterDuration, filterStartDate, filterEndDate },
+  arr
+) => {
   switch (filterDuration) {
+    case 'Lifetime':
     case 'This Week':
-      const firstDayOfWeek = moment().startOf('week');
-      const currDayOfWeek = moment().endOf('week');
-
-      return arr?.filter((item) =>
-        moment(item[0], 'DD-MM-YY').isBetween(
-          moment(firstDayOfWeek, 'DD-MM-YY'),
-          moment(currDayOfWeek, 'DD-MM-YY')
-        )
-      );
-
+    case 'Last Week':
     case 'This Month':
-      const firstDayOfMonth = moment().startOf('month');
-      const currDayOfMonth = moment().endOf('month');
-
+    case 'Last Month':
+    case 'Past 3 Months':
+    case 'Year to Date':
+    case 'Custom Range':
       return arr?.filter((item) =>
         moment(item[0], 'DD-MM-YY').isBetween(
-          moment(firstDayOfMonth, 'DD-MM-YY'),
-          moment(currDayOfMonth, 'DD-MM-YY')
+          moment(filterStartDate, 'DD-MM-YY'),
+          moment(filterEndDate, 'DD-MM-YY')
         )
       );
     default:
@@ -382,6 +382,8 @@ export const prepareSaleData = (sale_data, dispatch) => {
   dispatch(setAllDates(ALL_SALE_DATES));
   dispatch(setFilteredDates(ALL_SALE_DATES));
   dispatch(setAllItems(ALL_ITEMS));
+  dispatch(setFilterStartDate(ALL_SALE_DATES[0]));
+  dispatch(setFilterEndDate(ALL_SALE_DATES?.slice(-1)[0]));
 };
 
 export const filterAgeGenderByDate = ({ filterDuration }, arr) => {
@@ -548,8 +550,6 @@ export const fetchItemsSales = (data) => {
       let parsedItemName = items.replace(regex, ' ');
       itemSales.push({ item: parsedItemName, qty: keyValue[items] });
     }
-
-    console.log('ITEMSALE', itemSales);
 
     itemSales.sort((a, b) => +b.qty - +a.qty);
     return itemSales;
