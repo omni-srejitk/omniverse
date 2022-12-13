@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { MdPerson } from 'react-icons/md';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { resetAuthSlice } from '../../redux/features/authSlice';
-import { Button } from '../Buttons';
 import { resetDataSlice } from '../../redux/features/dataSlice';
 import { resetFilterSlice } from '../../redux/features/filterSlice';
+import { setProfilePopup } from '../../redux/features/popupSlice';
+import { selectPopupState } from '../../redux/actions/popupActions';
 
 export const Header = () => {
-  const [profileOption, setProfileOption] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const POPUP_STATE = useSelector(selectPopupState);
 
   const Logout = () => {
     dispatch(resetAuthSlice());
@@ -24,9 +24,13 @@ export const Header = () => {
       <img src={'/logo.png'} className='w-32 lg:hidden' />
 
       <div
-        onClick={() => setProfileOption((Prev) => !Prev)}
+        onClick={() =>
+          POPUP_STATE.profile
+            ? dispatch(setProfilePopup(false))
+            : dispatch(setProfilePopup(true))
+        }
         className={`relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border-2 lg:ml-auto ${
-          profileOption
+          POPUP_STATE.profile
             ? 'border-gray-300 bg-gray-200/50'
             : 'border-gray-200 bg-white'
         }   `}
@@ -34,7 +38,7 @@ export const Header = () => {
         <span className='material-icons pointer-events-none flex select-none items-center justify-center text-sm text-gray-500'>
           person
         </span>
-        {profileOption && (
+        {POPUP_STATE.profile && (
           <div className='absolute top-16 -right-0  flex h-fit w-[17.5rem] min-w-[10rem] flex-col justify-between overflow-hidden rounded-xl bg-white p-4 shadow-md'>
             <div className='h-full w-full'>
               <div
