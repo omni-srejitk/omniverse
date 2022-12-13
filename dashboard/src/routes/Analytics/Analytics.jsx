@@ -19,6 +19,7 @@ import { VerticalBarChart } from '../../components/Charts/BarChart/VerticalBarCh
 import { PieChartComp } from '../../components/Charts/PieChart/PieChartComp';
 import { DateSelector } from '../../components/DateSelector/DateSelector';
 import { ComingSoon } from '../../components/Placeholders/ComingSoon';
+import { usePrepareData } from '../../hooks/usePrepareData';
 import {
   selectFilterEndDate,
   selectFilterStartDate,
@@ -46,11 +47,6 @@ export const Analytics = () => {
   const [ageData, setAgeData] = useState([]);
   const [topStore, setTopStore] = useState([]);
   const [auditLog, setAuditLog] = useState([]);
-  const comparatorFn = (curr = 100, prev = 0, duration = 30) => {
-    let perc = (((curr - prev) * 100) / duration).toFixed(2);
-
-    return perc;
-  };
 
   const BRAND = localStorage.getItem('Name');
 
@@ -66,6 +62,7 @@ export const Analytics = () => {
   const dispatch = useDispatch();
   const { isLoading: isLiveStoresDataLoading, data: liveStoresData } =
     fetchAllLiveStores(BRAND);
+  const PREPARE_DATA = usePrepareData();
 
   const DASHBOARD_FILTERS = {
     'By Product': ALLITEMS,
@@ -189,8 +186,6 @@ export const Analytics = () => {
     setAuditLog(auditLog);
   };
 
-  comparatorFn();
-
   const TOP_SKU = fetchItemsSales(FILTEREDSALEDATA);
 
   const SELECTED_RANGE = (
@@ -218,10 +213,6 @@ export const Analytics = () => {
     fetchAuditData(FILTEREDSALEDATA);
   }, [FILTEREDSALEDATA]);
 
-  useEffect(() => {
-    if (isGMVLoading) return;
-    getFilteredData(FILTERSTATE, dailyGMVData, dispatch);
-  }, [isGMVLoading, FILTERSTATE, dailyGMVData]);
 
   useEffect(() => {
     if (isGenderStatsLoading) return;

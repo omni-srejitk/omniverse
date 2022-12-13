@@ -12,6 +12,8 @@ import {
 } from '../../components';
 import { DateSelector } from '../../components/DateSelector/DateSelector';
 import { ComingSoon } from '../../components/Placeholders/ComingSoon';
+import { useCalculateSaleData } from '../../hooks/useCalculateSaleData';
+import { usePrepareData } from '../../hooks/usePrepareData';
 import {
   selectCumlativeAmtData,
   selectCumlativeCountData,
@@ -19,10 +21,7 @@ import {
   selectSaleAmount,
   selectUnitsSold,
 } from '../../redux/actions';
-import {
-  selectAllDates,
-  selectFilteredSalesData,
-} from '../../redux/actions/dataActions';
+
 import {
   setAuthToken,
   setBrandName,
@@ -34,17 +33,11 @@ import {
   fetchLiveStoreCount,
   fetchStoreImages,
 } from '../../services/apiCalls';
-import {
-  calculateDailyGMV,
-  fetchCumalativeSaleAmount,
-  fetchCumalativeSaleCount,
-  getFilteredData,
-  prepareSaleData,
-} from '../../utils/helperFunctions';
+import { getFilteredData } from '../../utils/helperFunctions';
 
 export const Dashboard = () => {
   const BRAND = localStorage.getItem('Name');
-  const { isLoading: isGMVLoading, data: dailyGMVData } = fetchDailyGMV(BRAND);
+  const { data: dailyGMVData } = fetchDailyGMV(BRAND);
   const { isLoading: isInventoryLoading, data: inventoryData } =
     fetchInventoryCount(BRAND);
   const { isLoading: isInventoryCountLoading, data: inventoryCountData } =
@@ -57,11 +50,17 @@ export const Dashboard = () => {
   const BARCHART = useSelector(selectCumlativeCountData);
   const AREACHART = useSelector(selectCumlativeAmtData);
   const FILTERSTATE = useSelector((state) => state.filter);
-  const FILTEREDSALEDATA = useSelector(selectFilteredSalesData);
-  const ALLDATES = useSelector(selectAllDates);
   const TOKEN = JSON.parse(localStorage.getItem('Token'));
   const NAME = localStorage.getItem('Name');
   const SHOWPOPUP = useSelector(selectPopupState);
+  const { isGMVLoading } = usePrepareData();
+  const { isCalculating } = useCalculateSaleData(isGMVLoading);
+
+  const OVERVIEW_FILTERS = (
+    <div className='flex items-center gap-4'>
+      <Select />
+    </div>
+  );
 
   useEffect(() => {
     if (TOKEN) {
@@ -70,26 +69,6 @@ export const Dashboard = () => {
       dispatch(setBrandName(NAME));
     }
   }, [TOKEN, NAME]);
-
-  useEffect(() => {
-    if (!isGMVLoading && FILTEREDSALEDATA) {
-      calculateDailyGMV(FILTEREDSALEDATA, dispatch);
-      fetchCumalativeSaleCount(FILTEREDSALEDATA, ALLDATES, dispatch);
-      fetchCumalativeSaleAmount(FILTEREDSALEDATA, ALLDATES, dispatch);
-    }
-  }, [FILTEREDSALEDATA]);
-
-  useEffect(() => {
-    if (!isGMVLoading) {
-      prepareSaleData(dailyGMVData, dispatch);
-    }
-  }, [isGMVLoading, dailyGMVData]);
-
-  const OVERVIEW_FILTERS = (
-    <div className='flex items-center gap-4'>
-      <Select />
-    </div>
-  );
 
   useEffect(() => {
     if (isGMVLoading) return;
@@ -106,7 +85,7 @@ export const Dashboard = () => {
               icon='home'
               title='Units Sold'
               metric={UNITS_SOLD}
-              loading={isGMVLoading}
+              loading={isCalculating}
               background='bg-green-100'
               spinner={'border-green-200'}
               tooltip={'Total count of items sold.'}
@@ -115,7 +94,7 @@ export const Dashboard = () => {
               icon='insights'
               title='Total GMV'
               metric={SALE_AMT}
-              loading={isGMVLoading}
+              loading={isCalculating}
               tooltip={'Total sale of items sold.'}
               background='bg-blue-100'
               spinner={'border-blue-200'}
@@ -150,11 +129,11 @@ export const Dashboard = () => {
           }
         >
           <div className='relative flex h-full  max-h-[13rem] w-full flex-grow items-center justify-center rounded-xl bg-gray-50/50'>
-            {isGMVLoading ? (
+            {isCalculating ? (
               <Spinner
                 color={'border-blue-200'}
                 position={'top-1/2 left-1/2'}
-                loading={isGMVLoading}
+                loading={isCalculating}
               />
             ) : AREACHART?.length === 0 ? (
               <ComingSoon
@@ -188,11 +167,11 @@ export const Dashboard = () => {
           }
         >
           <div className='relative flex h-full  max-h-[14rem] w-full flex-grow items-center justify-center rounded-xl  bg-gray-50/50'>
-            {isGMVLoading ? (
+            {isCalculating ? (
               <Spinner
                 color={'border-green-200'}
                 position={'top-1/2 left-1/2'}
-                loading={isGMVLoading}
+                loading={isCalculating}
               />
             ) : BARCHART?.length === 0 ? (
               <ComingSoon

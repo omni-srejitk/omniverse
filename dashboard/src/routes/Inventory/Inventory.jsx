@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from '../../components';
+import { usePrepareData } from '../../hooks/usePrepareData';
 
 import {
   selectAllInventory,
@@ -49,7 +50,7 @@ export const Inventory = () => {
   const FILTERED_ITEMS = useSelector(selectAllFilteredItems);
   const FILTERED_STORES = useSelector(selectAllFilteredStores);
   const ALLITEMS = useSelector(selectAllItems);
-
+  const { isGMVLoading } = usePrepareData();
   useEffect(() => {
     if (!isInventoryLoading && !isWarehouseLoading) {
       applyInventoryFilters(
