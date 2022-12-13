@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +9,6 @@ import {
   Select,
   TableBody,
   TableContainer,
-  TableData,
   TableHead,
   TableHeader,
   TableRow,
@@ -165,6 +165,7 @@ export const Analytics = () => {
     arr?.map((saleData) => {
       if (datemap.has(saleData[0])) {
         const foundField = datemap.get(saleData[0]);
+
         datemap.set(saleData[0], [...foundField, saleData]);
       } else {
         datemap.set(saleData[0], [saleData]);
@@ -180,6 +181,10 @@ export const Analytics = () => {
         Value: dateDictionary[key],
       });
     }
+
+    auditLog.sort(
+      (a, b) => moment(b.Date, 'DD-MM-YY') - moment(a.Date, 'DD-MM-YY')
+    );
 
     setAuditLog(auditLog);
   };
@@ -320,37 +325,31 @@ export const Analytics = () => {
               </TableHead>
               <TableBody>
                 {auditLog?.map((audit) => (
-                  <tr
-                    className='min-h-20 flex max-h-40 w-full'
-                    key={audit.Date}
-                  >
-                    <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-pre-wrap break-words px-2  font-semibold scrollbar-thin'>
+                  <tr className='min-h-20 flex w-full' key={audit.Date}>
+                    <td
+                      aria-colspan={audit?.Value?.length}
+                      className='flex w-1/4 flex-grow items-center  justify-start overflow-x-scroll text-ellipsis whitespace-pre-wrap break-words  border-y-2 border-gray-100 px-2  font-semibold scrollbar-thin'
+                    >
                       {audit.Date}
                     </td>
-                    <td className='flex h-full w-full flex-grow flex-col items-start '>
-                      {audit.Value?.map((sale) => (
-                        <TableRow className='flex w-full flex-grow items-start justify-between'>
-                          <TableData>{sale[6] || 0}</TableData>
-                        </TableRow>
-                      ))}
-                    </td>
-                    <td className='flex h-full w-full flex-grow flex-col items-start '>
-                      {audit.Value?.map((sale) => (
-                        <TableRow className='flex w-full flex-grow items-start justify-between'>
-                          <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-nowrap break-words px-2  font-semibold scrollbar-thin'>
-                            {sale[2]}
-                          </td>
-                        </TableRow>
-                      ))}
-                    </td>
-                    <td className='flex h-full w-full flex-grow flex-col items-start '>
-                      {audit.Value?.map((sale) => (
-                        <TableRow className='flex w-full flex-grow items-start justify-between'>
-                          <td className='flex w-full flex-grow items-center justify-start  overflow-x-scroll text-ellipsis whitespace-nowrap break-words px-2  font-semibold scrollbar-thin'>
-                            {sale[7]}
-                          </td>
-                        </TableRow>
-                      ))}
+                    <td className='h-full w-full '>
+                      <table className='flex h-full w-full flex-grow flex-col'>
+                        <tbody className='h-full w-full'>
+                          {audit.Value?.map((sale) => (
+                            <tr className='flex h-full w-full'>
+                              <td className='flex h-20 w-1/3 flex-grow items-center justify-start overflow-x-scroll text-ellipsis whitespace-pre-wrap  break-words border-2 border-gray-100 px-2 font-medium  text-gray-600 scrollbar-thin'>
+                                {sale[6] || 0}
+                              </td>
+                              <td className='flex h-20 w-1/3 flex-grow items-center justify-start overflow-x-scroll text-ellipsis whitespace-pre-wrap  break-words border-2 border-gray-100 px-2 font-semibold  text-gray-600 scrollbar-thin'>
+                                {sale[2] || 0}
+                              </td>
+                              <td className='flex h-20 w-1/3 flex-grow items-center justify-start overflow-x-scroll text-ellipsis whitespace-pre-wrap break-words  border-2 border-gray-100 px-2 font-semibold text-gray-600  scrollbar-thin'>
+                                &#8377;{sale[7] || 0}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </td>
                   </tr>
                 ))}
@@ -370,7 +369,7 @@ export const Analytics = () => {
                 subtitle={'You will soon see unit wise sale ratio here.'}
               />
             ) : (
-              <PieChartComp data={topStore} vertical />
+              <PieChartComp data={topStore} vertical customLabel cy='30%' />
             )}
           </div>
         </Card>

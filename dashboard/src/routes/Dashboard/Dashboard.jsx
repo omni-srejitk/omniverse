@@ -149,7 +149,7 @@ export const Dashboard = () => {
             'row-span-1 lg:col-span-2 order-1 max-h-[20rem] flex-grow overflow-hidden justify-center items-center'
           }
         >
-          <div className='relative flex h-full w-full flex-grow items-center justify-center rounded-xl bg-gray-100/50'>
+          <div className='relative flex h-full  max-h-[13rem] w-full flex-grow items-center justify-center rounded-xl bg-gray-50/50'>
             {isGMVLoading ? (
               <Spinner
                 color={'border-blue-200'}
@@ -187,7 +187,7 @@ export const Dashboard = () => {
             'row-span-1 lg:col-span-2 max-h-[20rem] flex-grow overflow-hidden justify-center items-center order-2'
           }
         >
-          <div className='relative flex h-full w-full flex-grow items-center justify-center rounded-xl  bg-gray-100/50'>
+          <div className='relative flex h-full  max-h-[14rem] w-full flex-grow items-center justify-center rounded-xl  bg-gray-50/50'>
             {isGMVLoading ? (
               <Spinner
                 color={'border-green-200'}
