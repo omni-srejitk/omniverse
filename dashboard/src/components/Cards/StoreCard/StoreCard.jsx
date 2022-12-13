@@ -95,14 +95,15 @@ export const StoreCard = ({
   };
   return (
     <div
-      onClick={() => {
-        setShowModal(true);
-        setStoreDetail({ ...store, STORE_INV, STORE_DEP });
-      }}
-      className='relative w-full rounded-lg bg-white px-6 py-5'
+      // TODO To be enabled with new Modal
+      // onClick={() => {
+      //   setShowModal(true);
+      //   setStoreDetail({ ...store, STORE_INV, STORE_DEP });
+      // }}
+      className='relative h-full w-full rounded-lg bg-white px-6 py-5'
     >
       <div className='flex w-full items-center justify-start'>
-        <div className='flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-50/50 '>
+        <div className='flex h-12 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-white hover:bg-gray-50/50 '>
           {fetchStoreIcon(sub_type)}
         </div>
         <div className='ml-4 w-full overflow-hidden'>
@@ -112,12 +113,13 @@ export const StoreCard = ({
           >
             {customer_name}
           </h1>
-          <p className='my-1 h-8 font-medium text-gray-400'>
-            {`${sub_type} | ${locality}`}
-          </p>
+          {/* //TODO TO be added later */}
+          {/* <p className='my-1 h-8 font-medium text-gray-400'>
+            {sub_type && locality ? `${sub_type} | ${locality}` : ''}
+          </p> */}
         </div>
       </div>
-      <div className='my-4 flex h-fit w-full items-center justify-end gap-8'>
+      <div className='my-0 flex h-fit w-full items-center justify-end gap-8'>
         {/* //TODO TO be added later */}
         {/* <div className='flex flex-col items-center justify-between'>
           <Button type={'LOGO_BUTTON'} color='text-blue-400'>
@@ -147,7 +149,7 @@ export const StoreCard = ({
             <h3 className='text-4xl font-semibold'>{STORE_INV || 0}</h3>
           </div>
         </div>
-        <div className=' flex w-1/2 flex-col gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 p-4 shadow-sm'>
+        <div className=' flex w-1/2 flex-col gap-6 rounded-xl border-2 border-gray-200 bg-blue-50 py-4 px-2 shadow-sm'>
           <div>
             <div className='flex w-fit items-center justify-between gap-2 whitespace-pre break-words'>
               <p className='text-sm font-semibold'>Currently in store</p>

@@ -551,8 +551,6 @@ export const fetchItemsSales = (data) => {
       itemSales.push({ item: parsedItemName, qty: keyValue[items] });
     }
 
-    console.log('ITEMSALE', itemSales);
-
     itemSales.sort((a, b) => +b.qty - +a.qty);
     return itemSales;
   } catch (error) {
