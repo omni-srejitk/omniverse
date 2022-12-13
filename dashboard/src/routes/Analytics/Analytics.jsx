@@ -181,6 +181,7 @@ export const Analytics = () => {
       });
     }
 
+    auditLog.reverse()
     setAuditLog(auditLog);
   };
 

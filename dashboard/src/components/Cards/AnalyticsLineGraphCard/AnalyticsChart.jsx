@@ -28,7 +28,12 @@ export const AnalyticsChart = ({ data }) => {
 
   return (
     <div className='h-full max-h-[18rem] w-full'>
-      <h1 className='mb-6 text-3xl font-semibold'>&#8377;{TOTAL_SALES}</h1>
+      <h1 className='mb-6 text-3xl font-semibold'>
+        &#8377;
+        {TOTAL_SALES.toLocaleString('en-IN', {
+          maximumFractionDigits: 2,
+        })}
+      </h1>
       {data?.length === 0 ? (
         <ComingSoon
           logo={'auto_graph'}

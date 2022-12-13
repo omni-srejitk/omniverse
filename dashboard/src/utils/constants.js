@@ -15,18 +15,19 @@ export const SIDEBAR_LINKS = [
   },
   {
     id: 3,
-    icon: 'shopping_bag',
-    title: 'Stores',
-    link: '/stores',
-    active: false,
-  },
-  {
-    id: 4,
     icon: 'bar_chart',
     title: 'Analytics',
     link: '/analytics',
     active: true,
   },
+  {
+    id: 4,
+    icon: 'shopping_bag',
+    title: 'Stores',
+    link: '/stores',
+    active: false,
+  },
+  
   {
     id: 5,
     icon: 'podcasts',
