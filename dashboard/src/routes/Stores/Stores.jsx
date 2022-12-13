@@ -1,9 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-import { Modal, StoreModal } from '../../components';
 import { StoreCard } from '../../components/Cards/StoreCard/StoreCard';
 import { LABELS } from '../../components/Labels';
-import MapComponent from '../../components/Map/MapComponent';
 import { fetchAllStoresData } from '../../services/apiCalls';
 
 export const Stores = () => {
@@ -54,7 +52,7 @@ export const Stores = () => {
     <main className='page__content'>
       <h1 className='page__title'>Stores</h1>
       <section className='relative mx-auto mb-36 flex h-fit w-full flex-col items-center justify-between'>
-        <div className='grid-rows-auto z-10 order-2 mx-auto grid h-full grid-cols-3 flex-wrap items-start justify-start gap-4'>
+        <div className='grid-rows-auto z-10 order-2 mx-auto grid h-full w-full grid-cols-1 flex-wrap items-start justify-start gap-4 lg:grid-cols-2'>
           {!isAllStoresDataLoading &&
             ALL_STORES_DATA?.map((store) => (
               <StoreCard
