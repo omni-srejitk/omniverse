@@ -9,22 +9,18 @@ import {
   Legend,
   ResponsiveContainer,
   CartesianGrid,
+  Brush,
 } from 'recharts';
-export const BarCharts = ({
-  data = [],
-  XAxisKey,
-  YAxisKey,
-  DataKey,
-  color,
-}) => {
+export const BarCharts = React.memo((props) => {
+  const { data = [], XAxisKey, YAxisKey, DataKey, color } = props;
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'INR',
   });
 
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
-      <BarChart width={'100%'} height={'50%'} data={data}>
+    <ResponsiveContainer width={'100%'} height={'90%'}>
+      <BarChart width={'100%'} height={'90%'} data={data}>
         <defs>
           <linearGradient id='color' x1='0' y1='0' x2='0' y2='1'>
             <stop offset='0%' stopColor={color} stopOpacity='0.9' />
@@ -63,14 +59,13 @@ export const BarCharts = ({
         />
         <CartesianGrid opacity={'0.2'} />
         <Tooltip />
-        <Legend
-          formatter={(value) => (
-            <span className='text-color-class'>{value}</span>
-          )}
-        />
+        {import.meta.env.DEV && (
+          <Brush dataKey={DataKey} height={30} stroke={color} />
+        )}
+        {/* // TODO  Add this only on developmenmt server */}
 
         <Bar dataKey={DataKey} fill={color} axisLine={false} />
       </BarChart>
     </ResponsiveContainer>
   );
-};
+});

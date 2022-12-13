@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -6,23 +6,22 @@ import {
   BarCharts,
   Card,
   Carousal,
-  Filter,
   Select,
   StatCard,
   Spinner,
 } from '../../components';
+import { DateSelector } from '../../components/DateSelector/DateSelector';
+import { ComingSoon } from '../../components/Placeholders/ComingSoon';
+import { useCalculateSaleData } from '../../hooks/useCalculateSaleData';
+import { usePrepareData } from '../../hooks/usePrepareData';
 import {
-  selectAllStores,
   selectCumlativeAmtData,
   selectCumlativeCountData,
+  selectPopupState,
   selectSaleAmount,
   selectUnitsSold,
 } from '../../redux/actions';
-import {
-  selectAllDates,
-  selectAllItems,
-  selectFilteredSalesData,
-} from '../../redux/actions/dataActions';
+
 import {
   setAuthToken,
   setBrandName,
@@ -34,21 +33,11 @@ import {
   fetchLiveStoreCount,
   fetchStoreImages,
 } from '../../services/apiCalls';
-import {
-  calculateDailyGMV,
-  fetchCumalativeSaleAmount,
-  fetchCumalativeSaleCount,
-  getFilteredData,
-  prepareSaleData,
-} from '../../utils/helperFunctions';
+import { getFilteredData } from '../../utils/helperFunctions';
 
 export const Dashboard = () => {
   const BRAND = localStorage.getItem('Name');
-  const [showState, setShowState] = useState({
-    durationFilter: false,
-    productFilter: false,
-  });
-  const { isLoading: isGMVLoading, data: dailyGMVData } = fetchDailyGMV(BRAND);
+  const { data: dailyGMVData } = fetchDailyGMV(BRAND);
   const { isLoading: isInventoryLoading, data: inventoryData } =
     fetchInventoryCount(BRAND);
   const { isLoading: isInventoryCountLoading, data: inventoryCountData } =
@@ -57,16 +46,21 @@ export const Dashboard = () => {
   const dispatch = useDispatch();
   const UNITS_SOLD = useSelector(selectUnitsSold);
   const SALE_AMT = useSelector(selectSaleAmount);
-  const LIVESTORES = useSelector(selectAllStores);
   const LIVESTORES_COUNT = inventoryCountData;
   const BARCHART = useSelector(selectCumlativeCountData);
   const AREACHART = useSelector(selectCumlativeAmtData);
   const FILTERSTATE = useSelector((state) => state.filter);
-  const FILTEREDSALEDATA = useSelector(selectFilteredSalesData);
-  const ALLITEMS = useSelector(selectAllItems);
-  const ALLDATES = useSelector(selectAllDates);
   const TOKEN = JSON.parse(localStorage.getItem('Token'));
   const NAME = localStorage.getItem('Name');
+  const SHOWPOPUP = useSelector(selectPopupState);
+  const { isGMVLoading } = usePrepareData();
+  const { isCalculating } = useCalculateSaleData(isGMVLoading);
+
+  const OVERVIEW_FILTERS = (
+    <div className='flex items-center gap-4'>
+      <Select />
+    </div>
+  );
 
   useEffect(() => {
     if (TOKEN) {
@@ -75,36 +69,6 @@ export const Dashboard = () => {
       dispatch(setBrandName(NAME));
     }
   }, [TOKEN, NAME]);
-
-  useEffect(() => {
-    if (!isGMVLoading && FILTEREDSALEDATA) {
-      calculateDailyGMV(FILTEREDSALEDATA, dispatch);
-      fetchCumalativeSaleCount(FILTEREDSALEDATA, ALLDATES, dispatch);
-      fetchCumalativeSaleAmount(FILTEREDSALEDATA, ALLDATES, dispatch);
-    }
-  }, [FILTEREDSALEDATA]);
-
-  useEffect(() => {
-    if (!isGMVLoading) {
-      prepareSaleData(dailyGMVData, dispatch);
-    }
-  }, [isGMVLoading, dailyGMVData]);
-
-  const DASHBOARD_FILTERS = {
-    'By Product': ALLITEMS,
-    'By Store': LIVESTORES,
-  };
-
-  const OVERVIEW_FILTERS = (
-    <div className='items-centerS flex gap-4'>
-      <Select showState={showState} setShowState={setShowState} />
-      <Filter
-        filter={DASHBOARD_FILTERS}
-        showState={showState}
-        setShowState={setShowState}
-      />
-    </div>
-  );
 
   useEffect(() => {
     if (isGMVLoading) return;
@@ -121,7 +85,7 @@ export const Dashboard = () => {
               icon='home'
               title='Units Sold'
               metric={UNITS_SOLD}
-              loading={isGMVLoading}
+              loading={isCalculating}
               background='bg-green-100'
               spinner={'border-green-200'}
               tooltip={'Total count of items sold.'}
@@ -130,7 +94,7 @@ export const Dashboard = () => {
               icon='insights'
               title='Total GMV'
               metric={SALE_AMT}
-              loading={isGMVLoading}
+              loading={isCalculating}
               tooltip={'Total sale of items sold.'}
               background='bg-blue-100'
               spinner={'border-blue-200'}
@@ -164,12 +128,18 @@ export const Dashboard = () => {
             'row-span-1 lg:col-span-2 order-1 max-h-[20rem] flex-grow overflow-hidden justify-center items-center'
           }
         >
-          <div className='relative flex h-full w-full flex-grow items-center justify-center rounded-xl bg-gray-100/50'>
-            {isGMVLoading ? (
+          <div className='relative flex h-full  max-h-[13rem] w-full flex-grow items-center justify-center rounded-xl bg-gray-50/50'>
+            {isCalculating ? (
               <Spinner
                 color={'border-blue-200'}
                 position={'top-1/2 left-1/2'}
-                loading={isGMVLoading}
+                loading={isCalculating}
+              />
+            ) : AREACHART?.length === 0 ? (
+              <ComingSoon
+                logo={'insert_chart'}
+                title='No Data Found.'
+                subtitle='Please try again with different filters.'
               />
             ) : (
               <AreaCharts
@@ -188,7 +158,7 @@ export const Dashboard = () => {
             'row-span-2 flex-grow max-h-[42rem] col-span-1 order-3 lg:order-2 '
           }
         >
-          <Carousal src={imageData} loading={ImageLoading} />
+          <Carousal imagelist={imageData} loading={ImageLoading} />
         </Card>
         <Card
           title='Sales '
@@ -196,12 +166,18 @@ export const Dashboard = () => {
             'row-span-1 lg:col-span-2 max-h-[20rem] flex-grow overflow-hidden justify-center items-center order-2'
           }
         >
-          <div className='relative flex h-full w-full flex-grow items-center justify-center rounded-xl  bg-gray-100/50'>
-            {isGMVLoading ? (
+          <div className='relative flex h-full  max-h-[14rem] w-full flex-grow items-center justify-center rounded-xl  bg-gray-50/50'>
+            {isCalculating ? (
               <Spinner
                 color={'border-green-200'}
                 position={'top-1/2 left-1/2'}
-                loading={isGMVLoading}
+                loading={isCalculating}
+              />
+            ) : BARCHART?.length === 0 ? (
+              <ComingSoon
+                logo={'insert_chart'}
+                title='No Data Found.'
+                subtitle='Please try again with different filters.'
               />
             ) : (
               <BarCharts
@@ -215,6 +191,7 @@ export const Dashboard = () => {
           </div>
         </Card>
       </section>
+      {SHOWPOPUP.datePicker && <DateSelector />}
     </main>
   );
 };

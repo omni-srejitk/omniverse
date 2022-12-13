@@ -1,21 +1,28 @@
 import moment from 'moment';
+import { selectAllFilteredDates } from '../redux/actions';
 import {
   setAllDates,
   setAllInventory,
   setAllInventoryList,
   setAllItems,
   setAllSaleAmount,
-    setAllUnitsSold,
+  setAllUnitsSold,
   setAllWarehouse,
   setAllWarehouseList,
+  setFilteredAgeGenderData,
   setFilteredSaleData,
 } from '../redux/features/dataSlice';
-import { setFilteredDates } from '../redux/features/filterSlice';
+import {
+  setFilteredDates,
+  setFilterEndDate,
+  setFilterStartDate,
+} from '../redux/features/filterSlice';
 import {
   setCumlativeSum,
   setCumlativeUnits,
 } from '../redux/features/graphSlice';
 
+const BRAND = localStorage.getItem('Name');
 export const calcTickCount = (duration) => {
   switch (duration) {
     case 'All Time':
@@ -326,27 +333,23 @@ const filterByItem = ({ filteredItems }, arr) => {
 };
 
 // * DONE.
-export const filterByDate = ({ filterDuration }, arr) => {
+export const filterByDate = (
+  { filterDuration, filterStartDate, filterEndDate },
+  arr
+) => {
   switch (filterDuration) {
+    case 'Lifetime':
     case 'This Week':
-      const firstDayOfWeek = moment().startOf('week');
-      const currDayOfWeek = moment().endOf('week');
-
-      return arr?.filter((item) =>
-        moment(item[0], 'DD-MM-YY').isBetween(
-          moment(firstDayOfWeek, 'DD-MM-YY'),
-          moment(currDayOfWeek, 'DD-MM-YY')
-        )
-      );
-
+    case 'Last Week':
     case 'This Month':
-      const firstDayOfMonth = moment().startOf('month');
-      const currDayOfMonth = moment().endOf('month');
-
+    case 'Last Month':
+    case 'Past 3 Months':
+    case 'Year to Date':
+    case 'Custom Range':
       return arr?.filter((item) =>
         moment(item[0], 'DD-MM-YY').isBetween(
-          moment(firstDayOfMonth, 'DD-MM-YY'),
-          moment(currDayOfMonth, 'DD-MM-YY')
+          moment(filterStartDate, 'DD-MM-YY'),
+          moment(filterEndDate, 'DD-MM-YY')
         )
       );
     default:
@@ -377,5 +380,180 @@ export const prepareSaleData = (sale_data, dispatch) => {
   const ALL_ITEMS = fetchAllItems(sale_data);
 
   dispatch(setAllDates(ALL_SALE_DATES));
+  dispatch(setFilteredDates(ALL_SALE_DATES));
   dispatch(setAllItems(ALL_ITEMS));
+  dispatch(setFilterStartDate(ALL_SALE_DATES[0]));
+  dispatch(setFilterEndDate(ALL_SALE_DATES?.slice(-1)[0]));
+};
+
+export const filterAgeGenderByDate = ({ filterDuration }, arr) => {
+  switch (filterDuration) {
+    case 'This Week':
+      const firstDayOfWeek = moment().startOf('week');
+      const currDayOfWeek = moment().endOf('week');
+      console.log(arr);
+
+      return arr?.filter((item) =>
+        moment(item.date, 'YYYY-MM-DD').isBetween(
+          moment(firstDayOfWeek, 'YYYY-MM-DD'),
+          moment(currDayOfWeek, 'YYYY-MM-DD')
+        )
+      );
+
+    case 'This Month':
+      const firstDayOfMonth = moment().startOf('month');
+      const currDayOfMonth = moment().endOf('month');
+
+      return arr?.filter((item) =>
+        moment(item.date, 'YYYY-MM-DD').isBetween(
+          moment(firstDayOfMonth, 'YYYY-MM-DD'),
+          moment(currDayOfMonth, 'YYYY-MM-DD')
+        )
+      );
+    default:
+      return arr;
+  }
+};
+
+//  * DONE
+const filterAgeGenderByStore = ({ filteredStores }, arr) => {
+  if (filteredStores?.length > 0) {
+    let filteredByStores = arr?.filter((sale) => {
+      return filteredStores?.includes(sale.customer);
+    });
+
+    return filteredByStores;
+  } else {
+    return arr;
+  }
+};
+
+// * DONE
+const filterAgeGenderByItem = ({ filteredItems }, arr) => {
+  if (filteredItems?.length > 0) {
+    return arr?.filter((sale) => filteredItems.includes(sale.item_name));
+  } else {
+    return arr;
+  }
+};
+
+export const getFilteredAgeGenderData = (filterState, data, dispatch) => {
+  const res = applyFilters(
+    filterState,
+    filterAgeGenderByDate,
+    filterAgeGenderByItem,
+    filterAgeGenderByStore
+  )(data);
+  dispatch(setFilteredAgeGenderData(res));
+};
+
+export const computeAnalyticsSalesNumber2 = (count, amount, days) => {
+  // days tell us how many days to go behind
+  try {
+    //code here
+    const presentDate = moment().format('DD-MM-YY');
+    const previousDate = moment().subtract(days, 'days').format('DD-MM-YY');
+    let previousCount, previousGMV, presentCount, presentGMV;
+    let presentDateIndex, previousDateIndex; // for saving the index of present and previousDate
+    for (let i = 0; i < count.length; i++) {
+      if (count[i].Date == previousDate) {
+        previousCount = count[i].Unit_Sold;
+        previousGMV = amount[i].Unit_Amt;
+        previousDateIndex = i;
+      } else if (count[i].Date == presentDate) {
+        presentCount = count[i].Unit_Sold;
+        presentGMV = amount[i].Unit_Amt;
+        presentDateIndex = i;
+      }
+    }
+    let percentageChangeCount = (presentCount - previousCount) / 100;
+    let percentageChangeGMV = (presentGMV - previousGMV) / 100;
+    return {
+      percentageChangeCount,
+      percentageChangeGMV,
+      presentData: {
+        count: count[presentDateIndex],
+        amount: amount[presentDateIndex],
+      },
+      previousData: {
+        count: count[previousDateIndex],
+        amount: amount[previousDateIndex],
+      },
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const calculateDayWiseGMV = (data) => {
+  try {
+    let keyValue = {};
+    let itemSold = [];
+
+    for (let i = 0; i < data.length; i++) {
+      if (keyValue[data[i][0]]) {
+        keyValue[data[i][0]] += data[i][7];
+      } else {
+        keyValue[data[i][0]] = data[i][7];
+      }
+    }
+    for (let date in keyValue) {
+      itemSold.push({ date: date, gmv: keyValue[date] });
+    }
+
+    return itemSold;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const calculateDayWiseItemsSold = (data) => {
+  try {
+    let keyValue = {};
+    let itemSold = [];
+
+    for (let i = 0; i < data.length; i++) {
+      if (keyValue[data[i][0]]) {
+        keyValue[data[i][0]] += data[i][2];
+      } else {
+        keyValue[data[i][0]] = data[i][2];
+      }
+    }
+    for (let date in keyValue) {
+      itemSold.push({ date: date, qty: keyValue[date] });
+    }
+
+    return itemSold;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchItemsSales = (data) => {
+  let word = 'Nutritatva';
+  let regex = new RegExp(
+    `(${word})|(\W|\D,_)|([0-9][a-z]*)(^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$)`,
+    'g'
+  );
+
+  try {
+    let keyValue = {};
+    let itemSales = [];
+    for (let i = 0; i < data.length; i++) {
+      if (keyValue[data[i][6]]) {
+        keyValue[data[i][6]] += data[i][2];
+      } else {
+        keyValue[data[i][6]] = data[i][2];
+      }
+    }
+    for (let items in keyValue) {
+      let parsedItemName = items.replace(regex, ' ');
+      itemSales.push({ item: parsedItemName, qty: keyValue[items] });
+    }
+
+    itemSales.sort((a, b) => +b.qty - +a.qty);
+    return itemSales;
+  } catch (error) {
+    console.log(error);
+  }
 };

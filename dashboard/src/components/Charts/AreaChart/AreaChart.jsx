@@ -11,16 +11,16 @@ import {
   Legend,
 } from 'recharts';
 
-export const AreaCharts = ({
-  data = [],
-  XAxisKey,
-  YAxisKey,
-  DataKey,
-  color,
-}) => {
+export const AreaCharts = React.memo((props) => {
+  const { data = [], XAxisKey, YAxisKey, DataKey, color } = props;
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
-      <AreaChart width={'100%'} height={'50%'} data={data}>
+    <ResponsiveContainer width={'100%'} height={'80%'}>
+      <AreaChart
+        margin={{ bottom: -10 }}
+        width={'80%'}
+        height={'100%'}
+        data={data}
+      >
         <defs>
           <linearGradient id='color' x1='0' y1='0' x2='0' y2='1'>
             <stop offset='0%' stopColor={color} stopOpacity='0.9' />
@@ -31,10 +31,10 @@ export const AreaCharts = ({
           dataKey={XAxisKey}
           style={{
             fontSize: '0.7rem',
-            margin: '1rem 0 0',
+          
             fontFamily: 'Inter',
           }}
-          tickMargin={0}
+          tickMargin={5}
           axisLine={false}
           tickLine={false}
           tickCount={data.length}
@@ -56,11 +56,6 @@ export const AreaCharts = ({
         />
         <CartesianGrid opacity={'0.2'} />
         <Tooltip />
-        <Legend
-          formatter={(value) => (
-            <span className='text-color-class'>{value}</span>
-          )}
-        />
         <Area
           type='monotone'
           dataKey={DataKey}
@@ -73,4 +68,4 @@ export const AreaCharts = ({
       </AreaChart>
     </ResponsiveContainer>
   );
-};
+});

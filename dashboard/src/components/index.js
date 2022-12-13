@@ -3,7 +3,7 @@ export { Header } from './Header/Header';
 export { Sidebar } from './Sidebar/Sidebar';
 
 // * Utilities
-export { Spinner } from './Loaders';
+export { Spinner, ProgressBar } from './Loaders';
 export { Button } from './Buttons';
 export { TierLabel } from './Labels';
 export { StoreLabels } from './Labels';
@@ -22,6 +22,6 @@ export {
 export { AreaCharts, BarCharts } from './Charts';
 
 // * Misc
-export { Card, StatCard, StoreCard } from './Cards';
+export { Card, StatCard, StoreCard, AnalyticsChart} from './Cards';
 export { Select } from './Select/Select';
 export { Filter } from './Filter/Filter';

@@ -8,7 +8,7 @@ export const Sidebar = () => {
   return (
     <div className='fixed bottom-0 z-40 h-24 w-screen border-r-2 border-gray-100 bg-white px-6 pt-2 shadow-sm md:left-0 md:h-screen md:w-24 lg:w-[20rem]'>
       <div className='flex items-center justify-evenly md:flex-col md:items-start md:justify-start'>
-        <div className='my-4 hidden h-10 w-32 items-center justify-center rounded-full md:flex'>
+        <div className='my-4 hidden  h-10 w-32 items-center justify-center rounded-full lg:flex'>
           <img src={'/logo.png'} className='w-full' />
         </div>
         {SIDEBAR_LINKS.map(({ title, id, icon, link, active }) => {

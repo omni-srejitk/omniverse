@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectItemFilters, selectStoreFilters } from '../../redux/actions';
+import {
+  selectItemFilters,
+  selectPopupState,
+  selectStoreFilters,
+} from '../../redux/actions';
 import {
   setFilteredItems,
   setFilteredStores,
 } from '../../redux/features/filterSlice';
+import { setProductPopup } from '../../redux/features/popupSlice';
 import { fetchAllLiveStores } from '../../services/apiCalls';
 import { Spinner } from '../Loaders';
 
@@ -17,7 +22,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
   const FILTERBYSTORE = useSelector(selectStoreFilters);
   const { data: liveStoreData, isloading: isStoresLoading } =
     fetchAllLiveStores(BRAND);
-
+  const SHOWPOPUP = useSelector(selectPopupState);
   const handleItemChange = (val) => {
     if (itemFilters?.includes(val)) {
       setItemFilters(itemFilters.filter((filter) => filter !== val));
@@ -37,21 +42,20 @@ export const Filter = ({ filter, showState, setShowState }) => {
     <div className=' relative w-max '>
       <div
         onClick={() =>
-          setShowState({
-            ...showState,
-            durationFilter: false,
-            productFilter: !showState.productFilter,
-          })
+          SHOWPOPUP.productFilter
+            ? dispatch(setProductPopup(false))
+            : dispatch(setProductPopup(true))
         }
-        className='flex cursor-pointer items-center justify-between rounded-2xl  border-2 border-gray-100 px-4 py-2 font-medium hover:border-gray-400'
+        className='flex cursor-pointer items-center justify-between rounded-lg border-2  border-gray-100 bg-white px-4 py-2 font-medium hover:border-gray-400'
       >
+        <p className='px-1 font-medium text-gray-700'>Filter</p>
         <span className='material-icons'>
-          {showState.productFilter ? 'close' : 'filter_alt'}
+          {SHOWPOPUP.productFilter ? 'close' : 'filter_alt'}
         </span>
       </div>
       <div
         className={`absolute -right-6 z-20 rounded-xl bg-white p-6 md:right-0 ${
-          showState.productFilter ? 'visible h-fit' : 'hidden h-0'
+          SHOWPOPUP.productFilter ? 'visible h-fit' : 'hidden h-0'
         } shadow-md`}
       >
         <p className='my-2 font-medium text-gray-500'>By Product</p>
@@ -123,7 +127,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
               dispatch(setFilteredItems([]));
               setItemFilters([]);
               setStoreFilters([]);
-              setShowState({ ...showState, productFilter: false });
+              dispatch(setProductPopup(false));
             }}
             className='ml-auto flex cursor-pointer items-center  justify-between  rounded-2xl border-2 border-gray-100 px-4 py-2 font-medium hover:border-gray-400'
           >
@@ -137,7 +141,7 @@ export const Filter = ({ filter, showState, setShowState }) => {
                 itemFilters?.length === 0 ? [] : itemFilters;
               dispatch(setFilteredStores(FILTER_BY_STORES));
               dispatch(setFilteredItems(FILTER_BY_ITEMS));
-              setShowState({ ...showState, productFilter: false });
+              dispatch(setProductPopup(false));
             }}
             className='border-gray- 100 flex cursor-pointer  items-center  justify-between rounded-2xl border-2 bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
           >

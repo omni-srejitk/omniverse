@@ -1,21 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { reduceImages } from '../../utils/helperFunctions';
 import { Spinner } from '../Loaders';
-import { encode } from 'blurhash';
 
-export const Carousal = ({ src = {}, loading }) => {
+export const Carousal = ({ imagelist, loading }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  let MAX_LENGTH = 5;
-  const IMAGES_LOADED = 5;
+  const [imagesPreloaded, setImagesPreloaded] = useState(false);
+  let MAX_LENGTH = 4;
+  let IMAGES_LOADED = 10;
+  let INITIAL_SET = 0;
+  const IMAGE_CACHE =
+    !loading &&
+    Object.values(imagelist)
+      .slice(INITIAL_SET, IMAGES_LOADED)
+      .map((img) => img.image);
+
+  const preloadImage = (src) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = function () {
+        resolve(img);
+      };
+      img.onerror = img.onabort = function () {
+        reject(src);
+      };
+      img.src = src;
+    });
+  };
 
   const handleClick = (type) => {
     if (type === 'NEXT') {
       setCurrentIndex((prev) => prev + 1);
+      INITIAL_SET = IMAGES_LOADED;
+      IMAGES_LOADED += MAX_LENGTH;
     } else {
       setCurrentIndex((prev) => prev - 1);
     }
   };
-
 
   useEffect(() => {
     if (!loading && currentIndex > MAX_LENGTH) {
@@ -24,62 +43,60 @@ export const Carousal = ({ src = {}, loading }) => {
     if (
       currentIndex > MAX_LENGTH &&
       !loading &&
-      currentIndex === Object.keys(src)?.length - 1
+      currentIndex === Object.keys(imagelist)?.length - 1
     ) {
       MAX_LENGTH = IMAGES_LOADED;
       setCurrentIndex(0);
     }
-    if (!loading && currentIndex > Object.keys(src)?.length - 1) {
+    if (!loading && currentIndex > Object.keys(imagelist)?.length - 1) {
       setCurrentIndex(0);
     }
     if (!loading && currentIndex < 0) {
-      const PICS_LENGTH = Object.keys(src)?.length - 1;
+      const PICS_LENGTH = Object.keys(imagelist)?.length - 1;
       setCurrentIndex(PICS_LENGTH);
     }
   }, [currentIndex]);
 
-  const loadImage = async (src) =>
-    new Promise((resolve, reject) => {
-      const img = new Image();
-      img.src = src;
-      img.onload = () => resolve(img);
-      img.onerror = (...args) => reject(args);
-    });
+  useEffect(() => {
+    let isCancelled = false;
+    let imagesPromiseList = [];
+    async function effect() {
+      if (isCancelled) {
+        return;
+      }
 
-  const getImageData = (image) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = image.width;
-    canvas.height = image.height;
-    const context = canvas.getContext('2d');
-    context.drawImage(image, 0, 0);
-    return context.getImageData(0, 0, image.width, image.height);
-  };
+      IMAGE_CACHE &&
+        IMAGE_CACHE?.map((imageSrc) =>
+          imagesPromiseList?.push(preloadImage(imageSrc))
+        );
 
-  const encodeImageToBlurhash = async (imageUrl) => {
-    const image = await loadImage(imageUrl);
-    const imageData = getImageData(image);
-    return encode(imageData.data, imageData.width, imageData.height, 4, 4);
-  };
+      await Promise.all(imagesPromiseList);
 
-  // !Fix : Getting CORS Error
-  // useEffect(() => {
-  //   if (images?.length > 0) {
-  //     let temp = images.map((item) => loadImage(item.image));
-  //     console.log(temp);
-  //   }
-  // }, [images]);
+      if (isCancelled) {
+        return;
+      }
+
+      setImagesPreloaded(true);
+    }
+
+    effect();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [IMAGE_CACHE, loading]);
 
   return (
     <div className='flex h-full max-h-full flex-col items-center justify-start overflow-hidden rounded-lg pb-20'>
       <div className='mb-4 flex w-full items-center justify-between overflow-hidden'>
         <div>
-          {!loading && src && Object.keys(src)?.length > 0 ? (
+          {!loading && imagelist && Object.keys(imagelist)?.length > 0 ? (
             <h2 className='text-xl font-medium capitalize'>
-              {loading ? 'Loading...' : src[currentIndex]['customer']}
+              {loading ? 'Loading...' : imagelist[currentIndex]['customer']}
             </h2>
           ) : null}
         </div>
-        {!loading && src && Object.keys(src)?.length > 1 ? (
+        {!loading && imagelist && Object.keys(imagelist)?.length > 1 ? (
           <div className='flex h-14 w-fit items-center justify-between gap-4'>
             <button
               className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
@@ -89,7 +106,9 @@ export const Carousal = ({ src = {}, loading }) => {
               <span className='material-icons m-0 p-0 '>chevron_left</span>
             </button>
             <button
-              disabled={src && Object.keys(src)?.length - 1 === currentIndex}
+              disabled={
+                imagelist && Object.keys(imagelist)?.length - 1 === currentIndex
+              }
               className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 disabled:bg-gray-100 disabled:text-gray-300 hover:bg-gray-300`}
               onClick={() => handleClick('NEXT')}
             >
@@ -100,8 +119,8 @@ export const Carousal = ({ src = {}, loading }) => {
           </div>
         ) : null}
       </div>
-      <div className='relative flex h-full  w-full flex-grow overflow-hidden rounded-xl'>
-        {loading ? (
+      <div className='relative flex h-full min-h-[20rem]  w-full flex-grow overflow-hidden rounded-xl'>
+        {!imagesPreloaded ? (
           <Spinner
             color={'border-blue-200'}
             position={'top-1/2 left-1/2'}
@@ -111,14 +130,15 @@ export const Carousal = ({ src = {}, loading }) => {
           <div
             className={` flex h-full w-full flex-grow justify-center gap-4 overflow-hidden `}
           >
-            {!loading && src && Object.keys(src)?.length > 0 ? (
+            {!loading &&
+            imagesPreloaded &&
+            Object.values(imagelist)?.length > 0 ? (
               <img
                 className='z-10  h-full w-full rounded-xl object-cover'
                 src={
                   !loading &&
-                  src &&
-                  src[currentIndex]['status'] &&
-                  src[currentIndex]['image']
+                  imagesPreloaded &&
+                  imagelist[currentIndex]['image']
                 }
               />
             ) : (

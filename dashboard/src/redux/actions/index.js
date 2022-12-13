@@ -1,3 +1,5 @@
+export { selectPopupState } from './popupActions';
+
 export {
   selectAllFilteredDates,
   selectAllFilteredItems,
@@ -5,6 +7,8 @@ export {
   selectDurationFilter,
   selectItemFilters,
   selectStoreFilters,
+  selectFilterEndDate,
+  selectFilterStartDate,
 } from './filterActions';
 
 export {

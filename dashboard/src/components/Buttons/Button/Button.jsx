@@ -15,7 +15,7 @@ export const Button = ({
       className={`cursor-pointer rounded-lg px-4 py-2 font-semibold text-gray-500 hover:bg-gray-100 ${
         active ? 'bg-gray-100 text-black' : 'bg-white'
       } hover:text-black`}
-      rest
+      {...rest}
     >
       {children}
     </button>
@@ -25,6 +25,7 @@ export const Button = ({
     <button
       onClick={clickFunc}
       className='cursor-pointer rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600'
+      {...rest}
     >
       {children}
     </button>
@@ -34,6 +35,7 @@ export const Button = ({
     <button
       onClick={clickFunc}
       className='cursor-pointer rounded-lg border-2 border-gray-300 px-4  py-2 font-semibold text-gray-700 hover:border-gray-400  hover:text-black'
+      {...rest}
     >
       {children}
     </button>
@@ -45,6 +47,7 @@ export const Button = ({
       className={`group ${
         absolute ? 'absolute' : 'flex items-center justify-center'
       } top-4 right-4 z-40 h-10 w-10  cursor-pointer rounded-full border-2 border-gray-100 bg-white font-semibold text-gray-700 hover:border-gray-400  hover:text-black`}
+      {...rest}
     >
       <span
         className={`material-icons text-base ${color} flex h-full w-full items-center justify-center rounded-lg text-gray-400 group-hover:text-black`}

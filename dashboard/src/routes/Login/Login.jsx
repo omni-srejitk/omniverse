@@ -9,6 +9,7 @@ import {
   setBrandName,
   setloginStatus,
 } from '../../redux/features/authSlice';
+import { Spinner } from '../../components';
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -40,7 +41,6 @@ export const Login = () => {
       toast.error(`Couldn't sign you in`, { id: loginToast });
     }
 
-    console.log(error);
     if (!isLoading && res?.data && res?.data?.token) {
       localStorage.setItem('Token', JSON.stringify(res?.data.token));
       localStorage.setItem('Name', res?.data?.name.trim());
@@ -118,8 +118,14 @@ export const Login = () => {
         </p>
         <button
           type='submit'
-          className='my-2 flex w-72 cursor-pointer items-center justify-center rounded-xl border-2   border-transparent bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600'
+          disabled={isLoading}
+          className='relative my-2 flex w-72 cursor-pointer items-center justify-center gap-4 rounded-xl border-2 border-transparent   bg-blue-500 px-4 py-2 font-medium text-white disabled:bg-blue-400 hover:bg-blue-600'
         >
+          <Spinner
+            loading={isLoading}
+            color='border-blue-200'
+            absolute={false}
+          />
           Sign in
         </button>
       </form>
