@@ -14,9 +14,16 @@ export const Card = ({
           <div className='mr-4 h-8 w-4 rounded-md bg-purple-200'></div>
           <h4 className=' pr-4 text-lg md:text-3xl'>{title}</h4>
           {/* //TODO To be added in Next PR */}
-          {/* <h1 title='info' className='material-icons text-sm text-black/70'>
-            info
-          </h1> */}
+          {info.length > 0 ? (
+            <h1 title={info} className='material-icons text-sm text-black/70'>
+              info
+            </h1>
+          ) : (
+            <h1
+              title={info}
+              className='material-icons text-sm text-black/70'
+            ></h1>
+          )}
         </div>
         {cardHeader}
       </div>
