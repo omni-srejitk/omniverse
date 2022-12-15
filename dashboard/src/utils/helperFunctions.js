@@ -212,20 +212,15 @@ export const fetchAllItems = (sale_data = []) => {
 export const fetchCumalativeSaleCount = (sale_data = [], dates, dispatch) => {
   const SALE_COUNT = new Map();
   let UNIT_SALE = 0;
-  let firstDate = moment(dates[0], 'DD-MM-YY');
-  const endDate = moment();
-  const ALL_DATES = [];
+  const ALL_DATES = fetchAllDates(sale_data)
   const SALE_DATA = {};
   let DAYWISE_SOLD = [];
 
-  for (let i = firstDate; i <= endDate; i = moment(i).add(1, 'd')) {
-    ALL_DATES.push(moment(i, 'DD-MM-YY').format('DD-MM-YY'));
-  }
 
   if (sale_data?.length > 0) {
     ALL_DATES.map((date) => {
       sale_data?.map((sale) => {
-        if (moment(date, 'DD-MM-YY').isSame(moment(sale[0], 'DD-MM-YY'))) {
+        if (moment(date, 'DD-MM-YY').isSame(moment(sale[0], 'DD-MM-YY'))){
           UNIT_SALE += +sale[2];
           SALE_COUNT.set(sale[0], UNIT_SALE);
         } else {
@@ -350,7 +345,7 @@ export const filterByDate = (
         moment(item[0], 'DD-MM-YY').isBetween(
           moment(filterStartDate, 'DD-MM-YY'),
           moment(filterEndDate, 'DD-MM-YY')
-        )
+        , null, [])
       );
     default:
       return arr;
