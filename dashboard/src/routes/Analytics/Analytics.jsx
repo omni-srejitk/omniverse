@@ -228,13 +228,15 @@ export const Analytics = () => {
       <div className='max-w-screen mb-40 grid h-fit min-h-screen w-full grid-cols-1 grid-rows-[7] items-center justify-start  gap-8 lg:grid-cols-3 lg:grid-rows-[repeat(3,minmax(25rem,1fr))]'>
         <Card
           title='Total Sales'
+          info='Gross Merchandise Value of SKUs sold in the selected period.'
           classes={'row-span-1 w-full h-full col-span-1 lg:col-span-2'}
           cardHeader={SELECTED_RANGE}
         >
           <AnalyticsChart data={FILTEREDSALEDATA} />
         </Card>
         <Card
-          title='Top SKU'
+          title='Bestsellers'
+          info='These are your top selling items for the selected period.'
           classes={'w-full h-[25rem] col-span-1 row-span-1'}
         >
           <div className='h-full w-full'>
@@ -255,7 +257,11 @@ export const Analytics = () => {
             )}
           </div>
         </Card>
-        <Card title='Unit Sold' classes={'row-span-1 col-span-1 max-h-[25rem]'}>
+        <Card
+          title='Units Sold'
+          info='Total quantity of SKUs sold in the selected period.'
+          classes={'row-span-1 col-span-1 max-h-[25rem]'}
+        >
           {FILTEREDSALEDATA?.length === 0 ? (
             <ComingSoon
               logo={'insert_chart'}
@@ -273,7 +279,11 @@ export const Analytics = () => {
           )}
         </Card>
 
-        <Card title='Age Split' classes={'max-h-[25rem]'}>
+        <Card
+          title='Age Split'
+          info='The age wise split of the consumers who are purchasing your products inside stores. This data is collected by our promoters.'
+          classes={'max-h-[25rem]'}
+        >
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>
             {ageData?.length === 0 ? (
               <ComingSoon
@@ -286,13 +296,18 @@ export const Analytics = () => {
             )}
           </div>
         </Card>
-        <Card title='Gender Split' classes={'max-h-[25rem]'}>
+        <Card
+          title='Gender Split'
+          info='Binary gender distribution of consumers who are purchasing your products inside stores. This data is collected by our promoters'
+          classes={'max-h-[25rem]'}
+        >
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>
             <GenderChart data={genderData} />
           </div>
         </Card>
         <Card
           title='Audit Log'
+          info='A historical data sheet of all the sales based on audits.'
           classes={
             'row-span-1 col-span-1 lg:col-span-2 max-h-[25rem] overflow-hidden'
           }
@@ -358,6 +373,7 @@ export const Analytics = () => {
         </Card>
         <Card
           title='Top Stores'
+          info='Best performing stores based on quantity of items sold.'
           classes={'max-h-[25rem] col-span-1 overflow-hidden'}
         >
           <div className='h-80 w-full rounded-xl border-2 border-transparent'>

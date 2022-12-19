@@ -88,14 +88,16 @@ export const Dashboard = () => {
               loading={isCalculating}
               background='bg-green-100'
               spinner={'border-green-200'}
-              tooltip={'Total count of items sold.'}
+              tooltip={'Total quantity of SKUs sold in the selected period.'}
             />
             <StatCard
               icon='insights'
               title='Total GMV'
               metric={SALE_AMT}
               loading={isCalculating}
-              tooltip={'Total sale of items sold.'}
+              tooltip={
+                'Gross Merchandise Value of SKUs sold in the selected period.'
+              }
               background='bg-blue-100'
               spinner={'border-blue-200'}
               currency
@@ -107,14 +109,16 @@ export const Dashboard = () => {
               metric={LIVESTORES_COUNT}
               background='bg-purple-100'
               spinner={'border-purple-200'}
-              tooltip={'Total no of stores where item is active.'}
+              tooltip={"Total number of stores you're currently active in."}
             />
             <StatCard
               icon='warehouse'
               title='Total Deployed'
               metric={inventoryData}
               loading={isInventoryLoading}
-              tooltip={'Total no of items in inventory deployed.'}
+              tooltip={
+                'The number of SKUs which is currently present inside active stores.'
+              }
               background='bg-yellow-100'
               spinner={'border-yellow-200'}
             />
@@ -124,6 +128,7 @@ export const Dashboard = () => {
       <section className='grid-rows-[repeat(2,20rem] my-4 mb-36 grid h-full w-full grid-cols-1 gap-4 md:mb-0 lg:grid-cols-3 lg:pb-6'>
         <Card
           title='Cumalative Sales'
+          info='A cumalative graph of GMV in the selected period.'
           classes={
             'row-span-1 lg:col-span-2 order-1 max-h-[20rem] flex-grow overflow-hidden justify-center items-center'
           }
@@ -161,7 +166,8 @@ export const Dashboard = () => {
           <Carousal imagelist={imageData} loading={ImageLoading} />
         </Card>
         <Card
-          title='Sales '
+          title='Quantity Sold '
+          info='A cumalative graph of quantity of items sold in the selected period.'
           classes={
             'row-span-1 lg:col-span-2 max-h-[20rem] flex-grow overflow-hidden justify-center items-center order-2'
           }
