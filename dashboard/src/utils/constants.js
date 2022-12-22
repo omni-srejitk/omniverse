@@ -42,7 +42,7 @@ export const DATE_FILTERS = [
   {
     id: 1,
     title: 'Lifetime',
-    startDate: '',
+    startDate: moment().startOf('year').format('DD-MM-YY'),
     endDate: moment().format('DD-MM-YY'),
   },
   {
