@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AnalyticsChart,
+  Button,
   Card,
   Filter,
   Select,
@@ -42,6 +43,7 @@ import {
   getFilteredAgeGenderData,
   getFilteredData,
 } from '../../utils/helperFunctions';
+import { CSVLink } from 'react-csv';
 export const Analytics = () => {
   const [genderData, setGenderData] = useState({});
   const [ageData, setAgeData] = useState([]);
@@ -135,8 +137,8 @@ export const Analytics = () => {
     let ageMap = new Map();
 
     arr?.map((sale) => {
-      const MIN = Math.floor(+sale.age.split('-')[0].trim() / 10) * 10;
-      const MAX = Math.ceil(+sale.age.split('-')[1].trim() / 10) * 10;
+      const MIN = Math.floor(+sale.age.split('-')[0]?.trim() / 10) * 10;
+      const MAX = Math.ceil(+sale.age.split('-')[1]?.trim() / 10) * 10;
       const RANGE = `${MIN}-${MAX}`;
       if (ageMap.has(RANGE)) {
         ageMap.set(RANGE, ageMap.get(RANGE) + 1);
@@ -185,7 +187,6 @@ export const Analytics = () => {
 
     setAuditLog(auditLog);
   };
-
   const TOP_SKU = fetchItemsSales(FILTEREDSALEDATA);
 
   const SELECTED_RANGE = (
@@ -201,6 +202,42 @@ export const Analytics = () => {
         </span>
       </p>
     </div>
+  );
+
+  const csvData = FILTEREDSALEDATA.map((elem) => {
+    const ALLOWED = ['DD-MM-YY', 'DD/MM/YY'];
+    const date =
+      moment(elem[0].trim(), ALLOWED).format('DD-MM-YY') +
+      ' ' +
+      moment().format('hh:mm a');
+
+    return {
+      date: `${date}`,
+      Store: `${elem[1]}`,
+      Quantity: `${elem[2]}`,
+      Brand: `${elem[4]}`,
+      SkuName: `${elem[6]}`,
+      Price: `${elem[7]}`,
+    };
+  });
+
+  const csvHeader = [
+    { label: 'Date', key: 'date' },
+    { label: 'Store', key: 'StoreName' },
+    { label: 'Quantity', key: 'Quantity' },
+    { label: 'Brand', key: 'Brand' },
+    { label: 'SkuName', key: 'SkuName' },
+    { label: 'Price', key: 'Price' },
+  ];
+
+  const CSVBUTTON = (
+    <CSVLink
+      data={csvData}
+      headers={csvHeader}
+      filename={`${moment().format('DD-MM-YY-HH-MM')}-Audit Report.csv`}
+    >
+      <Button>Export to CSV</Button>
+    </CSVLink>
   );
 
   useEffect(() => {
@@ -311,6 +348,7 @@ export const Analytics = () => {
           classes={
             'row-span-1 col-span-1 lg:col-span-2 max-h-[25rem] overflow-hidden'
           }
+          cardHeader={CSVBUTTON}
         >
           {auditLog?.length === 0 ? (
             <ComingSoon
