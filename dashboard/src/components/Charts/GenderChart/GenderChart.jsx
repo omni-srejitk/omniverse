@@ -10,7 +10,7 @@ export const GenderChart = React.memo((props) => {
   const GENDER_RATIO_CHART = ({ type }) => {
     return (
       <div className=' flex h-full flex-grow flex-col items-center justify-center gap-4'>
-        <div className=' flex w-full items-center'>
+        <div className=' flex w-full items-center justify-center'>
           <span
             className={`material-icons flex w-full items-center justify-center text-9xl ${
               type === 'MALE' ? 'text-green-400/70' : 'text-blue-400/70'
@@ -28,7 +28,7 @@ export const GenderChart = React.memo((props) => {
   };
 
   const GENDER_STATS = (
-    <div className='flex h-full w-full items-center justify-between gap-8'>
+    <div className='flex h-full w-full items-center justify-between gap-2'>
       <GENDER_RATIO_CHART type='MALE' />
       <GENDER_RATIO_CHART type='FEMALE' />
     </div>

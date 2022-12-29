@@ -13,7 +13,6 @@ export const ProgressBar = ({ label, value }) => {
     }
   };
 
-
   const calculateTextColors = (value) => {
     if (value >= 75 && value <= 100) {
       return '#16a34a';
@@ -30,7 +29,7 @@ export const ProgressBar = ({ label, value }) => {
   let TEXT_COLOR = calculateTextColors(value);
 
   return (
-    <div className='h-fit w-32'>
+    <div className='-ml-3 h-fit w-24'>
       <div className='mb-1 flex w-full items-center justify-between gap-2'>
         <span className={`text-base font-medium text-black`}>{label}</span>
         <span

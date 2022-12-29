@@ -119,16 +119,11 @@ export const Analytics = () => {
         ?.slice(0, 3);
 
       let tempsss = topStores.map((sale) => {
-        let foundSale = liveStoresData?.find((store) => {
-          return store?.customer === sale[0];
-        });
-
         return {
-          name: foundSale?.customer_name,
+          name: sale[0],
           value: sale[1],
         };
       });
-
       setTopStore(tempsss);
     }
   };
@@ -206,16 +201,11 @@ export const Analytics = () => {
 
   const csvData = FILTEREDSALEDATA.map((elem) => {
     const ALLOWED = ['DD-MM-YY', 'DD/MM/YY'];
-    const date =
-      moment(elem[0].trim(), ALLOWED).format('DD-MM-YY') +
-      ' ' +
-      moment().format('hh:mm a');
-
+    const date = moment(elem[0].trim(), ALLOWED).format('DD-MM-YY');
     return {
       date: `${date}`,
       Store: `${elem[1]}`,
       Quantity: `${elem[2]}`,
-      Brand: `${elem[4]}`,
       SkuName: `${elem[6]}`,
       Price: `${elem[7]}`,
     };
@@ -223,9 +213,8 @@ export const Analytics = () => {
 
   const csvHeader = [
     { label: 'Date', key: 'date' },
-    { label: 'Store', key: 'StoreName' },
+    { label: 'Store', key: 'Store' },
     { label: 'Quantity', key: 'Quantity' },
-    { label: 'Brand', key: 'Brand' },
     { label: 'SkuName', key: 'SkuName' },
     { label: 'Price', key: 'Price' },
   ];
@@ -234,7 +223,9 @@ export const Analytics = () => {
     <CSVLink
       data={csvData}
       headers={csvHeader}
-      filename={`${moment().format('DD-MM-YY-HH-MM')}-Audit Report.csv`}
+      filename={`Omniflo Audit Report - ${BRAND} / ${moment().format(
+        'DD-MM-YY'
+      )}`}
     >
       <Button>Export to CSV</Button>
     </CSVLink>
