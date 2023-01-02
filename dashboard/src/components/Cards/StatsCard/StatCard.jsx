@@ -23,16 +23,20 @@ export const StatCard = ({
           SOON
         </div>
       )}
-      <div className='flex h-12 w-12 items-center justify-center rounded-full bg-black lg:h-12 lg:w-12'>
+      <div className='tooltip flex h-12 w-12 items-center justify-center rounded-full bg-black lg:h-12 lg:w-12'>
         <span className='material-icons  text-white'>{icon}</span>
       </div>
       <Spinner loading={loading} color={spinner} />
       <div className='mt-2'>
-        <div className='flex w-fit items-center justify-between gap-2'>
-          <p className='text-sm font-semibold'>{title}</p>
-          <span title={tooltip} className='material-icons text-base'>
+        <div
+          className='tooltip flex w-fit items-center justify-between gap-2 hover:cursor-default'
+          mytitle={tooltip}
+        >
+          <p className=' text-sm font-semibold'>{title}</p>
+          <span className='material-icons text-base hover:cursor-pointer'>
             info
           </span>
+          <span className='tooltiptext'>{tooltip}</span>
         </div>
         <h3 className=' text-4xl font-semibold'>
           {' '}
