@@ -212,15 +212,14 @@ export const fetchAllItems = (sale_data = []) => {
 export const fetchCumalativeSaleCount = (sale_data = [], dates, dispatch) => {
   const SALE_COUNT = new Map();
   let UNIT_SALE = 0;
-  const ALL_DATES = fetchAllDates(sale_data)
+  const ALL_DATES = fetchAllDates(sale_data);
   const SALE_DATA = {};
   let DAYWISE_SOLD = [];
-
 
   if (sale_data?.length > 0) {
     ALL_DATES.map((date) => {
       sale_data?.map((sale) => {
-        if (moment(date, 'DD-MM-YY').isSame(moment(sale[0], 'DD-MM-YY'))){
+        if (moment(date, 'DD-MM-YY').isSame(moment(sale[0], 'DD-MM-YY'))) {
           UNIT_SALE += +sale[2];
           SALE_COUNT.set(sale[0], UNIT_SALE);
         } else {
@@ -344,8 +343,10 @@ export const filterByDate = (
       return arr?.filter((item) =>
         moment(item[0], 'DD-MM-YY').isBetween(
           moment(filterStartDate, 'DD-MM-YY'),
-          moment(filterEndDate, 'DD-MM-YY')
-        , null, [])
+          moment(filterEndDate, 'DD-MM-YY'),
+          null,
+          []
+        )
       );
     default:
       return arr;
@@ -386,7 +387,6 @@ export const filterAgeGenderByDate = ({ filterDuration }, arr) => {
     case 'This Week':
       const firstDayOfWeek = moment().startOf('week');
       const currDayOfWeek = moment().endOf('week');
-      console.log(arr);
 
       return arr?.filter((item) =>
         moment(item.date, 'YYYY-MM-DD').isBetween(

@@ -42,7 +42,7 @@ export const DATE_FILTERS = [
   {
     id: 1,
     title: 'Lifetime',
-    startDate: moment().startOf('year').format('DD-MM-YY'),
+    startDate: moment().subtract(1, 'year').startOf('year').format('DD-MM-YY'),
     endDate: moment().format('DD-MM-YY'),
   },
   {
@@ -61,7 +61,7 @@ export const DATE_FILTERS = [
     id: 4,
     title: 'This Month',
     startDate: moment().startOf('month').format('DD-MM-YY'),
-    endDate: moment().subtract(1, 'week').endOf('month').format('DD-MM-YY'),
+    endDate: moment().endOf('month').format('DD-MM-YY'),
   },
   {
     id: 5,
@@ -75,11 +75,8 @@ export const DATE_FILTERS = [
   {
     id: 6,
     title: 'Past 3 Months',
-    startDate: moment()
-      .subtract(3, 'month')
-      .startOf('month')
-      .format('DD-MM-YY'),
-    endDate: moment().subtract(1, 'month').endOf('month').format('DD-MM-YY'),
+    startDate: moment().subtract(90, 'day').startOf('month').format('DD-MM-YY'),
+    endDate: moment().format('DD-MM-YY'),
   },
   {
     id: 7,

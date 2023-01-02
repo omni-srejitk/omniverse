@@ -44,6 +44,7 @@ import {
   getFilteredData,
 } from '../../utils/helperFunctions';
 import { CSVLink } from 'react-csv';
+import { PieChartChange } from '../../components/Charts/PieChart/PieChartChange';
 export const Analytics = () => {
   const [genderData, setGenderData] = useState({});
   const [ageData, setAgeData] = useState([]);
@@ -102,9 +103,20 @@ export const Analytics = () => {
     setGenderData(genderData);
   };
 
-  const fetchTopStores = (arr) => {
+  const fetchTopStores = (array) => {
     const storeData = new Map();
-
+    let arr = [];
+    // checking if total stores array's store is matching livestores
+    // so that only live stores are shown in pie chart
+    array?.forEach((a) => {
+      liveStoresData?.forEach((l) => {
+        if (l.customer === a[1]) {
+          let val = l.customer_name;
+          a = [...a, val];
+          arr.push(a);
+        }
+      });
+    });
     if (arr?.length > 0) {
       arr?.map((saleData) => {
         if (storeData.get(saleData[1])) {
@@ -113,22 +125,42 @@ export const Analytics = () => {
           storeData.set(saleData[1], saleData[2]);
         }
       });
-
-      let topStores = Array.from(storeData)
-        ?.sort((a, b) => +b[1] - +a[1])
-        ?.slice(0, 3);
-
-      let tempsss = topStores.map((sale) => {
-        let foundSale = liveStoresData?.find((store) => {
-          return store?.customer === sale[0];
-        });
-
-        return {
-          name: foundSale?.customer_name,
-          value: sale[1],
-        };
+      let topStores = Array.from(storeData)?.sort((a, b) => +b[1] - +a[1]);
+      // ?.slice(0, 3);
+      let valueArray = []; //array that has stores which constitute 80% of business
+      let sumOfValues = 0; //total sum of value (business money)
+      let sum80 = 0; //to push elements which constitute 80% of sumOfValues
+      topStores?.forEach((element) => {
+        sumOfValues += element[1];
       });
-
+      topStores.forEach((element) => {
+        sum80 += element[1]; //adding value to sum80
+        if (sum80 <= sumOfValues * 0.8) {
+          //if sum80 is less than 80% of total value
+          valueArray.push(element); //then only push that particular element
+          liveStoresData.filter((e) => {
+            if (element[0] == e.customer) {
+              element.push(e.customer_name);
+            }
+          });
+        } else {
+        }
+      });
+      let tempsss = topStores.map((sale) => {
+        if (valueArray.includes(sale)) {
+          return {
+            name: sale[2],
+            value: sale[1],
+            satisfies: true,
+          };
+        } else {
+          return {
+            name: sale[2],
+            value: sale[1],
+            satisfies: false,
+          };
+        }
+      });
       setTopStore(tempsss);
     }
   };
@@ -206,16 +238,11 @@ export const Analytics = () => {
 
   const csvData = FILTEREDSALEDATA.map((elem) => {
     const ALLOWED = ['DD-MM-YY', 'DD/MM/YY'];
-    const date =
-      moment(elem[0].trim(), ALLOWED).format('DD-MM-YY') +
-      ' ' +
-      moment().format('hh:mm a');
-
+    const date = moment(elem[0].trim(), ALLOWED).format('DD-MM-YY');
     return {
       date: `${date}`,
       Store: `${elem[1]}`,
       Quantity: `${elem[2]}`,
-      Brand: `${elem[4]}`,
       SkuName: `${elem[6]}`,
       Price: `${elem[7]}`,
     };
@@ -223,9 +250,8 @@ export const Analytics = () => {
 
   const csvHeader = [
     { label: 'Date', key: 'date' },
-    { label: 'Store', key: 'StoreName' },
+    { label: 'Store', key: 'Store' },
     { label: 'Quantity', key: 'Quantity' },
-    { label: 'Brand', key: 'Brand' },
     { label: 'SkuName', key: 'SkuName' },
     { label: 'Price', key: 'Price' },
   ];
@@ -234,7 +260,9 @@ export const Analytics = () => {
     <CSVLink
       data={csvData}
       headers={csvHeader}
-      filename={`${moment().format('DD-MM-YY-HH-MM')}-Audit Report.csv`}
+      filename={`Omniflo Audit Report - ${BRAND} / ${moment().format(
+        'DD-MM-YY'
+      )}`}
     >
       <Button>Export to CSV</Button>
     </CSVLink>
@@ -422,7 +450,12 @@ export const Analytics = () => {
                 subtitle={'You will soon see unit wise sale ratio here.'}
               />
             ) : (
-              <PieChartComp data={topStore} vertical customLabel cy='30%' />
+              <PieChartChange
+                data={topStore}
+                vertical
+                // customLabel
+                cy='30%'
+              />
             )}
           </div>
         </Card>
