@@ -84,7 +84,6 @@ export const Analytics = () => {
     if (isGMVLoading) return;
     getFilteredData(FILTERSTATE, dailyGMVData, dispatch);
   }, [isGMVLoading, FILTERSTATE, dailyGMVData]);
-
   const parseGenderData = (arr, loading) => {
     if (loading) return;
     let temp = new Map();
@@ -111,58 +110,57 @@ export const Analytics = () => {
     array?.forEach((a) => {
       liveStoresData?.forEach((l) => {
         if (l.customer === a[1]) {
-          let val = l.customer_name;
-          a = [...a, val];
+          a = [...a, l.customer_name];
           arr.push(a);
         }
       });
     });
-    if (arr?.length > 0) {
-      arr?.map((saleData) => {
-        if (storeData.get(saleData[1])) {
-          storeData.set(saleData[1], storeData.get(saleData[1]) + saleData[2]);
-        } else {
-          storeData.set(saleData[1], saleData[2]);
-        }
-      });
-      let topStores = Array.from(storeData)?.sort((a, b) => +b[1] - +a[1]);
-      // ?.slice(0, 3);
-      let valueArray = []; //array that has stores which constitute 80% of business
-      let sumOfValues = 0; //total sum of value (business money)
-      let sum80 = 0; //to push elements which constitute 80% of sumOfValues
-      topStores?.forEach((element) => {
-        sumOfValues += element[1];
-      });
-      topStores.forEach((element) => {
-        sum80 += element[1]; //adding value to sum80
-        if (sum80 <= sumOfValues * 0.8) {
-          //if sum80 is less than 80% of total value
-          valueArray.push(element); //then only push that particular element
-          liveStoresData.filter((e) => {
-            if (element[0] == e.customer) {
-              element.push(e.customer_name);
-            }
-          });
-        } else {
-        }
-      });
-      let tempsss = topStores.map((sale) => {
-        if (valueArray.includes(sale)) {
-          return {
-            name: sale[2],
-            value: sale[1],
-            satisfies: true,
-          };
-        } else {
-          return {
-            name: sale[2],
-            value: sale[1],
-            satisfies: false,
-          };
-        }
-      });
-      setTopStore(tempsss);
-    }
+    // if (arr?.length) {
+    arr?.map((saleData) => {
+      if (storeData.get(saleData[1])) {
+        storeData.set(saleData[1], storeData.get(saleData[1]) + saleData[2]);
+      } else {
+        storeData.set(saleData[1], saleData[2]);
+      }
+    });
+    let topStores = Array.from(storeData)?.sort((a, b) => +b[1] - +a[1]);
+    // ?.slice(0, 3);
+    let valueArray = []; //array that has stores which constitute 80% of business
+    let sumOfValues = 0; //total sum of value (business money)
+    let sum80 = 0; //to push elements which constitute 80% of sumOfValues
+    topStores?.forEach((element) => {
+      sumOfValues += element[1];
+    });
+    topStores?.forEach((element) => {
+      sum80 += element[1]; //adding value to sum80
+      if (sum80 <= sumOfValues * 0.8) {
+        //if sum80 is less than 80% of total value
+        valueArray.push(element); //then only push that particular element
+        liveStoresData.filter((e) => {
+          if (element[0] == e.customer) {
+            element.push(e.customer_name);
+          }
+        });
+      } else {
+      }
+    });
+    let tempsss = topStores?.map((sale) => {
+      if (valueArray?.includes(sale)) {
+        return {
+          name: sale[2],
+          value: sale[1],
+          satisfies: true,
+        };
+      } else {
+        return {
+          name: sale[2],
+          value: sale[1],
+          satisfies: false,
+        };
+      }
+    });
+
+    setTopStore(tempsss);
   };
 
   const parseAgeData = (arr) => {
@@ -276,7 +274,7 @@ export const Analytics = () => {
   useEffect(() => {
     fetchTopStores(FILTEREDSALEDATA);
     fetchAuditData(FILTEREDSALEDATA);
-  }, [FILTEREDSALEDATA]);
+  }, [FILTEREDSALEDATA, liveStoresData]);
 
   useEffect(() => {
     if (isGenderStatsLoading) return;
@@ -450,12 +448,7 @@ export const Analytics = () => {
                 subtitle={'You will soon see unit wise sale ratio here.'}
               />
             ) : (
-              <PieChartChange
-                data={topStore}
-                vertical
-                // customLabel
-                cy='30%'
-              />
+              <PieChartChange data={topStore} vertical cy='30%' />
             )}
           </div>
         </Card>
