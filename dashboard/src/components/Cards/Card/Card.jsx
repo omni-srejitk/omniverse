@@ -16,10 +16,7 @@ export const Card = ({
           {/* //TODO To be added in Next PR */}
           {info.length > 0 ? (
             <div className='tooltip'>
-              <h1
-                // title={info}
-                className='material-icons cursor-default text-sm text-black/70'
-              >
+              <h1 className='material-icons cursor-default text-sm text-black/70'>
                 info
               </h1>
               <span className='tooltiptextforcard bottom-0 z-10'>{info}</span>
