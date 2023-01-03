@@ -34,6 +34,7 @@ import {
   fetchStoreImages,
 } from '../../services/apiCalls';
 import { getFilteredData } from '../../utils/helperFunctions';
+import { setDurationPopup } from '../../redux/features/popupSlice';
 
 export const Dashboard = () => {
   const BRAND = localStorage.getItem('Name');
@@ -76,11 +77,16 @@ export const Dashboard = () => {
   }, [isGMVLoading, FILTERSTATE, dailyGMVData]);
 
   return (
-    <main className='page__content'>
+    <main
+      className='page__content'
+      onClick={() => {
+        SHOWPOPUP.durationFilter ? dispatch(setDurationPopup(false)) : '';
+      }}
+    >
       <section className='h-fit w-full'>
         <h1 className='page__title'>Welcome {BRAND}! 👋</h1>
         <Card title='Overview' cardHeader={OVERVIEW_FILTERS}>
-          <div className='card_body flex h-fit w-full justify-start overflow-x-auto scrollbar-thin'>
+          <div className=' card_body flex h-fit w-full justify-start overflow-x-auto scrollbar-thin'>
             <StatCard
               icon='home'
               title='Units Sold'
