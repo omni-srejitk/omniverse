@@ -24,7 +24,6 @@ export const PieChartChange = React.memo((props) => {
     '#00C49F',
     '#FF8042',
   ];
-  const gray = ['#000'];
 
   const RADIAN = Math.PI / 180;
 
@@ -59,8 +58,7 @@ export const PieChartChange = React.memo((props) => {
   };
 
   const CustomLegend = ({ payload }) => {
-    console.log('payload', payload);
-    if (payload && payload.length) {
+    if (payload && payload?.length) {
       return (
         <div
           className={`-mt-16 flex w-[95%] flex-col justify-start gap-0 text-base`}
@@ -140,6 +138,7 @@ export const PieChartChange = React.memo((props) => {
                   <Cell
                     key={entry}
                     dataKey={`cell-${index}`}
+                    stroke='none'
                     fill={colors[index % colors.length]}
                   />
                 )

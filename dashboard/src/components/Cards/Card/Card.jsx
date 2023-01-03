@@ -15,9 +15,12 @@ export const Card = ({
           <h4 className=' pr-4 text-lg md:text-3xl'>{title}</h4>
           {/* //TODO To be added in Next PR */}
           {info.length > 0 ? (
-            <h1 title={info} className='material-icons text-sm text-black/70'>
-              info
-            </h1>
+            <div className='tooltip'>
+              <h1 className='material-icons cursor-default text-sm text-black/70'>
+                info
+              </h1>
+              <span className='tooltiptextforcard bottom-0 z-10'>{info}</span>
+            </div>
           ) : (
             <h1
               title={info}

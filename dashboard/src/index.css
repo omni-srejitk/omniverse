@@ -17,4 +17,33 @@
   .card {
     @apply h-full min-h-[200px] w-full rounded-lg bg-white p-6;
   }
+
+  .tooltip {
+    @apply relative inline-block;
+  }
+
+  .tooltip .tooltiptext {
+    @apply invisible absolute bottom-[125%] left-1/2 z-10 -ml-16 w-32 rounded-md bg-[#282b2f] py-[5px] px-0 text-center text-[#fff] opacity-0 ease-in;
+  }
+  .tooltip .tooltiptext::after {
+    /* TODO = CONVERT THIS BORDER STYLE TO TAILWIND */
+    /* @apply absolute top-full left-1/2 -ml-2 border-8 border-solid border-transparent border-t-[#282b2f] content-none; */
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: #282b2f transparent transparent transparent;
+  }
+  .tooltip:hover .tooltiptext {
+    @apply visible w-48 text-sm opacity-100;
+  }
+  .tooltip:hover .tooltiptextforcard {
+    @apply visible w-48 text-sm opacity-100;
+  }
+  .tooltiptextforcard {
+    @apply invisible absolute top-8 z-10 -ml-32 h-fit w-32 rounded-md bg-[#282b2f] py-[5px] px-0 text-center text-[#fff] opacity-0 ease-in;
+  }
 }
