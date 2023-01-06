@@ -25,6 +25,7 @@ import {
   selectFilterEndDate,
   selectFilterStartDate,
   selectPopupState,
+  selectDurationFilter,
 } from '../../redux/actions';
 
 import {
@@ -45,6 +46,7 @@ import {
 } from '../../utils/helperFunctions';
 import { CSVLink } from 'react-csv';
 import { PieChartChange } from '../../components/Charts/PieChart/PieChartChange';
+import { setDurationFilter } from '../../redux/features/filterSlice';
 export const Analytics = () => {
   const [genderData, setGenderData] = useState({});
   const [ageData, setAgeData] = useState([]);
@@ -80,6 +82,16 @@ export const Analytics = () => {
       <Filter filter={DASHBOARD_FILTERS} />
     </div>
   );
+  const FILTERBYDURATION = useSelector(selectDurationFilter);
+  function filterchange() {
+    FILTERBYDURATION !== 'Lifetime'
+      ? dispatch(setDurationFilter('Lifetime'))
+      : '';
+  }
+
+  useEffect(() => {
+    filterchange();
+  }, []);
   useEffect(() => {
     if (isGMVLoading) return;
     getFilteredData(FILTERSTATE, dailyGMVData, dispatch);
