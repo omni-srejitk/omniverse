@@ -71,16 +71,15 @@ export const StoreCard = ({
               />
             </div>
             <div>
-              <div className="flex w-fit items-center justify-between gap-2 whitespace-pre break-words">
-                <p className="text-sm font-semibold text-gray-400">
-                  Total units sold
-                </p>
-                <span
-                  title={"Total units sold"}
-                  className="material-icons text-sm text-gray-400"
-                >
+              <div
+                className="tooltip flex w-fit items-center justify-between gap-2 text-gray-400 hover:cursor-default"
+                mytitle={"The total number of items currently sold till date."}
+              >
+                <p className=" text-sm font-semibold">Total Units Sold</p>
+                <span className="material-icons text-base hover:cursor-pointer">
                   info
                 </span>
+                <span className="tooltiptext">Total Units Sold</span>
               </div>
               <h3 className="text-4xl font-semibold">{STORE_INV || 0}</h3>
             </div>
@@ -95,23 +94,25 @@ export const StoreCard = ({
               />
             </div>
             <div>
-              <div className="flex w-fit items-center justify-between gap-2 whitespace-pre break-words">
-                <p className="text-sm font-semibold text-gray-400">
-                  Currently in store
-                </p>
-                <span
-                  title={"The number of items currently in store"}
-                  className="material-icons text-sm text-gray-400"
-                >
+              <div
+                className="tooltip flex w-fit items-center justify-between gap-2 text-gray-400 hover:cursor-default"
+                mytitle={"The number of items currently in store"}
+              >
+                <p className=" text-sm font-semibold">Currently in store</p>
+                <span className="material-icons text-base hover:cursor-pointer">
                   info
                 </span>
+                <span className="tooltiptext">
+                  The number of items currently in store
+                </span>
               </div>
+
               <h3 className="text-4xl font-semibold">{STORE_DEP || 0}</h3>
             </div>
           </div>
         </div>
       </div>
-      <div className="h-fit w-full py-6">
+      <div className="h-fit w-full py-4">
         <StoreLabels TAGS={tags} />
       </div>
     </div>
