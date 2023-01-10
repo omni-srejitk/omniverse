@@ -69,7 +69,7 @@ export const StoreModal = ({ store = {} }) => {
   };
 
   return (
-    <div className="relative z-10 flex h-[43rem] w-full flex-col items-center justify-start rounded-xl">
+    <div className="relative z-10 flex h-[43rem] w-full flex-col items-center justify-start rounded-xl shadow-md">
       <div className="flex w-full flex-grow flex-col items-start px-10">
         <h1 className=" mt-4  text-3xl font-bold text-black">{google_name}</h1>
         <div className="mt-4 flex justify-start text-xl font-medium text-gray-700">
@@ -151,7 +151,7 @@ export const StoreModal = ({ store = {} }) => {
             <div className=" h-6 w-3 rounded-sm bg-blue-300"></div>
             <p className=" font-semibold">Features</p>
           </div>
-          <div className="my-2 flex h-[13.75rem] w-full flex-wrap items-start justify-start rounded-md border-2 p-4">
+          <div className="my-2 flex h-fit max-h-[13.75rem] min-h-[5.5rem] w-full flex-wrap items-start justify-start rounded-md border-2 p-4">
             <StoreLabels TAGS={checkForStoreTags(store)} />
           </div>
         </div>

@@ -8,7 +8,7 @@ export const Modal = ({ open, children, onClose, obj }) => {
   return ReactDOM.createPortal(
     <>
       <div
-        className="fixed inset-0 z-50 m-0 p-0 backdrop-blur-sm"
+        className="fixed inset-0 z-50 m-0 bg-gray-500/10 p-0 backdrop-blur-sm"
         onClick={onClose}
       >
         <div
