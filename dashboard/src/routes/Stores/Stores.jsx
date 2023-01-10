@@ -1,12 +1,23 @@
-import React from 'react';
-import { useState } from 'react';
-import { StoreCard } from '../../components/Cards/StoreCard/StoreCard';
-import { LABELS } from '../../components/Labels';
-import { fetchAllStoresData } from '../../services/apiCalls';
+import React from "react";
+import { useState } from "react";
+import { StoreCard } from "../../components/Cards/StoreCard/StoreCard";
+import { LABELS } from "../../components/Labels";
+import MapComponent from "../../components/Map/MapComponent";
+import { Modal, StoreModal } from "../../components/Modals";
+import {
+  fetchAllStoresData,
+  fetchDailyGMV,
+  fetchDeployedQuantity,
+} from "../../services/apiCalls";
+import {
+  createStoreWiseDeployed,
+  createStoreWiseInventory,
+  createStoreWiseSales,
+} from "../../utils/storeFunctions";
 
 export const Stores = () => {
   const [storeDetail, setStoreDetail] = useState({});
-  const BRAND = localStorage.getItem('Name');
+  const BRAND = localStorage.getItem("Name");
 
   const { data, isLoading: isAllStoresDataLoading } = fetchAllStoresData(BRAND);
 
@@ -30,7 +41,7 @@ export const Stores = () => {
   };
 
   const checkIfPosh = (locality_area) => {
-    if (locality_area === 'Posh') {
+    if (locality_area === "Posh") {
       return true;
     }
     return false;
@@ -48,26 +59,71 @@ export const Stores = () => {
     };
   };
 
+  const { isLoading: isCalculateGMVLoading, data: dailyGMVData } =
+    fetchDailyGMV(BRAND);
+  const { isLoading: isDeployedQtyLoading, data: deployedQtyData } =
+    fetchDeployedQuantity(BRAND);
+
+  const STORE_DEP = createStoreWiseDeployed(
+    deployedQtyData,
+    storeDetail.customer_name
+  );
+
+  const STORE_INV = createStoreWiseInventory(
+    dailyGMVData,
+    storeDetail.customer
+  );
+
+  const STORE_SALE = createStoreWiseSales(dailyGMVData, storeDetail.customer);
+
   return (
-    <main className='page__content'>
-      <h1 className='page__title'>Stores</h1>
-      <section className='relative mx-auto mb-36 flex h-fit w-full flex-col items-center justify-between'>
-        <div className='grid-rows-auto z-10 order-2 mx-auto grid h-full w-full grid-cols-1 flex-wrap items-start justify-start gap-4 lg:grid-cols-2'>
-          {!isAllStoresDataLoading &&
-            ALL_STORES_DATA?.map((store) => (
-              <StoreCard
-                key={store.customer}
-                store={store}
-                tags={checkForStoreTags(store)}
-                label={LABELS.FLAGSHIP}
-                setShowModal={setShowModal}
-                showModal={showModal}
-                setStoreDetail={setStoreDetail}
-                showLabel
-              />
-            ))}
-        </div>
-      </section>
+    <main className="page__content grid grid-cols-2">
+      <div className="flex h-full w-full flex-col items-start justify-between gap-4">
+        <h1 className="page__title">
+          You're live in {ALL_STORES_DATA?.length} Stores!
+        </h1>
+        <section className="relative mx-auto mb-36 flex h-fit w-full flex-col items-center justify-between">
+          <div className="grid-rows-auto z-10 order-2 mx-auto grid h-full w-full grid-cols-1 flex-wrap items-start justify-start gap-4 ">
+            {!isAllStoresDataLoading &&
+              ALL_STORES_DATA?.map((store) => (
+                <StoreCard
+                  key={store.customer}
+                  store={store}
+                  tags={checkForStoreTags(store)}
+                  label={LABELS.FLAGSHIP}
+                  setShowModal={setShowModal}
+                  showModal={showModal}
+                  setStoreDetail={setStoreDetail}
+                  showLabel
+                />
+              ))}
+          </div>
+        </section>
+      </div>
+      <div className="fixed h-[calc(100vh-5rem)] w-[38vw] overflow-hidden lg:right-0 lg:top-20">
+        <MapComponent
+          storesData={ALL_STORES_DATA}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          setStoreDetail={setStoreDetail}
+        />
+      </div>
+      {showModal && (
+        <Modal
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <StoreModal
+            store={{
+              ...storeDetail,
+              STORE_INV,
+              STORE_DEP,
+              STORE_SALE,
+            }}
+          />
+        </Modal>
+      )}
     </main>
   );
 };
