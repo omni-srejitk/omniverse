@@ -131,18 +131,25 @@ export const reduceImages = (arr, setSrclist) => {
 
 export const cleanAllStoresData = (data) => {
   return data?.map((store) => {
-    let affliatedBrands = {};
-    let brands = JSON.parse(store?.brand_present) || {};
-    for (let key of Object.keys(brands)) {
-      if (brands[key]) {
-        affliatedBrands[key] = brands[key].split(',');
-      }
-    }
+    let brands = store?.brand_present
+//TODO : Work on this once Ankit sends the correct data
+
+    // const res = Object.entries(JSON.parse(brands))?.map((item)=>{
+    //   return {
+    //     [item[0]]:item?.slice(1) || []
+    //   }
+    // })
+
+
+
+
+ 
+
 
     let address = store?.address?.split(',');
     let locality = address?.at(-3)?.trim();
 
-    return { ...store, brand_present: affliatedBrands, locality };
+    return { ...store, locality };
   });
 };
 
