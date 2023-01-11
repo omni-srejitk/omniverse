@@ -17,12 +17,13 @@ const PieChartStoreComp = () => {
   useEffect(() => {
     fetchTopStores(FILTEREDSALEDATA);
   }, [FILTEREDSALEDATA, liveStoresData]);
+
   const fetchTopStores = (array) => {
     const storeData = new Map();
     let activeStoresData = [];
     array?.forEach((arr) => {
       liveStoresData?.forEach((store) => {
-        if (store.customer === arr[1]) {
+        if (store.customer == arr[1] || store.customer_name == arr[1]) {
           arr = [...arr, store.customer_name];
           activeStoresData.push(arr);
         }
@@ -45,35 +46,53 @@ const PieChartStoreComp = () => {
       sumOfValues += element[1];
     });
 
-    topStores?.forEach((element) => {
-      sum80 += element[1];
-      if (sum80 <= sumOfValues * 0.8) {
+    if (topStores.length >= 4) {
+      topStores?.forEach((element) => {
+        sum80 += element[1];
+        if (sum80 <= sumOfValues * 0.8) {
+          valueArray.push(element);
+          liveStoresData.filter((e) => {
+            if (element[0] == e.customer) {
+              element.push(e.customer_name);
+            }
+          });
+        }
+      });
+      let tempsss = topStores?.map((sale) => {
+        if (valueArray?.includes(sale)) {
+          return {
+            name: sale[2],
+            value: sale[1],
+            satisfies: true,
+          };
+        } else {
+          return {
+            name: sale[2],
+            value: sale[1],
+            satisfies: false,
+          };
+        }
+      });
+      setTopStore(tempsss);
+    } else {
+      topStores?.forEach((element) => {
         valueArray.push(element);
         liveStoresData.filter((e) => {
           if (element[0] == e.customer) {
             element.push(e.customer_name);
           }
         });
-      }
-    });
-
-    let tempsss = topStores?.map((sale) => {
-      if (valueArray?.includes(sale)) {
+        // }
+      });
+      let tempsss = topStores?.map((sale) => {
         return {
           name: sale[2],
           value: sale[1],
           satisfies: true,
         };
-      } else {
-        return {
-          name: sale[2],
-          value: sale[1],
-          satisfies: false,
-        };
-      }
-    });
-
-    setTopStore(tempsss);
+      });
+      setTopStore(tempsss);
+    }
   };
   return (
     <Card

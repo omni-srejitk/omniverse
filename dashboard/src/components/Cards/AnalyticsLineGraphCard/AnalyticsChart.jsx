@@ -3,8 +3,12 @@ import { LineChartComponent } from '../../Charts/LineChart/LineChartComponent';
 import { ComingSoon } from '../../Placeholders/ComingSoon';
 
 export const AnalyticsChart = ({ data }) => {
+  let newData = [...data];
+  newData.reverse();
   const TOTAL_SALES =
-    data.length === 0 ? 0 : data?.reduce((acc, curr) => (acc += curr[7]), 0);
+    newData.length === 0
+      ? 0
+      : newData?.reduce((acc, curr) => (acc += curr[7]), 0);
 
   return (
     <div className='h-full max-h-[18rem] w-full'>
@@ -21,7 +25,7 @@ export const AnalyticsChart = ({ data }) => {
           subtitle='Please try again with different filters.'
         />
       ) : (
-        <LineChartComponent data={data} />
+        <LineChartComponent data={newData} />
       )}
     </div>
   );

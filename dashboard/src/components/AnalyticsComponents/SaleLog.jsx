@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../Buttons';
 import { Card } from '../Cards';
+import { fetchDateWiseSales } from '../../services/apiCalls';
 import {
   TableBody,
   TableContainer,
@@ -16,14 +17,14 @@ import moment from 'moment';
 import { CSVLink } from 'react-csv';
 
 const SaleLog = () => {
-  const [auditLog, setAuditLog] = useState([]);
   const BRAND = localStorage.getItem('Name');
+  const [saleLog, setSaleLog] = useState([]);
+  const { data } = fetchDateWiseSales(BRAND);
   const FILTEREDSALEDATA = useSelector(selectFilteredSalesData);
   const { isLoading: isLiveStoresDataLoading, data: liveStoresData } =
     fetchAllLiveStores(BRAND);
 
   const fetchAuditData = (arr) => {
-    console.log('arr', arr);
     const datemap = new Map();
     arr?.map((saleData) => {
       if (datemap.has(saleData[0])) {
@@ -49,18 +50,26 @@ const SaleLog = () => {
       (a, b) => moment(b.Date, 'DD-MM-YY') - moment(a.Date, 'DD-MM-YY')
     );
 
-    setAuditLog(audLog);
+    setSaleLog(audLog);
   };
 
-  const csvData = FILTEREDSALEDATA.map((elem) => {
+  const csvData = data?.map((elem) => {
     const ALLOWED = ['DD-MM-YY', 'DD/MM/YY'];
     const date = moment(elem[0].trim(), ALLOWED).format('DD-MM-YY');
+    let newAge = elem[8];
+    let newGender = elem[9];
+    if (newAge === null || newGender === null) {
+      newAge = '-';
+      newGender = '-';
+    }
     return {
       date: `${date}`,
-      Store: `${elem[1]}`,
+      StoreName: `${elem[1]}`,
       Quantity: `${elem[2]}`,
       SkuName: `${elem[6]}`,
       Price: `${elem[7]}`,
+      Age: `${newAge}`,
+      Gender: `${newGender}`,
     };
   });
 
@@ -70,13 +79,15 @@ const SaleLog = () => {
 
   const csvHeader = [
     { label: 'Date', key: 'date' },
-    { label: 'Store', key: 'Store' },
+    { label: 'StoreName', key: 'StoreName' },
     { label: 'Quantity', key: 'Quantity' },
     { label: 'SkuName', key: 'SkuName' },
     { label: 'Price', key: 'Price' },
+    { label: 'Age', key: 'Age' },
+    { label: 'Gender', key: 'Gender' },
   ];
 
-  const CSVBUTTON = (
+  const CSVBUTTON = csvData ? (
     <CSVLink
       data={csvData}
       headers={csvHeader}
@@ -86,6 +97,8 @@ const SaleLog = () => {
     >
       <Button>Export to CSV</Button>
     </CSVLink>
+  ) : (
+    ''
   );
 
   return (
@@ -97,7 +110,7 @@ const SaleLog = () => {
       }
       cardHeader={CSVBUTTON}
     >
-      {auditLog?.length === 0 ? (
+      {saleLog?.length === 0 ? (
         <ComingSoon
           logo={'table_chart'}
           title={'No matching data.'}
@@ -114,7 +127,7 @@ const SaleLog = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {auditLog?.map((audit) => (
+            {saleLog?.map((audit) => (
               <tr className='min-h-20 flex w-full' key={audit.Date}>
                 <td
                   aria-colspan={audit?.Value?.length}

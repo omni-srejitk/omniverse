@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { startTransition, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AnalyticsChartComp from '../../components/AnalyticsComponents/AnalyticsChartComp';
 import PieChartStoreComp from '../../components/AnalyticsComponents/PieChartStoreComp';
@@ -15,8 +15,13 @@ import {
 } from '../../redux/actions/dataActions';
 import { fetchDailyGMV, fetchDateWiseSales } from '../../services/apiCalls';
 import { getFilteredData } from '../../utils/helperFunctions';
-import { setDurationFilter } from '../../redux/features/filterSlice';
+import {
+  setDurationFilter,
+  setFilterEndDate,
+  setFilterStartDate,
+} from '../../redux/features/filterSlice';
 import SaleLog from '../../components/AnalyticsComponents/SaleLog';
+import { selectAllFilteredDates } from '../../redux/actions';
 
 export const Analytics = () => {
   const BRAND = localStorage.getItem('Name');
@@ -27,6 +32,8 @@ export const Analytics = () => {
   const { isLoading: isGMVLoading, data: dailyGMVData } = fetchDailyGMV(BRAND);
   const FILTERSTATE = useSelector((state) => state.filter);
   const dispatch = useDispatch();
+  const allDates = useSelector(selectAllFilteredDates);
+  const lengthOfAllDates = allDates?.length;
 
   const DASHBOARD_FILTERS = {
     'By Product': ALLITEMS,
@@ -47,11 +54,17 @@ export const Analytics = () => {
 
   useEffect(() => {
     filterchange();
+    if (data) {
+      getFilteredData(FILTERSTATE, data, dispatch);
+      dispatch(setFilterStartDate(allDates[0]));
+      dispatch(setFilterEndDate(allDates[lengthOfAllDates - 1]));
+    }
   }, []);
   useEffect(() => {
-    if (isGMVLoading) return;
-    getFilteredData(FILTERSTATE, dailyGMVData, dispatch);
-  }, [isGMVLoading, FILTERSTATE, dailyGMVData]);
+    if (data) {
+      getFilteredData(FILTERSTATE, data, dispatch);
+    }
+  }, [FILTERSTATE, data]);
 
   return (
     <main className='page__content'>

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GenderChart } from '../Charts';
-import { selectFilteredAgeGenderData } from '../../redux/actions/dataActions';
 import { fetchDateWiseSales } from '../../services/apiCalls';
 import { getFilteredAgeGenderData } from '../../utils/helperFunctions';
 import { ComingSoon } from '../Placeholders/ComingSoon';
@@ -12,7 +11,6 @@ export const GenderData = () => {
   const dispatch = useDispatch();
   const [genderData, setGenderData] = useState([]);
   const BRAND = localStorage.getItem('Name');
-  const FILTEREDAGEGENDERDATA = useSelector(selectFilteredAgeGenderData);
   const { data: data, isLoading: isDataLoading } = fetchDateWiseSales(BRAND);
 
   const FILTERSTATE = useSelector((state) => state.filter);
@@ -23,8 +21,8 @@ export const GenderData = () => {
   }, [isDataLoading, FILTERSTATE, data]);
 
   useEffect(() => {
-    parseGenderData(FILTEREDAGEGENDERDATA, isDataLoading);
-  }, [FILTEREDAGEGENDERDATA, isDataLoading]);
+    parseGenderData(data, isDataLoading);
+  }, [data, isDataLoading]);
 
   const parseGenderData = (arr, loading) => {
     if (loading) return;
@@ -53,7 +51,15 @@ export const GenderData = () => {
       classes={'max-h-[25rem]'}
     >
       <div className='h-80 w-full rounded-xl border-2 border-transparent'>
-        <GenderChart data={genderData} />
+        {genderData.length == 0 ? (
+          <ComingSoon
+            logo={'pie_chart'}
+            title={'No matching data.'}
+            subtitle={'You will soon see age wise sale ratio here.'}
+          />
+        ) : (
+          <GenderChart data={genderData} />
+        )}
       </div>
     </Card>
   );

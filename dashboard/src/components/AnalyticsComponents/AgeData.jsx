@@ -2,10 +2,7 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PieChartComp } from '../Charts/PieChart/PieChartComp';
-
-import { selectFilteredAgeGenderData } from '../../redux/actions/dataActions';
 import { fetchDateWiseSales } from '../../services/apiCalls';
-import { getFilteredAgeGenderData } from '../../utils/helperFunctions';
 import { ComingSoon } from '../Placeholders/ComingSoon';
 import { Card } from '../Cards';
 
@@ -13,19 +10,11 @@ export const AgeData = () => {
   const dispatch = useDispatch();
   const [ageData, setAgeData] = useState([]);
   const BRAND = localStorage.getItem('Name');
-  const FILTEREDAGEGENDERDATA = useSelector(selectFilteredAgeGenderData);
   const { data: data, isLoading: isDataLoading } = fetchDateWiseSales(BRAND);
 
-  const FILTERSTATE = useSelector((state) => state.filter);
-
   useEffect(() => {
-    if (isDataLoading) return;
-    getFilteredAgeGenderData(FILTERSTATE, data, dispatch);
-  }, [isDataLoading, FILTERSTATE, data]);
-
-  useEffect(() => {
-    parseAgeData(FILTEREDAGEGENDERDATA, isDataLoading);
-  }, [FILTEREDAGEGENDERDATA, isDataLoading]);
+    parseAgeData(data, isDataLoading);
+  }, [data, isDataLoading]);
 
   const parseAgeData = (arr) => {
     let ageMap = new Map();
