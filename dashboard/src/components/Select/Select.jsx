@@ -21,8 +21,6 @@ export const Select = () => {
   const dispatch = useDispatch();
   const FILTERBYDURATION = useSelector(selectDurationFilter);
   const SHOWPOPUP = useSelector(selectPopupState);
-  const SALEDATE = useSelector(selectAllDates);
-  const FIRSTSALEDATE = SALEDATE.slice(0, 1)[0];
 
   return (
     <div className='relative w-max '>

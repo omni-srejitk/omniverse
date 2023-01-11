@@ -16,14 +16,13 @@ function MapComponent({
   return (
     <Map
       initialViewState={{
-        longitude: 77.5946,
-        latitude: 12.9716,
+        longitude: 77.95,
+        latitude: 12.903,
         zoom: 10,
       }}
       style={{
-        width: '100%',
-        height: '100%',
-        borderRadius: '12px',
+        width: '100vw',
+        height: '100vh',
       }}
       mapboxAccessToken={import.meta.env.VITE_MAP_TOKEN}
       mapStyle={import.meta.env.VITE_MAP_STYLE}
