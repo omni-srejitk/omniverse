@@ -8,6 +8,7 @@ import {
   createStoreWiseInventory,
 } from "../../../utils/storeFunctions";
 import { StoreLabels } from "../../Labels";
+import { motion } from "framer-motion";
 
 export const StoreCard = ({
   store,
@@ -17,7 +18,7 @@ export const StoreCard = ({
   setStoreDetail,
   showLabel = true,
 }) => {
-  const { customer_name, sub_type, locality } = store;
+  const { customer_name, sub_type, locality, google_name } = store;
   const BRAND = localStorage.getItem("Name");
   const { isLoading: isCalculateGMVLoading, data: dailyGMVData } =
     fetchDailyGMV(BRAND);
@@ -36,24 +37,37 @@ export const StoreCard = ({
     customer_name?.split(" ").filter((word) => word !== "")[1][0];
 
   return (
-    <div
+    <motion.div
+      initial={{
+        scale: 1,
+      }}
+      whileHover={{
+        scale: 1.05,
+      }}
       onClick={() => {
         setStoreDetail(store);
         setShowModal(true);
       }}
-      className="relative h-full w-full rounded-lg bg-white px-6 py-5"
+      className="relative h-full w-full rounded-lg bg-white px-6 py-5 shadow-md hover:bg-gray-50 hover:shadow-xl"
     >
       <div className="flex w-full items-center justify-between gap-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-300 uppercase">
           {SHORTFORM}
         </div>
-        <div className="w-full overflow-hidden">
-          <h1
-            title={customer_name}
-            className="overflow-ellipsis whitespace-pre break-words text-lg font-semibold"
+        <div className="w-full">
+          <div
+            className="tooltip flex w-fit items-center justify-between gap-2 text-black hover:cursor-default"
+            mytitle={"The total number of items currently sold till date."}
           >
-            {customer_name}
-          </h1>
+            <h1
+              title={google_name}
+              className="overflow-ellipsis whitespace-pre break-words text-lg font-semibold"
+            >
+              {google_name}
+            </h1>
+
+            <span className="tooltiptext">{google_name}</span>
+          </div>
           <p className="font-semibold capitalize text-gray-400">
             {sub_type} | {locality}
           </p>
@@ -115,6 +129,6 @@ export const StoreCard = ({
       <div className="h-fit w-full py-4">
         <StoreLabels TAGS={tags} />
       </div>
-    </div>
+    </motion.div>
   );
 };
