@@ -1,9 +1,9 @@
-import * as React from "react";
-import Map, { Marker } from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { useState } from "react";
-import { StoreModal } from "../Modals/StoreModal/StoreModal";
-import { Modal } from "../Modals";
+import * as React from 'react';
+import Map, { Marker } from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { useState } from 'react';
+import { StoreModal } from '../Modals/StoreModal/StoreModal';
+import { Modal } from '../Modals';
 
 function MapComponent({
   storesData = [],
@@ -16,13 +16,13 @@ function MapComponent({
   return (
     <Map
       initialViewState={{
-        longitude: 77.6242,
+        longitude: 77.95,
         latitude: 12.903,
         zoom: 10,
       }}
       style={{
-        width: "40vw",
-        height: "100vh",
+        width: '100vw',
+        height: '100vh',
       }}
       mapboxAccessToken={import.meta.env.VITE_MAP_TOKEN}
       mapStyle={import.meta.env.VITE_MAP_STYLE}
@@ -37,19 +37,19 @@ function MapComponent({
               offsetTop={-10}
             >
               <p
-                role="img"
+                role='img'
                 onClick={() => {
                   setSelectedLocation(store);
                   setShowModal(true);
                   setStoreDetail(store);
                 }}
-                className="cursor-pointer rounded-lg bg-white p-2 font-medium
-    transition-all duration-150 ease-out hover:scale-125"
+                className='cursor-pointer rounded-lg bg-white p-2 font-medium
+    transition-all duration-150 ease-out hover:scale-125'
               >
                 {store.customer_name}
               </p>
-              <div className="flex flex-row justify-center">
-                <span className="material-icons text-red-500">room</span>
+              <div className='flex flex-row justify-center'>
+                <span className='material-icons text-red-500'>room</span>
               </div>
             </Marker>
             {selectedLocation.longitude === store.longitude && (

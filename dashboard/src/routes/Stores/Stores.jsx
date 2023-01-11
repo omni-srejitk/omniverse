@@ -77,12 +77,12 @@ export const Stores = () => {
   const STORE_SALE = createStoreWiseSales(dailyGMVData, storeDetail.customer);
 
   return (
-    <main className="page__content grid grid-cols-2">
-      <div className="flex h-full w-full flex-col items-start justify-between gap-4">
+    <main className="page__content grid grid-cols-1 lg:grid-cols-2">
+      <div className="mt-60 flex h-full w-full flex-col items-start justify-start gap-4 border-2 lg:mt-0 lg:justify-between">
         <h1 className="page__title">
           You're live in {ALL_STORES_DATA?.length} Stores!
         </h1>
-        <section className="relative mx-auto mb-36 flex h-fit w-full flex-col items-center justify-between">
+        <section className="relative mx-auto mb-36 flex h-fit w-full flex-col items-center justify-between lg:mt-0">
           <div className="grid-rows-auto z-10 order-2 mx-auto grid h-full w-full grid-cols-1 flex-wrap items-start justify-start gap-4 ">
             {!isAllStoresDataLoading &&
               ALL_STORES_DATA?.map((store) => (
@@ -100,7 +100,7 @@ export const Stores = () => {
           </div>
         </section>
       </div>
-      <div className="fixed h-[calc(100vh-5rem)] w-[38vw] overflow-hidden lg:right-0 lg:top-20">
+      <div className="fixed z-30  h-[30vh] w-[90vw] overflow-hidden lg:right-0 lg:top-20 lg:h-[calc(100vh-5rem)] lg:w-[38vw]">
         <MapComponent
           storesData={ALL_STORES_DATA}
           showModal={showModal}

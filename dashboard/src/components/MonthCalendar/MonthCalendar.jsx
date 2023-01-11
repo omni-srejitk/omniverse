@@ -1,9 +1,5 @@
 import moment from 'moment';
-import {
-  selectDurationFilter,
-  selectFilterEndDate,
-  selectFilterStartDate,
-} from '../../redux/actions';
+import { selectDurationFilter } from '../../redux/actions';
 import { useSelector } from 'react-redux';
 export const MonthCalendar = ({
   month,
@@ -171,7 +167,7 @@ export const MonthCalendar = ({
   );
 
   return (
-    <div className='flex flex-col items-center justify-center  first:hidden lg:first:flex'>
+    <div className='flex h-[25rem]  flex-col items-center justify-start first:hidden lg:first:flex'>
       <p className=' text-lg font-medium'>{month}</p>
       <table>
         <thead className='w-full'>
