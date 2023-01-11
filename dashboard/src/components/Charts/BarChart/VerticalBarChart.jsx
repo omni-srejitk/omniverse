@@ -9,7 +9,8 @@ import {
   CartesianGrid,
 } from 'recharts';
 export const VerticalBarChart = React.memo((props) => {
-  const { data, dataKey, color = '#86efac', XAxisKey, YAxisKey } = props;
+  const { data, dataKey, XAxisKey, YAxisKey } = props;
+  let color = '#86efac';
 
   const SLICE_LENGTH = data?.length > 5 ? 5 : data?.length;
   const SLICED_DATA = data?.slice(0, SLICE_LENGTH);

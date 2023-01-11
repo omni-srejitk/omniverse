@@ -68,18 +68,27 @@ export const PieChartChange = React.memo((props) => {
               key={payload.cell}
               className='flex h-fit w-full items-center gap-2 bg-white/90'
             >
-              <div
-                style={{ background: payload.fill }}
-                className={` h-4 w-4 rounded-lg `}
-              ></div>
+              {payload.name !== undefined ? (
+                <div
+                  style={{ background: payload.fill }}
+                  className={` h-4 w-4 rounded-lg `}
+                ></div>
+              ) : (
+                ''
+              )}
 
-              <span
-                title={payload.name}
-                style={{ color: payload.fill }}
-                className='mb-1 font-semibold text-gray-400'
-              >{`${
-                payload?.name?.charAt(0).toUpperCase() + payload.name?.slice(1)
-              } `}</span>
+              {payload.name !== undefined ? (
+                <span
+                  title={payload.name}
+                  style={{ color: payload.fill }}
+                  className='mb-1 font-semibold text-gray-400'
+                >{`${
+                  payload?.name?.charAt(0).toUpperCase() +
+                  payload.name?.slice(1)
+                } `}</span>
+              ) : (
+                ''
+              )}
             </div>
           ))}
         </div>

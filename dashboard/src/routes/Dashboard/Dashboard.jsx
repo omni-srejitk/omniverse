@@ -20,6 +20,7 @@ import {
   selectPopupState,
   selectSaleAmount,
   selectUnitsSold,
+  selectDurationFilter,
 } from '../../redux/actions';
 
 import {
@@ -27,6 +28,7 @@ import {
   setBrandName,
   setloginStatus,
 } from '../../redux/features/authSlice';
+import { setDurationFilter } from '../../redux/features/filterSlice';
 import {
   fetchDailyGMV,
   fetchInventoryCount,
@@ -75,6 +77,17 @@ export const Dashboard = () => {
     if (isGMVLoading) return;
     getFilteredData(FILTERSTATE, dailyGMVData, dispatch);
   }, [isGMVLoading, FILTERSTATE, dailyGMVData]);
+
+  const FILTERBYDURATION = useSelector(selectDurationFilter);
+  function filterchange() {
+    FILTERBYDURATION !== 'Lifetime'
+      ? dispatch(setDurationFilter('Lifetime'))
+      : '';
+  }
+
+  useEffect(() => {
+    filterchange();
+  }, []);
 
   return (
     <main
